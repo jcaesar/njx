@@ -2,6 +2,7 @@
   paramiko,
   rustworkx,
   setuptools,
+  pynacl,
   buildPythonPackage,
 }:
 let
@@ -11,6 +12,6 @@ buildPythonPackage {
   pname = project.name;
   version = project.version;
   src = ./.;
-  propagatedBuildInputs = [paramiko rustworkx setuptools];
+  propagatedBuildInputs = [paramiko rustworkx pynacl setuptools];
   format = "pyproject";
 }
