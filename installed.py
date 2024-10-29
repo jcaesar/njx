@@ -2,6 +2,7 @@ import os
 import paramiko
 from multiprocessing.pool import ThreadPool
 from collections import defaultdict
+from tqdm import tqdm
 import random
 import subprocess
 import json
@@ -39,7 +40,7 @@ def gather(t):
         "files": ft.listdir("/nix/store"),
     }
 print("Gathering store content (on {} hosts)".format(len(gathertasks)), file = sys.stderr)
-ondisk = pool.map(gather, gathertasks)
+ondisk = list(tqdm(pool.imap(gather, gathertasks), total=len(gathertasks)))
 
 showpossible = defaultdict(lambda: []) # where derivations are available
 for g in ondisk:
@@ -73,7 +74,7 @@ def showdrv(t):
     return json.loads(out)
 random.shuffle(showtasks)
 print("Reading derivations ({} chunks nix derivation show)".format(len(showtasks)), file = sys.stderr)
-shown = {k: v for c in pool.map(showdrv, showtasks) for k, v in c.items()}
+shown = {k: v for c in tqdm(pool.imap(showdrv, showtasks), total=len(showtasks)) for k, v in c.items()}
 
 print("Mangling dependency graph ({} items)".format(len(shown)), file = sys.stderr)
 g = rx.PyDiGraph(check_cycle=True)
@@ -86,7 +87,7 @@ def drvnode(k):
     return n
 hostroots = {x["host"]: g.add_node("[{}]".format(x["host"])) for x in ondisk}
 addroots = {l: hostroots[x["host"]] for x in ondisk for l in x["roots"]}
-for k, v in shown.items():
+for k, v in tqdm(shown.items()):
     kn = drvnode(k)
     for inp in v["inputDrvs"].keys():
         g.add_edge(kn, drvnode(inp), ())
