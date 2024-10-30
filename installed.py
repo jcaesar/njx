@@ -10,6 +10,8 @@ import subprocess
 import json
 import rustworkx as rx
 import sys
+import threading
+import time
 pool = ThreadPool()
 
 remote = sys.argv[1:]
@@ -28,7 +30,22 @@ def open_ssh(host):
         username = config['user'],
     )
     return client
-ssh = {h: open_ssh(h) for h in remote}
+ssh = {h: open_ssh(h) for h in tqdm(remote)}
+
+def ssh_exec_out(conn, cmd):    
+    stdin, stdout, stderr = conn.exec_command(cmd)
+    stdout.channel.set_combine_stderr(True)
+    stdin.channel.shutdown_write()
+    return stdout.read()
+def keepalive():
+    next = time.monotonic()
+    while True:
+        for _, c in ssh.items():
+            ssh_exec_out(c, "true")
+        next += 29
+        time.sleep(max(10, next - time.monotonic()))
+    
+threading.Thread(target=keepalive)
 
 roots = ["/run/current-system", "/run/booted-system"]
 gathertasks = \
@@ -70,10 +87,7 @@ def showdrv(t):
     if h == "local":
         out = subprocess.check_output(cmd + args, stderr=subprocess.STDOUT)
     else:
-        stdin, stdout, stderr = ssh[h].exec_command(" ".join(cmd) + " '" + "' '".join(args) + "'")
-        stdout.channel.set_combine_stderr(True)
-        stdin.channel.shutdown_write()
-        out = stdout.read()
+        out = ssh_exec_out(ssh[h], " ".join(cmd) + " '" + "' '".join(args) + "'")
     return json.loads(out)
 random.shuffle(showtasks)
 print("Reading derivations ({} chunks nix derivation show)".format(len(showtasks)), file = sys.stderr)
