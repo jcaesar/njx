@@ -69,8 +69,7 @@ def gather(h):
     }
     pool_conn(h, conn)
     return ret
-print("Gathering store content (on {} hosts)".format(1 + len(remote)), file = sys.stderr)
-ondisk = list(tqdm(pool.imap(gather, ["local"] + remote), total=1 + len(remote)))
+ondisk = list(tqdm(pool.imap(gather, ["local"] + remote), total=1 + len(remote), unit="host", desc="ls /nix/store"))
 
 showpossible = defaultdict(lambda: []) # where derivations are available
 for g in ondisk:
@@ -116,7 +115,7 @@ def showdrv(t):
                 trunc = out[:100] + " … " + out[-100:] if len(out) > 200 else out
                 raise Exception(f"Failed to decode out of {h} executing {ex}: {trunc}")
             for d in c:
-                if f"/nix/store/{d}" not in out:
+                if f"/nix/store/{d}" not in ret:
                     raise Exception(f"{d} not in show output of {h}")
             pool_conn(h, conn)
             return ret
@@ -125,10 +124,8 @@ def showdrv(t):
                 raise
             time.sleep(3)
 random.shuffle(showtasks)
-print("Reading derivations ({} chunks nix derivation show)".format(len(showtasks)), file = sys.stderr)
-shown = {k: v for c in tqdm(pool.imap(showdrv, showtasks), total=len(showtasks)) for k, v in c.items()}
+shown = {k: v for c in tqdm(pool.imap(showdrv, showtasks), total=len(showtasks), unit="exec", desc="nix derivation show …") for k, v in c.items()}
 
-print("Mangling dependency graph ({} items)".format(len(shown)), file = sys.stderr)
 g = rx.PyDiGraph(check_cycle=True)
 drvnodes = {}
 def drvnode(k):
@@ -139,7 +136,7 @@ def drvnode(k):
     return n
 hostroots = {x["host"]: g.add_node("[{}]".format(x["host"])) for x in ondisk}
 addroots = {l: hostroots[x["host"]] for x in ondisk for l in x["roots"]}
-for k, v in tqdm(shown.items()):
+for k, v in tqdm(shown.items(), desc="[graph building]"):
     kn = drvnode(k)
     for inp in v["inputDrvs"].keys():
         g.add_edge(kn, drvnode(inp), ())
