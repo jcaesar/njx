@@ -1,18 +1,18 @@
 {
   paramiko,
   rustworkx,
-  setuptools,
   pynacl,
   tqdm,
-  buildPythonPackage,
+  buildPythonApplication,
 }:
-let
-  project = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project;
-in
-buildPythonPackage {
-  pname = project.name;
-  version = project.version;
+buildPythonApplication {
+  pname = "njx";
+  version = "0.1.0";
+  propagatedBuildInputs = [paramiko rustworkx pynacl tqdm];
   src = ./.;
-  propagatedBuildInputs = [paramiko rustworkx pynacl tqdm setuptools];
-  format = "pyproject";
+  format = "other";
+  installPhase = ''
+    install -D ${./.}/installed.py $out/bin/njx-installed
+    install -D ${./.}/delete_generations.py $out/bin/njx-delete-generations
+  '';
 }
