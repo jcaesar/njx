@@ -3,7 +3,7 @@
 import os
 import paramiko
 from multiprocessing.pool import ThreadPool
-from collections import defaultdict
+from collections import defaultdict, deque
 from tqdm import tqdm
 import random
 import subprocess
@@ -15,8 +15,6 @@ import time
 pool = ThreadPool()
 
 remote = sys.argv[1:]
-if len(remote) > 0:
-    print("Establishing ssh connection to remote servers ({})".format(" ".join(remote)), file = sys.stderr)
 def open_ssh(host):
     config = paramiko.SSHConfig \
         .from_path(os.path.expanduser('~/.ssh/config')) \
@@ -30,7 +28,16 @@ def open_ssh(host):
         username = config['user'],
     )
     return client
-ssh = {h: open_ssh(h) for h in tqdm(remote)}
+
+conn_pool = defaultdict(deque)
+def pooled_conn(h):
+    if len(conn_pool[h]) == 0:
+        return open_ssh(h)
+    else:
+        return conn_pool[h].popleft()
+def pool_conn(h, conn):
+    if conn is not None:
+        conn_pool[h].append(conn)
 
 def ssh_exec_out(conn, cmd):    
     stdin, stdout, stderr = conn.exec_command(cmd)
@@ -48,18 +55,22 @@ def keepalive():
 threading.Thread(target=keepalive)
 
 roots = ["/run/current-system", "/run/booted-system"]
-gathertasks = \
-    [(h, c.open_sftp()) for h, c in ssh.items()] + \
-    [("local", os)]
-def gather(t):
-    (h, ft) = t
-    return {
+def gather(h):
+    if h == "local":
+        ft = os
+        conn = None
+    else:
+        conn = pooled_conn(h)
+        ft = conn.open_sftp()
+    ret = {
         "host": h,
         "roots": [ft.readlink(k) for k in roots],
         "files": ft.listdir("/nix/store"),
     }
-print("Gathering store content (on {} hosts)".format(len(gathertasks)), file = sys.stderr)
-ondisk = list(tqdm(pool.imap(gather, gathertasks), total=len(gathertasks)))
+    pool_conn(h, conn)
+    return ret
+print("Gathering store content (on {} hosts)".format(1 + len(remote)), file = sys.stderr)
+ondisk = list(tqdm(pool.imap(gather, ["local"] + remote), total=1 + len(remote)))
 
 showpossible = defaultdict(lambda: []) # where derivations are available
 for g in ondisk:
@@ -75,20 +86,44 @@ def selhost(hs):
 showon = {f: selhost(hs) for f, hs in showpossible.items()} # where to execute nix derivation show $drv
 showchunk = defaultdict(lambda: [[]]) # chunked multiple derivations so we don't invoke nix derviation show 100k times
 for drv, on in showon.items():
-    if len(showchunk[on][-1]) < 234:
+    if len(showchunk[on][-1]) < 89:
         showchunk[on][-1] += [drv]
     else:
         showchunk[on] += [[drv]]
-showtasks = [(h, c) for h,cs in showchunk.items() for c in cs]
+showtasks = [(h, c) for h, cs in showchunk.items() for c in cs]
 def showdrv(t):
     (h, c) = t
     cmd = ["nix", "derivation", "show"]
     args = [f"/nix/store/{d}^*" for d in c]
-    if h == "local":
-        out = subprocess.check_output(cmd + args, stderr=subprocess.STDOUT)
-    else:
-        out = ssh_exec_out(ssh[h], " ".join(cmd) + " '" + "' '".join(args) + "'")
-    return json.loads(out)
+    tries = 0
+    while True:
+        tries += 1
+        try:
+            try:
+                if h == "local":
+                    ex = cmd + args
+                    out = subprocess.check_output(ex, stderr=subprocess.STDOUT)
+                    conn = None
+                else:
+                    ex = " ".join(cmd) + " '" + "' '".join(args) + "'"
+                    conn = pooled_conn(h)
+                    out = ssh_exec_out(conn, ex)
+            except Exception as e:
+                raise Exception(f"Failed to execute on {h}: {ex}")
+            try:
+                ret = json.loads(out)
+            except Exception as e:
+                trunc = out[:100] + " … " + out[-100:] if len(out) > 200 else out
+                raise Exception(f"Failed to decode out of {h} executing {ex}: {trunc}")
+            for d in c:
+                if f"/nix/store/{d}" not in out:
+                    raise Exception(f"{d} not in show output of {h}")
+            pool_conn(h, conn)
+            return ret
+        except:
+            if tries > 3:
+                raise
+            time.sleep(3)
 random.shuffle(showtasks)
 print("Reading derivations ({} chunks nix derivation show)".format(len(showtasks)), file = sys.stderr)
 shown = {k: v for c in tqdm(pool.imap(showdrv, showtasks), total=len(showtasks)) for k, v in c.items()}
