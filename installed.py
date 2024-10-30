@@ -65,11 +65,12 @@ for drv, on in showon.items():
 showtasks = [(h, c) for h,cs in showchunk.items() for c in cs]
 def showdrv(t):
     (h, c) = t
-    cmd = ["nix", "derivation", "show"] + [f"/nix/store/{d}^*" for d in c]
+    cmd = ["nix", "derivation", "show"]
+    args = [f"/nix/store/{d}^*" for d in c]
     if h == "local":
-        out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        out = subprocess.check_output(cmd + args, stderr=subprocess.STDOUT)
     else:
-        stdin, stdout, stderr = ssh[h].exec_command(" ".join(cmd))
+        stdin, stdout, stderr = ssh[h].exec_command(" ".join(cmd) + " '" + "' '".join(args) + "'")
         stdout.channel.set_combine_stderr(True)
         stdin.channel.shutdown_write()
         out = stdout.read()
