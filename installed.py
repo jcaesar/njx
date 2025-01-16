@@ -13,6 +13,7 @@ import rustworkx as rx
 import sys
 import threading
 import time
+import getpass
 pool = ThreadPool()
 
 remote = sys.argv[1:]
@@ -24,9 +25,9 @@ def open_ssh(host):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(
-        hostname = config['hostname'],
-        port = config['port'],
-        username = config['user'],
+        hostname = config['hostname'].replace("%%", "%"),
+        port = config.get('port', 22),
+        username = config.get('user', getpass.getuser()),
     )
     return client
 
@@ -40,7 +41,7 @@ def pool_conn(h, conn):
     if conn is not None:
         conn_pool[h].append(conn)
 
-def ssh_exec_out(conn, cmd):    
+def ssh_exec_out(conn, cmd):
     stdin, stdout, stderr = conn.exec_command(cmd)
     stdout.channel.set_combine_stderr(True)
     stdin.channel.shutdown_write()
@@ -52,7 +53,7 @@ def keepalive():
             ssh_exec_out(c, "true")
         next += 29
         time.sleep(max(10, next - time.monotonic()))
-    
+
 threading.Thread(target=keepalive)
 
 def decode_stacked(document):
@@ -142,7 +143,7 @@ ondisk = list(tqdm(pool.imap(gather, ["local"] + remote), total=1 + len(remote),
 def exec_where_avail(cmd, targets):
     showpossible = defaultdict(lambda: []) # where derivations are available
     for t in targets:
-        for g in ondisk:                    
+        for g in ondisk:
             host = g["host"]
             if t in g["files"]:
                 showpossible[t] += [host]
@@ -212,7 +213,7 @@ for x in ondisk:
 
 installed = [{"name": n, "version": ver, "host": h} for n, ver, h in sorted(installed)]
 print("Dumping install information ({} entries)".format(len(installed)), file = sys.stderr)
-json.dump(installed, sys.stdout) 
+json.dump(installed, sys.stdout)
 
 def main():
     pass
