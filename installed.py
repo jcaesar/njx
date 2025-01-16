@@ -14,7 +14,9 @@ import sys
 import threading
 import time
 import getpass
+import socket
 pool = ThreadPool()
+local = socket.gethostname()
 
 remote = sys.argv[1:]
 def open_ssh(host):
@@ -74,7 +76,7 @@ def exec_decode(h, cmd, f):
         try:
             try:
                 ex = " ".join(cmd)
-                if h == "local":
+                if h == local:
                     out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                     conn = None
                 else:
@@ -125,7 +127,7 @@ def gather(h):
             #     return False
             return True
         return list(filter(nope, (x.split(" ")[-1] for x in out.split("\n"))))
-    if h == "local":
+    if h == local:
         ft = os
         conn = None
     else:
@@ -138,7 +140,7 @@ def gather(h):
     }
     pool_conn(h, conn)
     return ret
-ondisk = list(tqdm(pool.imap(gather, ["local"] + remote), total=1 + len(remote), unit="host", desc="gc roots, ls /nix/store"))
+ondisk = list(tqdm(pool.imap(gather, set([local] + remote)), total=1 + len(remote), unit="host", desc="gc roots, ls /nix/store"))
 
 def exec_where_avail(cmd, targets):
     showpossible = defaultdict(lambda: []) # where derivations are available
@@ -148,8 +150,8 @@ def exec_where_avail(cmd, targets):
             if t in g["files"]:
                 showpossible[t] += [host]
     def selhost(hs):
-        if "local" in hs:
-            return "local"
+        if local in hs:
+            return local
         else:
             return random.choice(hs)
     showon = {f: selhost(hs) for f, hs in showpossible.items()} # where to execute nix derivation show $drv
