@@ -43,16 +43,19 @@ def pool_conn(h, conn):
     if conn is not None:
         conn_pool[h].append(conn)
 
-def ssh_exec_out(conn, cmd):
-    stdin, stdout, stderr = conn.exec_command(cmd)
-    stdout.channel.set_combine_stderr(True)
-    stdin.channel.shutdown_write()
-    return stdout.read()
+def ssh_exec_out(conn, cmd, host):
+    try:
+        stdin, stdout, stderr = conn.exec_command(cmd)
+        stdout.channel.set_combine_stderr(True)
+        stdin.channel.shutdown_write()
+        return stdout.read()
+    except:
+        raise Exception(f"Error executing on {host}")
 def keepalive():
     next = time.monotonic()
     while True:
-        for _, c in ssh.items():
-            ssh_exec_out(c, "true")
+        for h, c in ssh.items():
+            ssh_exec_out(c, "true", h)
         next += 29
         time.sleep(max(10, next - time.monotonic()))
 
@@ -81,7 +84,7 @@ def exec_decode(h, cmd, f):
                     conn = None
                 else:
                     conn = pooled_conn(h)
-                    out = ssh_exec_out(conn, ex)
+                    out = ssh_exec_out(conn, ex, h)
             except Exception as e:
                 raise Exception(f"Failed to execute on {h}: {ex}")
             try:
