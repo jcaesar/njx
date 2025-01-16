@@ -203,7 +203,9 @@ for x in ondisk:
     for f in x["roots"]:
         g.add_edge(root, drvnode(f), ())
     for _,l in rx.dfs_edges(g, root):
-        info = path_info[g[l]]
+        info = path_info.get(g[l], None)
+        if info is None:
+            continue
         drv = derivations.get(info.get("deriver", None), None)
         if drv is None:
             continue
