@@ -1,0 +1,39 @@
+set print pretty on
+set print object on
+set print static-members on
+set print vtbl on
+set print demangle on
+set demangle-style auto
+set print sevenbit-strings off
+
+# This file contains the generic settings
+
+set prompt gdb> 
+
+set history save on
+set history save on
+set history size unlimited
+set history remove-duplicates unlimited
+set history expansion on
+
+# Stop printing arrays at a nul
+set print null-stop
+
+# Pretty Print things
+set print pretty on
+set print array on
+
+# C++ specific settings
+set print vtbl on
+set print object on
+set overload-resolution on
+
+# Required on a mac, breaks stuff (spaces in arguments) on linux
+set startup-with-shell on
+
+set tui border-kind acs
+
+#set fork-follow-mode child
+
+handle SIGPIPE nostop noprint pass
+set debuginfod enabled on
