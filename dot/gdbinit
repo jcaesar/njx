@@ -28,9 +28,6 @@ set print vtbl on
 set print object on
 set overload-resolution on
 
-# Required on a mac, breaks stuff (spaces in arguments) on linux
-set startup-with-shell on
-
 set tui border-kind acs
 
 #set fork-follow-mode child

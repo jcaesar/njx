@@ -16,24 +16,6 @@
     lib.attrValues flakes.self.overlays
     ++ [
       (final: prev: {
-        matrix-synapse-unwrapped = prev.matrix-synapse-unwrapped.overridePythonAttrs (old: {
-          # #369303. tests.storage.databases.main.test_events_worker.DatabaseOutageTestCase.test_recovery fails with twisted.protocols.amp.TooLong
-          postPatch =
-            (old.postPatch or "")
-            + ''
-              substituteInPlace tests/storage/databases/main/test_events_worker.py --replace-fail \
-              $'    def test_recovery(' \
-              $'    from tests.unittest import skip_unless\n'\
-              $'    @skip_unless(False, "broken")\n'\
-              $'    def test_recovery('
-              substituteInPlace tests/http/test_proxyagent.py --replace-fail \
-              $'MatrixFederationAgentTests(TestCase):' \
-              $'MatrixFederationAgentTests(TestCase):\n'\
-              $'    skip = "Some broken"'
-            '';
-          # pysaml2 s broken. #367976
-          nativeCheckInputs = builtins.filter (x: x.pname != "pysaml2") old.nativeCheckInputs;
-        });
         # #368981
         avro-cpp = prev.avro-cpp.overrideAttrs (old: {
           cmakeFlags =
