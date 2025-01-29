@@ -15,16 +15,8 @@
   nixpkgs.overlays =
     lib.attrValues flakes.self.overlays
     ++ [
-      (final: prev: {
-        # #368981
-        avro-cpp = prev.avro-cpp.overrideAttrs (old: {
-          cmakeFlags =
-            (old.cmakeFlags or [])
-            ++ [
-              (lib.cmakeFeature "CMAKE_CXX_FLAGS" "-Wno-error=dangling-reference")
-            ];
-        });
-      })
+      # (final: prev: {
+      # })
     ];
   nix.settings.experimental-features = ["nix-command" "flakes"];
   programs.command-not-found.enable = false; # doesn't work anyway
