@@ -26,24 +26,5 @@ in {
   };
   environment.systemPackages = with pkgs; [libcec];
 
-  services.home-assistant = {
-    # enable = true;
-    extraComponents = [
-      "met"
-      "radio_browser"
-      "media_player"
-      "zha"
-      "bluetooth_tracker"
-      "bluetooth_le_tracker"
-      "bluetooth"
-      "bluetooth_adapters"
-      "generic_thermostat"
-      "dhcp"
-    ];
-    config = {
-      default_config = {};
-    };
-  };
-
   system.stateVersion = "24.05";
 }
