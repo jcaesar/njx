@@ -1,4 +1,4 @@
-# remote luks unlock: $ ssh $host -p2223 -tt systemctl restart systemd-ask-password-console
+# remote luks unlock: $ ssh $host -p2223 -tt systemctl default
 {
   config,
   lib,

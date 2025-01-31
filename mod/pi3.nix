@@ -28,8 +28,8 @@
     cfg = config.systemd.services.supplicant-wlan0;
   in {
     serviceConfig = cfg.serviceConfig;
-    after = cfg.after ++ ["boot.mount"];
-    wantedBy = ["sys-subsystem-net-devices-wlan0.device"];
+    after = cfg.after ++ ["boot.mount" "sys-subsystem-net-devices-wlan0.device"];
+    wantedBy = ["default.target"];
     bindsTo = cfg.bindsTo;
     requires = ["boot.mount" "sys-subsystem-net-devices-wlan0.device"];
     wants = ["network.target"];
