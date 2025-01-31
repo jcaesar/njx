@@ -5,7 +5,7 @@ pkgs: prev: {
   seeed-2mic-blinky = pkgs.callPackage ./seeed-2mic-blinky.nix {};
   pyanidb = pkgs.python3.pkgs.callPackage ./pyanidb.nix {};
   junix = pkgs.python3.pkgs.callPackage ./junix.nix {};
-  njx = pkgs.callPackage ./njx.nix {};
+  njx = pkgs.python3.pkgs.callPackage ../tools {};
   rowserext = pkgs.callPackage ./rowserext.nix {};
   ruri = pkgs.callPackage ./ruri.nix {};
   colmap = import ./colmap.nix prev;

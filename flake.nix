@@ -58,6 +58,11 @@
         // sysTests
         // aggSys
     );
+    packages = eachSystem (pkgs: { inherit (pkgs) njx; });
+    apps = eachSystem (pkgs: nixpkgs.lib.genAttrs ["installed" "delete-generations"] (n: {
+      type = "app";
+      program = "${pkgs.njx}/bin/njx-${n}";
+    }));
   };
 
   inputs = {
