@@ -22,14 +22,13 @@
     sysA = sys "aarch64-linux";
   in {
     inherit flakes;
-    nixosConfigurations =
-      {
-        mictop = sysI ./sys/mictop.nix;
-        pekinese = sysI ./sys/pekinese/configuration.nix;
-        pitivi = sysA ./sys/pitivi.nix;
-        gegensprech = sysA ./sys/gegensprech.nix;
-        basenji = sysI ./sys/basenji.nix;
-      };
+    nixosConfigurations = {
+      mictop = sysI ./sys/mictop.nix;
+      pekinese = sysI ./sys/pekinese/configuration.nix;
+      pitivi = sysA ./sys/pitivi.nix;
+      gegensprech = sysA ./sys/gegensprech.nix;
+      basenji = sysI ./sys/basenji.nix;
+    };
     nixosModules = {
       njx = import ./mod;
       home-manager = flakes.home-manager.nixosModules.home-manager;

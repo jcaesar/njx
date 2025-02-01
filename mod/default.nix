@@ -1,7 +1,4 @@
-{
-  modulesPath,
-  ...
-}: let
+{modulesPath, ...}: let
   mkModOption = name: {
     lib,
     config,

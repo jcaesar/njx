@@ -13,29 +13,28 @@
     daemonIOSchedClass = "idle";
   };
 
-  fonts.packages = with pkgs;
-    [
-      ipafont
-      ipaexfont
-      hanazono
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      mplus-outline-fonts.githubRelease
-      dina-font
-      proggyfonts
-      nerd-fonts.droid-sans-mono
-      fira-code
-      terminus_font
-      iosevka
-      sarasa-gothic
-      source-code-pro
-      terminus_font
-      inconsolata
-    ];
+  fonts.packages = with pkgs; [
+    ipafont
+    ipaexfont
+    hanazono
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
+    nerd-fonts.droid-sans-mono
+    fira-code
+    terminus_font
+    iosevka
+    sarasa-gothic
+    source-code-pro
+    terminus_font
+    inconsolata
+  ];
 
   services.xserver = {
     xkb = {
