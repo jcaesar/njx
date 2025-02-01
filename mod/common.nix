@@ -86,6 +86,11 @@
       rusti-cal # rustier cal
       man-pages
       expect
+      ffmpeg
+      gimp
+      picard
+      inkscape
+      typst # better tex?
       (python3.withPackages (ps:
         with ps; [
           netaddr
