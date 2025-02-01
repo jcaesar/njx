@@ -6,6 +6,7 @@ pkgs: prev: {
   pyanidb = pkgs.python3.pkgs.callPackage ./pyanidb.nix {};
   junix = pkgs.python3.pkgs.callPackage ./junix.nix {};
   njx = pkgs.python3.pkgs.callPackage ../tools {};
+  njx-repo-scripts = pkgs.callPackage ../tools/nus.nix {};
   rowserext = pkgs.callPackage ./rowserext.nix {};
   ruri = pkgs.callPackage ./ruri.nix {};
   colmap = import ./colmap.nix prev;

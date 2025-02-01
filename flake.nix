@@ -58,11 +58,18 @@
         // sysTests
         // aggSys
     );
-    packages = eachSystem (pkgs: { inherit (pkgs) njx; });
-    apps = eachSystem (pkgs: nixpkgs.lib.genAttrs ["installed" "delete-generations"] (n: {
-      type = "app";
-      program = "${pkgs.njx}/bin/njx-${n}";
-    }));
+    packages = eachSystem (pkgs: {inherit (pkgs) njx;});
+    apps = let
+      app = program: {
+        inherit program;
+        type = "app";
+      };
+    in
+      eachSystem (pkgs:
+        nixpkgs.lib.genAttrs ["slack" "apply" "tag"] (n:
+          app "${pkgs.njx-repo-scripts}/bin/${n}.nu")
+        // nixpkgs.lib.genAttrs ["installed" "delete-generations"] (n:
+          app "${pkgs.njx}/bin/njx-${n}"));
   };
 
   inputs = {
