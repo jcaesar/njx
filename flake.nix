@@ -3,25 +3,14 @@
     nixpkgs,
     self,
     ...
-  } @ flakes: let
-    inherit (nixpkgs.lib) genAttrs attrNames attrValues mapAttrs filter;
-    pkgsForSystem = system:
-      import nixpkgs {
-        inherit system;
-        overlays = attrValues self.overlays;
-      };
-    genSystems = genAttrs ["x86_64-linux" "aarch64-linux"];
-    eachSystem = f: genSystems (system: f (pkgsForSystem system));
-    sys = system: main:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {inherit flakes system;};
-        modules = builtins.attrValues self.nixosModules ++ [main];
-      };
-    sysI = sys "x86_64-linux";
-    sysA = sys "aarch64-linux";
+  } @ flakes': let
+    flakes = flakes' // {njx = self;};
+    inherit (nixpkgs.lib) genAttrs attrNames mapAttrs;
+    inherit (self.lib) sysFs eachSystem app allToplevels;
+    inherit (sysFs flakes) sysI sysA;
   in {
     inherit flakes;
+    lib = import ./lib.nix {inherit self nixpkgs;};
     nixosConfigurations = {
       mictop = sysI ./sys/mictop.nix;
       pekinese = sysI ./sys/pekinese/configuration.nix;
@@ -34,41 +23,21 @@
       home-manager = flakes.home-manager.nixosModules.home-manager;
       disko = flakes.disko.nixosModules.disko;
     };
-    overlays.default = final: prev: import ./pkgs final prev;
+    overlays.pkgs = import ./pkgs;
     formatter = eachSystem (pkgs: pkgs.alejandra);
     checks = eachSystem (
       pkgs: let
         myPkgs = genAttrs (attrNames (self.overlays.default null null)) (p: pkgs.${p});
-        sysTests = mapAttrs (_: sys: sys.config.system.build.toplevel) self.nixosConfigurations;
-        aggSys = let
-          all = attrNames self.nixosConfigurations;
-          linkFor = sys: "ln -s ${self.nixosConfigurations.${sys}.config.system.build.toplevel} $out/${sys}";
-          links = filt: builtins.concatStringsSep "\n" (map linkFor (filter (name: filt name) all));
-          toplevels = filt:
-            pkgs.runCommandLocal "toplevels" {} ''
-              mkdir $out
-              ${links filt}
-            '';
-        in {
-          allSys = toplevels (_: true);
-        };
+        aggSys = allToplevels self.nixosConfigurations pkgs;
       in
-        myPkgs
-        // sysTests
-        // aggSys
+        myPkgs // aggSys
     );
     packages = eachSystem (pkgs: {inherit (pkgs) njx;});
-    apps = let
-      app = program: {
-        inherit program;
-        type = "app";
-      };
-    in
-      eachSystem (pkgs:
-        nixpkgs.lib.genAttrs ["slack" "apply" "tag"] (n:
-          app "${pkgs.njx-repo-scripts}/bin/${n}.nu")
-        // nixpkgs.lib.genAttrs ["installed" "delete-generations"] (n:
-          app "${pkgs.njx}/bin/njx-${n}"));
+    apps = eachSystem (pkgs:
+      genAttrs ["slack" "apply" "tag"] (n:
+        app "${pkgs.njx-repo-scripts}/bin/${n}.nu")
+      // genAttrs ["installed" "delete-generations"] (n:
+        app "${pkgs.njx}/bin/njx-${n}"));
   };
 
   inputs = {

@@ -81,7 +81,7 @@
     element-desktop
     iamb
     pyanidb
-    (himalaya.override {buildFeatures = ["notmuch"];})
+    (himalaya.override {withFeatures = ["notmuch"];})
     wl-clipboard
     notmuch
   ];

@@ -63,7 +63,7 @@
 
   users.users.julius.packages = with pkgs; [
     element-desktop
-    (himalaya.override {buildFeatures = ["notmuch"];})
+    (himalaya.override {withFeatures = ["notmuch"];})
     notmuch
     nextcloud-client
     wl-clipboard

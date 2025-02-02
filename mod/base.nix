@@ -12,12 +12,7 @@
     r = flakes.self.shortRev or flakes.self.dirtyShortRev or "nogit";
   in "j_${r}_${flakes.self.lastModifiedDate}";
 
-  nixpkgs.overlays =
-    lib.attrValues flakes.self.overlays
-    ++ [
-      # (final: prev: {
-      # })
-    ];
+  nixpkgs.overlays = lib.attrValues flakes.njx.overlays;
   nix.settings.experimental-features = ["nix-command" "flakes"];
   programs.command-not-found.enable = false; # doesn't work anyway
   njx.source-flakes = lib.mkDefault true;
