@@ -35,7 +35,7 @@
 
   environment.systemPackages = with pkgs; [
     deadnix
-    vulnix
+    # vulnix # todo
     git # better svn/hg
   ];
 
@@ -62,7 +62,7 @@
       wol
       pwgen
       binutils
-      binwalk
+      # binwalk
       urlencode
       nmap
       dos2unix
