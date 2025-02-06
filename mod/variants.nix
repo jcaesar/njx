@@ -96,6 +96,7 @@
       "${modulesPath}/virtualisation/qemu-vm.nix"
     ];
     boot.initrd.secrets = lib.mkForce {};
+    boot.initrd.network.ssh.enable = false;
     services.getty.autologinUser = "root";
     virtualisation.graphics = false;
     virtualisation.memorySize = 2048;
