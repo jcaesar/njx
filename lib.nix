@@ -30,7 +30,7 @@ in {
   };
   allToplevels = configs: pkgs: {
     allSys = let
-      linkFor = sys: "ln -s ${sys.config.system.build.toplevel} $out/${sys}";
+      linkFor = sys: let em = sys.config.system; in "ln -s ${em.build.toplevel} $out/${em.name}";
     in
       pkgs.runCommandLocal "toplevels" {} ''
         mkdir $out

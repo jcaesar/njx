@@ -27,7 +27,7 @@
     formatter = eachSystem (pkgs: pkgs.alejandra);
     checks = eachSystem (
       pkgs: let
-        myPkgs = genAttrs (attrNames (self.overlays.default null null)) (p: pkgs.${p});
+        myPkgs = genAttrs (attrNames (self.overlays.pkgs null null)) (p: pkgs.${p});
         aggSys = allToplevels self.nixosConfigurations pkgs;
       in
         myPkgs // aggSys
