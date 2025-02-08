@@ -20,11 +20,6 @@
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4064884/latest.xpi"
   },
   {
-    "name": "Sidebery",
-    "id": "{3c078156-979c-498b-8990-85f7987dd929}",
-    "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4230615/latest.xpi"
-  },
-  {
     "name": "Auto Tab Discard",
     "id": "{c2c003ee-bd69-42a2-b0e9-6f34222cb046}",
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4045009/latest.xpi"
@@ -35,19 +30,9 @@
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4186050/latest.xpi"
   },
   {
-    "name": "Firefox Translations",
-    "id": "firefox-translations-addon@mozilla.org",
-    "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4141509/latest.xpi"
-  },
-  {
     "name": "Old Reddit Redirect",
     "id": "{9063c2e9-e07c-4c2c-9646-cfe7ca8d0498}",
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4182157/latest.xpi"
-  },
-  {
-    "name": "Ruffle - Flash Emulator",
-    "id": "{b5501fd1-7084-45c5-9aa6-567c2fcf5dc6}",
-    "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4239745/latest.xpi"
   },
   {
     "name": "uMatrix",
@@ -58,10 +43,5 @@
     "name": "10ten Japanese Reader (Rikaichamp)",
     "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}",
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4216725/latest.xpi"
-  },
-  {
-    "name": "Vim Vixen",
-    "id": "vim-vixen@i-beam.org",
-    "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/3845233/latest.xpi"
   }
 ]

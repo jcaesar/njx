@@ -106,6 +106,7 @@
     alacritty
     polkit-kde-agent
     brightnessctl
+    grim
   ];
 
   system.systemBuilderCommands = let
