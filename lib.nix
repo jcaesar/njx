@@ -9,9 +9,13 @@
       inherit system;
       overlays = attrValues self.overlays;
     };
-in {
-  inherit pkgsForSystem;
   eachSystem = f: genSystems (system: f (pkgsForSystem system));
+  app = program: {
+    inherit program;
+    type = "app";
+  };
+in {
+  inherit pkgsForSystem eachSystem;
   sysFs = flakes': let
     flakes = self.flakes // flakes';
     sys = system: main:
@@ -24,10 +28,6 @@ in {
     sysI = sys "x86_64-linux";
     sysA = sys "aarch64-linux";
   };
-  app = program: {
-    inherit program;
-    type = "app";
-  };
   allToplevels = configs: pkgs: {
     allSys = let
       linkFor = sys: let em = sys.config.system; in "ln -s ${em.build.toplevel} $out/${em.name}";
@@ -37,4 +37,10 @@ in {
         ${concatStringsSep "\n" (map linkFor (attrValues configs))}
       '';
   };
+  apps = eachSystem (pkgs:
+    genAttrs ["slack" "tag"] (n:
+      app "${pkgs.njx-repo-scripts}/bin/${n}.nu")
+    // genAttrs ["installed" "delete-generations"] (n:
+      app "${pkgs.njx}/bin/njx-${n}")
+    // {apply = app (pkgs.njx-repo-scripts.apply self);});
 }

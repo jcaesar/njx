@@ -2,7 +2,6 @@
   pkgs,
   lib,
   flakes,
-  config,
   ...
 }: {
   nix.channel.enable = false;

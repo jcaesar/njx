@@ -5,11 +5,11 @@
     ...
   } @ flakes': let
     flakes = flakes' // {njx = self;};
-    inherit (nixpkgs.lib) genAttrs attrNames mapAttrs;
-    inherit (self.lib) sysFs eachSystem app allToplevels;
+    inherit (nixpkgs.lib) genAttrs attrNames;
+    inherit (self.lib) sysFs eachSystem apps allToplevels;
     inherit (sysFs flakes) sysI sysA;
   in {
-    inherit flakes;
+    inherit flakes apps;
     lib = import ./lib.nix {inherit self nixpkgs;};
     nixosConfigurations = {
       mictop = sysI ./sys/mictop.nix;
@@ -33,11 +33,6 @@
         myPkgs // aggSys
     );
     packages = eachSystem (pkgs: {inherit (pkgs) njx;});
-    apps = eachSystem (pkgs:
-      genAttrs ["slack" "apply" "tag"] (n:
-        app "${pkgs.njx-repo-scripts}/bin/${n}.nu")
-      // genAttrs ["installed" "delete-generations"] (n:
-        app "${pkgs.njx}/bin/njx-${n}"));
   };
 
   inputs = {
