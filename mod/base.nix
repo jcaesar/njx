@@ -63,9 +63,9 @@
     njx
     helix # better vim
     rsync # better scp
+    sshfs # use it for backups. TODO script
   ];
   programs.nh.enable = true; # better nixos-rebuild
-
   services.openssh = {
     settings.PasswordAuthentication = false;
     settings.KbdInteractiveAuthentication = false;

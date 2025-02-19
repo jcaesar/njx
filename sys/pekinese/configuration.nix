@@ -82,6 +82,7 @@
     iamb
     pyanidb
     (himalaya.override {withFeatures = ["notmuch"];})
+    geary
     wl-clipboard
     notmuch
   ];
