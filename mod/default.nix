@@ -20,6 +20,7 @@ in {
     ./common-home-nushell-env.nix
     ./source-flakes.nix
     ./extra-initrd.nix
+    ./protect-boot.nix
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")
