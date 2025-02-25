@@ -18,6 +18,7 @@
     pkgs,
     ...
   }: {
+    njx.protect-boot = false;
     boot.initrd.luks.devices = lib.mkForce {};
     fileSystems = {};
     boot.supportedFilesystems.zfs = lib.mkForce false;
