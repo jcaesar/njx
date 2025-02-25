@@ -91,7 +91,7 @@
     libreoffice-still
     # gimp
     xclip
-    dolphin # better explorer.exe
+    kdePackages.dolphin # better explorer.exe
     asak # "better audacity" / just an audio recorder
     gnome-clocks
     easyeffects # pipewire remixer
@@ -104,7 +104,7 @@
     swayidle
     waybar
     alacritty
-    polkit-kde-agent
+    kdePackages.polkit-kde-agent-1
     brightnessctl
     grim
   ];
