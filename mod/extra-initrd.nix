@@ -10,8 +10,8 @@
   config.boot.initrd.systemd.storePaths =
     lib.pipe config.njx.extraInitrdClosures
     [
-      (builtins.concatStringsSep "\n")
-      (pkgs.writeText "extra-initrd-paths")
+      builtins.toJSON
+      (pkgs.writeText "supplicant-wlan0-service-config.json")
       pkgs.writeClosure
       lib.readFile
       (lib.removeSuffix "\n")
