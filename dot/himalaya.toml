@@ -1,0 +1,20 @@
+[accounts.main]
+default = true
+email = "…@…"
+display-name = "main"
+downloads-dir = "/home/julius/downloads"
+backend.type = "notmuch"
+backend.database-path = "/home/julius/mail"
+backend.maildirpp = false
+message.send.backend.type = "smtp"
+message.send.backend.host = "mail.…"
+message.send.backend.port = 465
+message.send.backend.login = "…@…"
+message.send.backend.encryption.type = "tls"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.command = "secret-tool lookup login …@…"
+folder.aliases.inbox = "main/INBOX"
+folder.aliases.sent = "main/Sent"
+folder.aliases.drafts = "main/Drafts"
+folder.aliases.trash = "main/trash"
+

@@ -81,11 +81,10 @@
     element-desktop
     iamb
     pyanidb
-    (himalaya.override {withFeatures = ["notmuch"];})
     geary
     wl-clipboard
-    notmuch
   ];
+  njx.mail = true;
 
   home-manager.users.julius = {
     home.file.".config/hypr/hyprpaper.conf".text = ''

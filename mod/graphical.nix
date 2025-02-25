@@ -111,6 +111,7 @@
     kdePackages.polkit-kde-agent-1
     brightnessctl
     grim
+    wl-clipboard
   ];
 
   system.systemBuilderCommands = let

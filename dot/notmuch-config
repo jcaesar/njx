@@ -1,0 +1,10 @@
+[database]
+path=/home/julius/mail
+[user]
+name=EX AMPLE
+primary_email=EXAMPLE@EXAMPLE
+other_email=*@EXAMPLE
+[new]
+tags=
+[search]
+[maildir]

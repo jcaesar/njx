@@ -63,10 +63,7 @@
 
   users.users.julius.packages = with pkgs; [
     element-desktop
-    (himalaya.override {withFeatures = ["notmuch"];})
-    notmuch
     nextcloud-client
-    wl-clipboard
     thunderbird # keine zeit für sparifankerl
     picard
   ];

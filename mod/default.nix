@@ -34,5 +34,6 @@ in {
     (mkModOption "seeed-2mic/default")
     (mkModOption "slim")
     (mkModOption "sysrq")
+    (mkModOption "mail")
   ];
 }

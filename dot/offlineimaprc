@@ -1,0 +1,22 @@
+[general]
+accounts = EXAMPLE
+
+[Account EXAMPLE]
+localrepository = EXAMPLE-local
+remoterepository = EXAMPLE-remote
+postsynchook = notmuch new
+autorefresh = 40
+
+[Repository EXAMPLE-local]
+type = Maildir
+localfolders = ~/mail/main
+
+[Repository EXAMPLE-remote]
+type = IMAP
+remotehost = mail.EXAMPLE
+remoteuser = EXAMPLE@EXAMPLE
+# nice because we don't need to muck around with pythonfile and PYTHONPATH, bad because it throws /very/ ugly error messages (e.g. if secret-tool isn't present)
+remotepasseval = __import__("subprocess").check_output(["secret-tool", "lookup", "login", "EXAMPLE@EXAMPLE"]).decode("ascii")
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+maxconnections = 1 # change to 5 or so during initial sync
+idlefolders = ['INBOX']
