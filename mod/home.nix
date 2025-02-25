@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  nixosConfig,
   ...
 }: rec {
   home.username = "julius";
@@ -102,11 +103,6 @@
       "credential \"https://github.com\"".helper = creds;
       "credential \"https://gist.github.com\"".helper = creds;
     };
-  };
-
-  services.nextcloud-client = {
-    enable = true;
-    startInBackground = true;
   };
 
   xdg.userDirs = {
