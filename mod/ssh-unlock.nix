@@ -41,8 +41,7 @@ in {
       systemd = {
         enable = true;
         network = {
-          enable = true;
-          networks = config.systemd.network.networks;
+          inherit (config.systemd.network) enable config links netdevs networks;
         };
       };
       network = {
