@@ -84,14 +84,9 @@
       cargo-edit
       gcc
       python3.pkgs.python-fx
-      rusti-cal # rustier cal
       man-pages
       expect
       ffmpeg
-      gimp
-      picard
-      inkscape
-      typst # better tex?
       (python3.withPackages (ps:
         with ps; [
           netaddr

@@ -89,7 +89,11 @@
     zathura
     imagemagick
     libreoffice-still
-    # gimp
+    rusti-cal # rustier cal
+    gimp
+    picard
+    inkscape
+    typst # better tex?
     xclip
     kdePackages.dolphin # better explorer.exe
     asak # "better audacity" / just an audio recorder
