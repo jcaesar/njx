@@ -36,7 +36,6 @@
     jq
     rq
     wget
-    httpie # better wget/curl
     xh # "better" httpie
     screen
     tmux # better screen
