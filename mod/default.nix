@@ -21,6 +21,7 @@ in {
     ./source-flakes.nix
     ./extra-initrd.nix
     ./protect-boot.nix
+    ./prometheus-fix.nix
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")
