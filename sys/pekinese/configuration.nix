@@ -19,6 +19,7 @@
   boot.initrd.systemd.enable = true;
   systemd.targets.tpm2.enable = false; # timeouts waiting on dev-tpmrm0
   hardware.cpu.intel.updateMicrocode = true;
+  system.etc.overlay.enable = true; # i'm hoping I can speed up "activating NixOS" in stage 2 with this
 
   fileSystems."/" = {
     device = "/dev/disk/by-partlabel/primary";
