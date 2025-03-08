@@ -12,7 +12,7 @@ in
   }: {
     programs = {
       firefox = {
-        package = pkgs.firefox-devedition;
+        package = pkgs.firefox;
         enable = true;
         languagePacks = ["en-GB" "de" "ja"];
 
@@ -66,7 +66,7 @@ in
               ++ map (ex: {
                 id = "rowserext-${ex}@liftm.de";
                 sourceURI = "file://${pkgs.rowserext}/${ex}.xpi";
-              }) ["lionel" "join-on-time"]
+              }) [] #["lionel" "join-on-time"] # won't work for now, because devedition is out
             ));
 
           # ---- PREFERENCES ----
@@ -90,7 +90,7 @@ in
             "browser.newtabpage.activity-stream.showSponsoredTopSites" = lock false;
             "browser.sessionstore.warnOnQuit" = true;
             "dom.private-attribution.submission.enabled" = lock false;
-            "xpinstall.signatures.required" = lock false; # Meh, can't install my custom extensions otherwise. only works on esr/devedition
+            # "xpinstall.signatures.required" = lock false; # Meh, can't install my custom extensions otherwise. only works on esr/devedition
 
             "browser.ctrlTab.sortByRecentlyUsed" = true;
             "network.captive-portal-service.enabled" = false;
