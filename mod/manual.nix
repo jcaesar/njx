@@ -6,7 +6,8 @@
 }: let
   key = "manual";
   cfg = config.njx.${key};
-  text = if cfg == {}
+  text =
+    if cfg == {}
     then "No necessary manual configuration documented"
     else ''
       # Manual config
