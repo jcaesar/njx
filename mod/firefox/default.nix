@@ -14,25 +14,23 @@ in
     # https://hedgedoc.grimmauld.de/s/rVnTq0-Rs#
     nixpkgs.overlays = lib.singleton (final: prev: {
       firefox = prev.firefox.overrideAttrs (old: {
-        nativeBuildInputs = (old.nativeBuildInputs or []) ++ (with prev; [zip unzip gnused]);
-        buildCommand =
-          ''
-            export buildRoot="$(pwd)"
-          ''
-          + old.buildCommand
-          + ''
-            pushd $buildRoot
-            unzip $out/lib/firefox/browser/omni.ja -d patched_omni || ret=$?
-            if [[ $ret && $ret -ne 2 ]]; then
-              echo "unzip exited with unexpected error"
-              exit $ret
-            fi
-            rm $out/lib/firefox/browser/omni.ja
-            cd patched_omni
-            sed -i 's/"enterprise_only"\s*:\s*true,//' modules/policies/schema.sys.mjs
-            zip -9DXqr $out/lib/firefox/browser/omni.ja * # potentially qr9XD
-            popd
-          '';
+        nativeBuildInputs =
+          (old.nativeBuildInputs or [])
+          ++ (with final; [zip unzip gnused]);
+        buildCommand = let
+          omni = "$out/lib/firefox/browser/omni.ja";
+          modify = "modules/policies/schema.sys.mjs";
+        in ''
+          ${old.buildCommand}
+          if test -L ${omni}; then
+            install -m644 $(realpath ${omni}) ${omni}
+          fi
+          pushd $(mktemp -d)
+          unzip ${omni} ${modify} || test $? -eq 2
+          sed -i 's/"enterprise_only"\s*:\s*true,//' ${modify}
+          zip -0DX ${omni} ${modify}
+          popd
+        '';
       });
     });
     programs = {
