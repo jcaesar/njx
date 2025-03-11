@@ -10,6 +10,31 @@ in
     lib,
     ...
   }: {
+    # Enable SearchEngines policy
+    # https://hedgedoc.grimmauld.de/s/rVnTq0-Rs#
+    nixpkgs.overlays = lib.singleton (final: prev: {
+      firefox = prev.firefox.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or []) ++ (with prev; [zip unzip gnused]);
+        buildCommand =
+          ''
+            export buildRoot="$(pwd)"
+          ''
+          + old.buildCommand
+          + ''
+            pushd $buildRoot
+            unzip $out/lib/firefox/browser/omni.ja -d patched_omni || ret=$?
+            if [[ $ret && $ret -ne 2 ]]; then
+              echo "unzip exited with unexpected error"
+              exit $ret
+            fi
+            rm $out/lib/firefox/browser/omni.ja
+            cd patched_omni
+            sed -i 's/"enterprise_only"\s*:\s*true,//' modules/policies/schema.sys.mjs
+            zip -9DXqr $out/lib/firefox/browser/omni.ja * # potentially qr9XD
+            popd
+          '';
+      });
+    });
     programs = {
       firefox = {
         package = pkgs.firefox;
@@ -91,6 +116,7 @@ in
             "browser.sessionstore.warnOnQuit" = true;
             "dom.private-attribution.submission.enabled" = lock false;
             # "xpinstall.signatures.required" = lock false; # Meh, can't install my custom extensions otherwise. only works on esr/devedition
+            "browser.urlbar.update2.engineAliasRefresh" = true; # easy modifying of search engines from about:preferences
 
             "browser.ctrlTab.sortByRecentlyUsed" = true;
             "network.captive-portal-service.enabled" = false;
