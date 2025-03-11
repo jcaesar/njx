@@ -10,27 +10,20 @@ in
     lib,
     ...
   }: {
-    # Enable SearchEngines policy
-    # https://hedgedoc.grimmauld.de/s/rVnTq0-Rs#
+    # Enable SearchEngines policy: https://hedgedoc.grimmauld.de/s/rVnTq0-Rs#
     nixpkgs.overlays = lib.singleton (final: prev: {
       firefox = prev.firefox.overrideAttrs (old: {
         nativeBuildInputs =
           (old.nativeBuildInputs or [])
           ++ (with final; [zip unzip gnused]);
-        buildCommand = let
-          omni = "$out/lib/firefox/browser/omni.ja";
-          modify = "modules/policies/schema.sys.mjs";
-        in ''
-          ${old.buildCommand}
-          if test -L ${omni}; then
-            install -m644 $(realpath ${omni}) ${omni}
-          fi
-          pushd $(mktemp -d)
-          unzip ${omni} ${modify} || test $? -eq 2
-          sed -i 's/"enterprise_only"\s*:\s*true,//' ${modify}
-          zip -0DX ${omni} ${modify}
-          popd
-        '';
+        buildCommand = old.buildCommand + ''(
+          cd $(mktemp -d)
+          omni=$out/lib/firefox/browser/omni.ja
+          unzip -q $omni || test $? -eq 2
+          sed -i 's/"enterprise_only"\s*:\s*true,//' modules/policies/schema.sys.mjs
+          rm $omni
+          zip -9DXqr $omni .
+        );'';
       });
     });
     programs = {
