@@ -22,6 +22,7 @@ in {
     ./extra-initrd.nix
     ./protect-boot.nix
     ./prometheus-fix.nix
+    ./he-tunnel.nix
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")
