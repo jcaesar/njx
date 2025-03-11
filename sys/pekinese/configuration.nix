@@ -69,8 +69,6 @@
     finalOctet = 13;
   };
 
-  services.openssh.enable = true;
-
   services.xserver.enable = true;
   home-manager.users.julius.wayland.windowManager.hyprland.enable = true;
   programs.hyprland = {
