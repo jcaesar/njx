@@ -46,8 +46,11 @@ to_be_kept = [kept_name(p) for p in profiles if p["profile"] >= delete_before]
 print("To be deleted:", ", ".join(to_be_deleted))
 print("To be kept:", ", ".join(to_be_kept))
 
-if len(sys.argv) == 2 and sys.argv[1] == "fmuf" and len(to_be_deleted) > 0:
-    subprocess.run(["nix-env", "--delete-generations", "--profile", profiledir + "system"] + to_be_deleted)
+if len(sys.argv) == 2 and len(to_be_deleted) > 0:
+    if sys.argv[1] in ["fmuf", "fmh"]:
+        subprocess.run(["nix-env", "--delete-generations", "--profile", profiledir + "system"] + to_be_deleted)
+    if sys.argv[1] == "fmh":
+        subprocess.run([profiledir + "system/bin/switch-to-configuration", "boot"])       
 
 def main():
     pass
