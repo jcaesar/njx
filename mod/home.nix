@@ -125,11 +125,6 @@
     #'';
   };
 
-  wayland.windowManager.hyprland = {
-    settings = import ../dot/hypr/hyprland.nix;
-    xwayland.enable = true;
-  };
-
   systemd.user.services.stehauf = {
     Unit.Description = "Ich hab Rücken";
     Service.ExecStart = "${lib.getExe pkgs.libnotify} \"Streck Dich\" \"Du krummbuckla!\"";
@@ -140,7 +135,7 @@
   };
 
   home.file.".config/i3/config".source = ../dot/i3/config;
-  home.file.".config/hypr/hyprlock.conf".source = ../dot/hypr/hyprlock.conf;
+  home.file.".config/niri/config.kdl".source = ../dot/niri.kdl;
   home.file.".config/alacritty/alacritty.toml".source = ../dot/alacritty.toml;
   home.file.".config/mpv/mpv.conf".source = ../dot/mpv/mpv.conf;
   home.file.".config/mpv/input.conf".source = ../dot/mpv/input.conf;

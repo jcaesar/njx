@@ -83,10 +83,6 @@
   njx.mail = true;
 
   home-manager.users.julius = {
-    home.file.".config/hypr/hyprpaper.conf".text = ''
-      preload = /home/julius/cloud/Micxedo-Bilder/crx/sd7/DCIM/100MSDCF/DSC05055.JPG
-      wallpaper = eDP-1,/home/julius/cloud/Micxedo-Bilder/crx/sd7/DCIM/100MSDCF/DSC05055.JPG
-    '';
     services.nextcloud-client = {
       enable = true;
       startInBackground = true;

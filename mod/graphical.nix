@@ -86,6 +86,7 @@
     gomuks # better element
     activitywatch
     sxiv # better feh
+    imv # because sxiv doesn't do wayland
     zathura
     imagemagick
     libreoffice-still
@@ -103,8 +104,7 @@
     # Hyprland stuff
     #qt6-wayland
     wofi # worse rofi
-    hyprpaper
-    hyprlock
+    swaylock
     swayidle
     waybar
     alacritty
