@@ -136,6 +136,7 @@
 
   home.file.".config/i3/config".source = ../dot/i3/config;
   home.file.".config/niri/config.kdl".source = ../dot/niri.kdl;
+  home.file.".config/waybar/config.kdl".source = ../dot/waybar.jsonc;
   home.file.".config/alacritty/alacritty.toml".source = ../dot/alacritty.toml;
   home.file.".config/mpv/mpv.conf".source = ../dot/mpv/mpv.conf;
   home.file.".config/mpv/input.conf".source = ../dot/mpv/input.conf;
