@@ -134,6 +134,38 @@
     Install.WantedBy = ["timers.target"];
   };
 
+  services.swayidle = let
+    lock = pkgs.writeShellApplication {
+      name = "njx-waylock";
+      runtimeInputs = [nixosConfig.programs.niri.package pkgs.swaylock pkgs.coreutils];
+      text = ''
+        timeout --kill-after=15 10 niri msg action power-off-monitors || true
+        swaylock_args=(--show-failed-attempts)
+        lock_bg="$HOME/.config/swaylock-bg"
+        if test -e "$lock_bg"; then
+          swaylock_args+=(--image "$lockbg")
+        fi
+        exec swaylock "$${swaylock_args[@]}"
+      '';
+    };
+  in
+    lib.mkIf nixosConfig.programs.niri.enable {
+      enable = true;
+      events = lib.singleton {
+        event = "before-sleep";
+        command = lib.getExe lock;
+      };
+      timeouts = lib.singleton {
+        timeout = 310;
+        command = lib.getExe lock;
+      };
+    };
+  systemd.user.services.swww = lib.mkIf nixosConfig.programs.niri.enable {
+    Service.ExecStart = lib.getExe' pkgs.swww "swww-daemon";
+    Unit.PartOf = lib.singleton "graphical-session.target";
+    Install.WantedBy = lib.singleton "graphical-session.target";
+  };
+
   home.file.".config/i3/config".source = ../dot/i3/config;
   home.file.".config/niri/config.kdl".source = ../dot/niri.kdl;
   home.file.".config/waybar/config.jsonc".text = builtins.toJSON (import ../dot/waybar.nix);

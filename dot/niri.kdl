@@ -24,7 +24,7 @@ input {
     touchpad {
         // off
         tap
-        // dwt
+        dwt
         // dwtp
         // natural-scroll
         // accel-speed 0.2
@@ -212,7 +212,6 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 // spawn-at-startup "alacritty" "-e" "fish"
-spawn-at-startup "swayidle" "-w" "timeout" "330" "swaylock" "before-sleep" "swaylock"
 environment {
     NIXOS_OZONE_WL "1"
 }
