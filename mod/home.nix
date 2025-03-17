@@ -159,7 +159,7 @@
       timeouts = [
         {
           timeout = 300;
-          command = "niri msg action power-off-monitors";
+          command = "${lib.getExe pkgs.niri} msg action power-off-monitors";
         }
         {
           timeout = 310;
