@@ -142,7 +142,7 @@
         swaylock_args=(--show-failed-attempts)
         lock_bg="$HOME/.config/swaylock-bg"
         if test -e "$lock_bg"; then
-          swaylock_args+=(--image "$lockbg")
+          swaylock_args+=(--image "$lock_bg")
         fi
         exec swaylock "''${swaylock_args[@]}"
       '';
