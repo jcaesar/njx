@@ -202,8 +202,8 @@ layout {
     struts {
         left 15
         right 15
-        // top 64
-        // bottom 64
+        top 8
+        bottom 8
     }
 }
 
@@ -212,6 +212,8 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 // spawn-at-startup "alacritty" "-e" "fish"
+// hack because these apparently start too early and fail to connect. :/
+spawn-at-startup "systemctl" "--user" "start" "nextcloud-client" "waybar" "swww" "swayidle"
 environment {
     NIXOS_OZONE_WL "1"
 }
