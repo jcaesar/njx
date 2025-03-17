@@ -137,7 +137,7 @@
   services.swayidle = let
     lock = pkgs.writeShellApplication {
       name = "njx-waylock";
-      runtimeInputs = [nixosConfig.programs.niri.package pkgs.swaylock];
+      runtimeInputs = [pkgs.swaylock];
       text = ''
         swaylock_args=(--show-failed-attempts)
         lock_bg="$HOME/.config/swaylock-bg"
@@ -159,7 +159,7 @@
       timeouts = [
         {
           timeout = 300;
-          command = "${lib.getExe pkgs.niri} msg action power-off-monitors";
+          command = "${lib.getExe nixosConfig.programs.niri.package} msg action power-off-monitors";
         }
         {
           timeout = 310;
