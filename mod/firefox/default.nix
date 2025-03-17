@@ -16,14 +16,17 @@ in
         nativeBuildInputs =
           (old.nativeBuildInputs or [])
           ++ (with final; [zip unzip gnused]);
-        buildCommand = old.buildCommand + ''(
-          cd $(mktemp -d)
-          omni=$out/lib/firefox/browser/omni.ja
-          unzip -q $omni || test $? -eq 2
-          sed -i 's/"enterprise_only"\s*:\s*true,//' modules/policies/schema.sys.mjs
-          rm $omni
-          zip -9DXqr $omni .
-        );'';
+        buildCommand = ''
+          ${old.buildCommand}
+          (
+            cd $(mktemp -d)
+            omni=$out/lib/firefox/browser/omni.ja
+            unzip -q $omni || test $? -eq 2
+            sed -i 's/"enterprise_only"\s*:\s*true,//' modules/policies/schema.sys.mjs
+            rm $omni
+            zip -9DXqr $omni .
+          )
+        '';
       });
     });
     programs = {
