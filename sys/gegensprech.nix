@@ -26,6 +26,7 @@ in {
     Service.Environment = "RUST_LOG=info,gegensprech=warn";
     Install.WantedBy = ["default.target"];
   };
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
