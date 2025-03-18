@@ -61,7 +61,6 @@
     element-desktop
     nextcloud-client
     thunderbird # keine zeit für sparifankerl
-    picard
   ];
 
   networking.extraHosts = ''

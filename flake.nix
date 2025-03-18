@@ -24,6 +24,7 @@
       disko = flakes.disko.nixosModules.disko;
     };
     overlays.pkgs = import ./pkgs;
+    overlays.fixes = import ./fixes.nix;
     formatter = eachSystem (pkgs: pkgs.alejandra);
     checks = eachSystem (
       pkgs: let
