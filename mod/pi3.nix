@@ -7,6 +7,7 @@
   njx.base = true;
   njx.slim = true;
   njx.sshUnlock.modules = ["smsc95xx"];
+  njx.protect-boot = false;
 
   boot.loader.systemd-boot.enable = lib.mkForce false;
   # one little nastiness: the bootloader doesn't support secrets, so we need to hack around
