@@ -74,6 +74,7 @@
       man-pages
       expect
       ffmpeg
+      waypipe
       (python3.withPackages (ps:
         with ps; [
           netaddr

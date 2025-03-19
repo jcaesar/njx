@@ -16,7 +16,7 @@
   nix.settings.experimental-features = ["nix-command" "flakes"];
   programs.command-not-found.enable = false; # doesn't work anyway
   njx.source-flakes = lib.mkDefault true;
-  
+
   home-manager.sharedModules = [
     ({
       lib,

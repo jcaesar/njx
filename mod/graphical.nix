@@ -74,45 +74,47 @@
     glxinfo
   ];
 
-  users.users.julius.packages = with pkgs; [
-    xpra
-    mpv
-    yt-dlp
-    vlc # better windows media player
-    helvum # pipewire patch bay
-    pulseaudio
-    pavucontrol
-    dunst # better du
-    gomuks # better element
-    activitywatch
-    sxiv # better feh
-    imv # because sxiv doesn't do wayland
-    zathura
-    imagemagick
-    libreoffice-still
-    rusti-cal # rustier cal
-    gimp
-    picard
-    inkscape
-    typst # better tex?
-    xclip
-    kdePackages.dolphin # better explorer.exe
-    asak # "better audacity" / just an audio recorder
-    gnome-clocks
-    easyeffects # pipewire remixer
-    omekasy # unicode font style changer
-    # Hyprland stuff
-    #qt6-wayland
-    wofi # worse rofi
-    swaylock
-    swayidle
-    waybar
-    alacritty
-    kdePackages.polkit-kde-agent-1
-    brightnessctl
-    grim
-    wl-clipboard
-  ];
+  users.users.julius.packages = with pkgs;
+    [
+      xpra
+      mpv
+      yt-dlp
+      vlc # better windows media player
+      helvum # pipewire patch bay
+      pulseaudio
+      pavucontrol
+      dunst # better du
+      gomuks # better element
+      activitywatch
+      sxiv # better feh
+      imv # because sxiv doesn't do wayland
+      zathura
+      imagemagick
+      libreoffice-still
+      rusti-cal # rustier cal
+      gimp
+      picard
+      inkscape
+      typst # better tex?
+      xclip
+      kdePackages.dolphin # better explorer.exe
+      asak # "better audacity" / just an audio recorder
+      gnome-clocks
+      easyeffects # pipewire remixer
+      omekasy # unicode font style changer
+      alacritty
+      #qt6-wayland
+      wl-clipboard
+    ]
+    ++ lib.optionals config.programs.niri.enable [
+      wofi # worse rofi
+      swaylock
+      swayidle
+      waybar
+      kdePackages.polkit-kde-agent-1
+      brightnessctl
+      swww
+    ];
 
   system.systemBuilderCommands = let
     # reproduce nonexposed envs from nixos/modules/hardware/opengl.nix

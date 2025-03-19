@@ -1,3 +1,3 @@
 final: prev: {
-  picard = prev.picard.overrideAttrs { doCheck = false; };
+  picard = prev.picard.overrideAttrs {doCheck = false;};
 }
