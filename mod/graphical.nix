@@ -34,6 +34,9 @@
     source-code-pro
     terminus_font
     inconsolata
+    xwayland-satellite
+    ffmpeg
+    waypipe
   ];
 
   services.xserver = {

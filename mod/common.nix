@@ -62,7 +62,6 @@
       nixfmt-rfc-style
       nix-update
       nix-tree
-      nix-top
       nix-output-monitor # better nix build
       nixpkgs-review
       cargo
@@ -73,8 +72,6 @@
       python3.pkgs.python-fx
       man-pages
       expect
-      ffmpeg
-      waypipe
       (python3.withPackages (ps:
         with ps; [
           netaddr
