@@ -17,7 +17,6 @@ in {
     ./wg-doggieworld.nix
     ./manual.nix
     ./powercap.nix
-    ./common-home-nushell-env.nix
     ./source-flakes.nix
     ./extra-initrd.nix
     ./protect-boot.nix
