@@ -2,8 +2,38 @@
   lib,
   pkgs,
   nixosConfig,
+  config,
   ...
-}: rec {
+}: let
+  lock = pkgs.writeShellApplication {
+    name = "njx-waylock";
+    runtimeInputs = [pkgs.swaylock];
+    text = ''
+      swaylock_args=(--show-failed-attempts)
+      lock_bg="$HOME/.config/swaylock-bg"
+      if test -e "$lock_bg"; then
+        swaylock_args+=(--image "$lock_bg")
+      fi
+      exec swaylock "''${swaylock_args[@]}"
+    '';
+  };
+  lockExe = lib.getExe lock;
+  windowPickExe = let
+    niri = lib.getExe pkgs.niri;
+    nu = lib.getExe pkgs.nushell;
+    fuzzel = lib.getExe pkgs.fuzzel;
+  in
+    pkgs.writeScript "niriswitch" ''
+      #!${nu}
+      # based on https://git.ersei.net/nix-configs.git/tree/home/common/wayland/niri.nix?id=a5b7a6a7d92bb6f56c6ec374499bf40acebffefc#n39
+      let windows = ${niri} msg -j windows | from json
+      let sel = $windows
+        | format pattern $"{title}(char nul)icon(char unit_separator){app_id}"
+        | str join "\n"
+        | ${fuzzel} --dmenu --index
+      ${niri} msg action focus-window --id ($windows.id | get $sel)
+    '';
+in {
   home.username = "julius";
   home.homeDirectory = "/home/julius";
   home.stateVersion = "23.11";
@@ -105,17 +135,19 @@
     };
   };
 
-  xdg.userDirs = {
+  xdg.userDirs = let
+    home = config.home.homeDirectory;
+  in {
     enable = true;
     createDirectories = false;
-    desktop = "${home.homeDirectory}/.local/xdg/desktop";
-    documents = "${home.homeDirectory}/docs";
-    download = "${home.homeDirectory}/downloads";
-    music = "${home.homeDirectory}/music";
-    pictures = "${home.homeDirectory}/.local/xdg/pics";
-    publicShare = "${home.homeDirectory}/.local/xdg/share";
-    templates = "${home.homeDirectory}/.local/xdg/templates";
-    videos = "${home.homeDirectory}/music";
+    desktop = "${home}/.local/xdg/desktop";
+    documents = "${home}/docs";
+    download = "${home}/downloads";
+    music = "${home}/music";
+    pictures = "${home}/.local/xdg/pics";
+    publicShare = "${home}/.local/xdg/share";
+    templates = "${home}/.local/xdg/templates";
+    videos = "${home}/music";
 
     #extraConfig = ''
     #  {
@@ -134,39 +166,29 @@
     Install.WantedBy = ["timers.target"];
   };
 
-  services.swayidle = let
-    lock = pkgs.writeShellApplication {
-      name = "njx-waylock";
-      runtimeInputs = [pkgs.swaylock];
-      text = ''
-        swaylock_args=(--show-failed-attempts)
-        lock_bg="$HOME/.config/swaylock-bg"
-        if test -e "$lock_bg"; then
-          swaylock_args+=(--image "$lock_bg")
-        fi
-        exec swaylock "''${swaylock_args[@]}"
-      '';
-    };
-  in
-    lib.mkIf nixosConfig.programs.niri.enable {
-      enable = true;
-      events = [
-        {
-          event = "before-sleep";
-          command = lib.getExe lock;
-        }
-      ];
-      timeouts = [
-        {
-          timeout = 300;
-          command = "${lib.getExe nixosConfig.programs.niri.package} msg action power-off-monitors";
-        }
-        {
-          timeout = 310;
-          command = lib.getExe lock;
-        }
-      ];
-    };
+  services.swayidle = lib.mkIf nixosConfig.programs.niri.enable {
+    enable = true;
+    events = [
+      {
+        event = "before-sleep";
+        command = lockExe;
+      }
+      {
+        event = "lock";
+        command = lockExe;
+      }
+    ];
+    timeouts = [
+      {
+        timeout = 300;
+        command = "${lib.getExe nixosConfig.programs.niri.package} msg action power-off-monitors";
+      }
+      {
+        timeout = 310;
+        command = lockExe;
+      }
+    ];
+  };
   systemd.user.services.swww = lib.mkIf nixosConfig.programs.niri.enable {
     Service.ExecStart = lib.getExe' pkgs.swww "swww-daemon";
     Unit.PartOf = lib.singleton "graphical-session.target";
@@ -174,7 +196,13 @@
   };
 
   home.file.".config/i3/config".source = ../dot/i3/config;
-  home.file.".config/niri/config.kdl".source = ../dot/niri.kdl;
+  home.file.".config/niri/config.kdl" = lib.mkIf nixosConfig.programs.niri.enable {
+    source = pkgs.substituteAll {
+      src = ../dot/niri.kdl;
+      lock = lockExe;
+      windowpick = windowPickExe;
+    };
+  };
   home.file.".config/waybar/config.jsonc".text = builtins.toJSON (import ../dot/waybar.nix);
   home.file.".config/alacritty/alacritty.toml".source = ../dot/alacritty.toml;
   home.file.".config/mpv/mpv.conf".source = ../dot/mpv/mpv.conf;

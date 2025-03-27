@@ -294,7 +294,8 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return { spawn "alacritty"; }
     Mod+D { spawn "wofi" "--gtk-dark" "--show" "drun"; }
-    Super+Alt+L { spawn "swaylock"; }
+    Super+Shift+L { spawn "@lock@"; }
+    Mod+W { spawn "@windowpick@"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.
@@ -491,6 +492,9 @@ binds {
     // since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
+
+	Mod+Shift+Space { toggle-window-floating; }
+	Mod+Space { switch-focus-between-floating-and-tiling; }
 
     Print { screenshot; }
     Ctrl+Print { screenshot-screen; }
