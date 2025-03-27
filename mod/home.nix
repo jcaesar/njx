@@ -5,6 +5,7 @@
   config,
   ...
 }: let
+  inherit (lib) getExe getExe';
   lock = pkgs.writeShellApplication {
     name = "njx-waylock";
     runtimeInputs = [pkgs.swaylock];
@@ -17,11 +18,11 @@
       exec swaylock "''${swaylock_args[@]}"
     '';
   };
-  lockExe = lib.getExe lock;
+  lockExe = getExe lock;
   windowPickExe = let
-    niri = lib.getExe pkgs.niri;
-    nu = lib.getExe pkgs.nushell;
-    fuzzel = lib.getExe pkgs.fuzzel;
+    niri = getExe pkgs.niri;
+    nu = getExe pkgs.nushell;
+    fuzzel = getExe pkgs.fuzzel;
   in
     pkgs.writeScript "niriswitch" ''
       #!${nu}
@@ -127,6 +128,14 @@ in {
       enable = true;
       enableNushellIntegration = true;
     };
+    fuzzel = {
+      enable = true;
+      settings = {
+        main.terminal = getExe pkgs.alacritty;
+        main.layer = "overlay";
+        colors.background = "00000077";
+      };
+    };
   };
 
   programs.git = {
@@ -139,7 +148,7 @@ in {
       quickserve = "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/";
     };
     extraConfig = let
-      creds = ["" "${lib.getExe pkgs.github-cli} auth git-credential"];
+      creds = ["" "${getExe pkgs.github-cli} auth git-credential"];
     in {
       pull.ff = "only";
       rerere.enable = true;
@@ -174,7 +183,7 @@ in {
 
   systemd.user.services.stehauf = {
     Unit.Description = "Ich hab Rücken";
-    Service.ExecStart = "${lib.getExe pkgs.libnotify} \"Streck Dich\" \"Du krummbuckla!\"";
+    Service.ExecStart = "${getExe pkgs.libnotify} \"Streck Dich\" \"Du krummbuckla!\"";
   };
   systemd.user.timers.stehauf = {
     Timer.OnCalendar = "*-*-* *:57 UTC";
@@ -196,7 +205,7 @@ in {
     timeouts = [
       {
         timeout = 300;
-        command = "${lib.getExe nixosConfig.programs.niri.package} msg action power-off-monitors";
+        command = "${getExe nixosConfig.programs.niri.package} msg action power-off-monitors";
       }
       {
         timeout = 310;
@@ -205,7 +214,7 @@ in {
     ];
   };
   systemd.user.services.swww = lib.mkIf nixosConfig.programs.niri.enable {
-    Service.ExecStart = lib.getExe' pkgs.swww "swww-daemon";
+    Service.ExecStart = getExe' pkgs.swww "swww-daemon";
     Unit.PartOf = lib.singleton "graphical-session.target";
     Install.WantedBy = lib.singleton "graphical-session.target";
   };
@@ -216,6 +225,10 @@ in {
       src = ../dot/niri.kdl;
       lock = lockExe;
       windowpick = windowPickExe;
+      brightnessctl = getExe pkgs.brightnessctl;
+      wpctl = getExe' pkgs.wireplumber "wpctl";
+      fuzzel = getExe config.programs.fuzzel.package;
+      alacritty = getExe pkgs.alacritty;
     };
   };
   home.file.".config/waybar/config.jsonc".text = builtins.toJSON (import ../dot/waybar.nix);
