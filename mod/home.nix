@@ -32,6 +32,7 @@
         | format pattern $"{title}(char nul)icon(char unit_separator){app_id}"
         | str join "\n"
         | ${fuzzel} --dmenu --index
+        | into int
       ${niri} msg action focus-window --id ($windows.id | get $sel)
     '';
 in {
