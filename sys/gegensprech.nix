@@ -18,7 +18,7 @@ in {
     packages = with pkgs; [gegensprech];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
-    extraGroups = ["gpio"];
+    extraGroups = ["gpio" "audio"];
   };
   home-manager.users.gegensprech.systemd.user.services.gegensprech = {
     Unit.Description = "Gegensprech";
@@ -32,8 +32,11 @@ in {
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # https://wiki.nixos.org/w/index.php?title=PipeWire&oldid=21060#Headless_operation
+    socketActivation = false;
   };
   environment.systemPackages = with pkgs; [alsa-utils dtc libraspberrypi];
+  systemd.user.services.wireplumber.wantedBy = ["default.target"];
 
   boot.initrd.systemd.services.blinky = let
     spidev = "sys-devices-platform-soc-3f204000.spi-spi_master-spi0-spi0.1-spidev-spidev0.1.device";
