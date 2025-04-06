@@ -20,12 +20,19 @@ in {
     linger = true;
     extraGroups = ["gpio" "audio"];
   };
+  njx.manual.gegensprech = "Needs running `gegensprech login` as user `gegensprech`.";
   home-manager.users.gegensprech.systemd.user.services.gegensprech = {
     Unit.Description = "Gegensprech";
     Service.ExecStart = "${lib.getExe pkgs.gegensprech} run seeed-2mic";
-    Service.Environment = "RUST_LOG=info,gegensprech=warn";
+    Service.Environment = "RUST_LOG=info,gegensprech=warn,matrix_sdk_base=warn";
     Install.WantedBy = ["default.target"];
   };
+  home-manager.users.gegensprech.home.file.".config/gegensprech/cmds.yaml".text = ''
+    .-: !LoopTape
+        time: 90s
+        send: true
+        play: false
+  '';
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -37,6 +44,7 @@ in {
   };
   environment.systemPackages = with pkgs; [alsa-utils dtc libraspberrypi];
   systemd.user.services.wireplumber.wantedBy = ["default.target"];
+  systemd.user.sockets.pipewire-pulse.wantedBy = ["default.target"]; # it's in sockets.target, yet isn't active..
 
   boot.initrd.systemd.services.blinky = let
     spidev = "sys-devices-platform-soc-3f204000.spi-spi_master-spi0-spi0.1-spidev-spidev0.1.device";
