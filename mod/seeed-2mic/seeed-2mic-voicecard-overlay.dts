@@ -4,7 +4,7 @@
 /plugin/;
 
 / {
-    compatible = "brcm,bcm2837";
+    compatible = "brcm,bcm2837", "brcm,bcm2708";
 
     fragment@0 {
         target = <&i2s>;
@@ -12,7 +12,7 @@
             status = "okay";
         };
     };
-    
+
     fragment@1 {
         target-path="/";
         __overlay__ {
@@ -23,7 +23,7 @@
             };
         };
     };
-    
+
     fragment@2 {
         target = <&i2c1>;
         __overlay__ {
@@ -40,13 +40,12 @@
         };
     };
 
-
     fragment@3 {
         target = <&sound>;
-        __overlay__ {
+        slave_overlay: __overlay__ {
             compatible = "simple-audio-card";
             simple-audio-card,format = "i2s";
-            simple-audio-card,name = "seeed-2mic-voicecard"; 
+            simple-audio-card,name = "seeed-2mic-voicecard";
             status = "okay";
             simple-audio-card,widgets =
                 "Microphone", "Mic Jack",
@@ -75,7 +74,7 @@
     };
 
     __overrides__ {
-        // alsaname = <&slave_overlay>,"simple-audio-card,name";
+        alsaname = <&slave_overlay>,"simple-audio-card,name";
         compatible = <&wm8960>,"compatible";
         master = <0>,"=2!3";
     };

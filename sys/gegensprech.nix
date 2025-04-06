@@ -18,7 +18,7 @@ in {
     packages = with pkgs; [gegensprech];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
-    extraGroups = ["gpio" "audio"];
+    extraGroups = ["gpio" "audio" "video"];
   };
   njx.manual.gegensprech = "Needs running `gegensprech login` as user `gegensprech`.";
   home-manager.users.gegensprech.systemd.user.services.gegensprech = {
