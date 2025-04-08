@@ -34,9 +34,6 @@
     source-code-pro
     terminus_font
     inconsolata
-    xwayland-satellite
-    ffmpeg
-    waypipe
   ];
 
   services.xserver = {
@@ -108,6 +105,7 @@
       alacritty
       #qt6-wayland
       wl-clipboard
+      waypipe
     ]
     ++ lib.optionals config.programs.niri.enable [
       wofi # worse rofi
@@ -117,6 +115,8 @@
       kdePackages.polkit-kde-agent-1
       brightnessctl
       swww
+      xwayland-satellite
+      ffmpeg
     ];
 
   system.systemBuilderCommands = let
