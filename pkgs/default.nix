@@ -8,6 +8,7 @@ pkgs: prev: {
   njx = pkgs.python3.pkgs.callPackage ../tools {};
   njx-repo-scripts = pkgs.callPackage ../tools/nus.nix {};
   rowserext = pkgs.callPackage ./rowserext.nix {};
+  neolink = pkgs.callPackage ./neolink.nix {};
   ruri = pkgs.callPackage ./ruri.nix {};
   colmap = import ./colmap.nix prev;
   vector-cloudwatchsyslogs = import ./vector-cloudwatchsyslogs.nix pkgs;
