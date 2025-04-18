@@ -99,12 +99,12 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.lightdm.enableGnomeKeyring = true;
   programs.seahorse.enable = true;
-  
+
   services.tailscale = {
     enable = true;
     port = 0; # auto?
   };
-  
+
   networking.extraHosts = ''
     0.0.0.0 pr0gramm.com
   '';
