@@ -17,8 +17,6 @@
     gnused
     gnutar
     gzip
-    helix
-    helix # better vim
     hostname
     htop # better top
     iftop
