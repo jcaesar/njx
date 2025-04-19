@@ -59,8 +59,20 @@
     zip
   ];
 
+  android-integration = {
+    am.enable = false;
+    termux-open.enable = false;
+    termux-open-url.enable = false;
+    termux-reload-settings.enable = false;
+    termux-setup-storage.enable = false;
+    termux-wake-lock.enable = false;
+    termux-wake-unlock.enable = false;
+    unsupported.enable = false;
+    xdg-open.enable = false;
+  };
+
   environment.etcBackupExtension = ".bak";
-  system.stateVersion = "25.05";
+  system.stateVersion = "24.05";
   nix.extraOptions = ''
     experimental-features = nix-command flakes
   '';

@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   nixosConfig,
   ...
@@ -15,7 +16,7 @@
         nano = "hx";
       };
       # workaround for there not being nushell support for environment.variables
-      extraEnv = ''
+      extraEnv = lib.mkIf ((nixosConfig.environment or {}) ? variables) ''
         mut cev = open ${pkgs.writeText "environment.variables.json" (builtins.toJSON nixosConfig.environment.variables)}
         for var in [XCURSOR_PATH XDG_CONFIG_DIRS XDG_DATA_DIRS PATH] {
           if $var in $cev and $var in $env {

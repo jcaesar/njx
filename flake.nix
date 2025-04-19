@@ -24,7 +24,7 @@
       home-manager = flakes.home-manager.nixosModules.home-manager;
       disko = flakes.disko.nixosModules.disko;
     };
-        nixOnDroidConfigurations.default = import ./sys/fon/meta.nix flakes;
+    nixOnDroidConfigurations.default = import ./sys/fon/meta.nix flakes;
     overlays.pkgs = import ./pkgs;
     overlays.fixes = import ./fixes.nix;
     formatter = eachSystem (pkgs: pkgs.alejandra);
