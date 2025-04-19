@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   environment.packages = with pkgs; [
     bat # better cat
     binutils
@@ -77,6 +82,7 @@
 
   time.timeZone = "Asia/Tokyo";
 
+  user.shell = lib.getExe config.home-manager.config.programs.nushell.package;
   home-manager = {
     config = ./home.nix;
     backupFileExtension = "hm-bak";
