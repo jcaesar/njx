@@ -4,7 +4,7 @@
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.users.julius = import ./home.nix;
+  home-manager.users.julius = import ./home/julius.nix;
   home-manager.backupFileExtension = "hm.bak";
 
   systemd.oomd = {

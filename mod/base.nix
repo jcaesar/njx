@@ -2,7 +2,6 @@
   pkgs,
   lib,
   flakes,
-  config,
   ...
 }: {
   nix.channel.enable = false;
@@ -17,19 +16,7 @@
   programs.command-not-found.enable = false; # doesn't work anyway
   njx.source-flakes = lib.mkDefault true;
 
-  home-manager.sharedModules = [
-    ({
-      lib,
-      pkgs,
-      config,
-      ...
-    }: {
-      home.activation.cleanGenerations = lib.hm.dag.entryAfter ["linkGeneration"] ''
-        run ${lib.getExe' pkgs.nix "nix-env"} $VERBOSE_ARG --delete-generations \
-          --profile ${config.xdg.stateHome}/nix/profiles/home-manager +1
-      '';
-    })
-  ];
+  home-manager.sharedModules = [./home/generation-cleanup.nix];
 
   boot.loader = {
     systemd-boot = {
