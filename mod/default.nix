@@ -22,6 +22,7 @@ in {
     ./protect-boot.nix
     ./prometheus-fix.nix
     ./he-tunnel.nix
+    ./sftpgo.nix
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")
