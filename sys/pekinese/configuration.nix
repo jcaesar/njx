@@ -72,6 +72,7 @@
   services.xserver.enable = true;
   programs.niri.enable = true;
   programs.waybar.enable = true;
+  xdg.portal.wlr.enable = true;
 
   users.users.julius.packages = with pkgs; [
     element-desktop
