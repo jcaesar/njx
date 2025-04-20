@@ -25,6 +25,7 @@
     hostname
     htop # better top
     iftop
+    imagemagick
     iotop
     jq
     killall
