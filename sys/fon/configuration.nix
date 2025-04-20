@@ -4,6 +4,11 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ../../mod/source-flakes.nix
+  ];
+  njx.source-flakes = true;
+
   environment.packages = with pkgs; [
     bat # better cat
     binutils

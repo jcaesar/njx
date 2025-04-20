@@ -4,7 +4,7 @@
   njx,
   home-manager,
   ...
-}:
+} @ flakes:
 nix-on-droid.lib.nixOnDroidConfiguration {
   modules = [./configuration.nix];
   pkgs = import nixpkgs {
@@ -12,4 +12,5 @@ nix-on-droid.lib.nixOnDroidConfiguration {
     overlays = [nix-on-droid.overlays.default] ++ builtins.attrValues njx.overlays;
   };
   home-manager-path = home-manager.outPath;
+  extraSpecialArgs = {inherit flakes;};
 }
