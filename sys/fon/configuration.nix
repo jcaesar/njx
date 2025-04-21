@@ -66,6 +66,9 @@
     xh # "better" httpie
     xz
     zip
+    (writeShellScriptBin "ping" ''
+      /android/system/bin/linker64 /android/system/bin/ping "$@"
+    '')
   ];
 
   android-integration = {
