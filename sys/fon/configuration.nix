@@ -67,7 +67,7 @@
     xz
     zip
     (writeShellScriptBin "ping" ''
-      /android/system/bin/linker64 /android/system/bin/ping "$@"
+      exec /android/system/bin/linker64 /android/system/bin/ping "$@"
     '')
   ];
 
