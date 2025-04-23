@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: let
-  inherit (builtins) genList length elemAt attrNames attrValues;
-  inherit (lib) types mkOption flatten mapAttrsToList unique listToAttrs mkIf pipe;
+  inherit (builtins) genList length elemAt attrValues;
+  inherit (lib) types mkOption flatten mapAttrsToList unique listToAttrs mkIf;
   slugify = lib.replaceChars ["/" "@"] ["_" "_"];
   cfg = config.services.sftpgo.overwriteUserData;
   enable = config.services.sftpgo.enable && cfg != {} && cfg != null;
@@ -101,5 +101,7 @@ in {
     );
   };
   config.services.sftpgo.loadDataFile = mkIf enable "/var/lib/sftpgo/nix-load.json";
-  config.systemd.services.sftpgo.serviceConfig.ExecStartPre = mkIf enable [startPre];
+  config.systemd.services.sftpgo = mkIf enable {
+    serviceConfig.ExecStartPre = [startPre];
+  };
 }
