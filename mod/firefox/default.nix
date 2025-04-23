@@ -85,7 +85,7 @@ in
               ++ map (ex: {
                 id = "rowserext-${ex}@liftm.de";
                 sourceURI = "file://${pkgs.rowserext}/${ex}.xpi";
-              }) [] #["lionel" "join-on-time"] # won't work for now, because devedition is out
+              }) ["lionel" "join-on-time"]
             ));
 
           # ---- PREFERENCES ----
