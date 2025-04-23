@@ -49,6 +49,8 @@
     gid = 0;
     download_data_transfer = 0;
     filesystem.provider = 0;
+    filters.tls_certs = user.value.tlsCerts;
+    public_keys = user.value.sshKeys;
   };
   settings = {
     folders = map mkFolder folders;
@@ -90,6 +92,16 @@ in {
           };
           home = mkOption {
             type = types.path;
+          };
+          sshKeys = mkOption {
+            type = types.listOf types.str;
+            default = [];
+            description = "SSH public keys for sftp access";
+          };
+          tlsCerts = mkOption {
+            type = types.listOf types.str;
+            default = [];
+            description = "PEM encoded TLS certificates for FTP and/or WebDAV authentication";
           };
           mounts = mkOption {
             type = types.attrsOf types.path;
