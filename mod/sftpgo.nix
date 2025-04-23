@@ -6,7 +6,6 @@
 }: let
   inherit (builtins) genList length elemAt attrValues;
   inherit (lib) types mkOption flatten mapAttrsToList unique listToAttrs mkIf;
-  slugify = lib.replaceChars ["/" "@"] ["_" "_"];
   cfg = config.services.sftpgo.overwriteUserData;
   enable = config.services.sftpgo.enable && cfg != {} && cfg != null;
   folders = unique (
@@ -20,11 +19,11 @@
     }) (length folders))).${
       folder
     };
-  mkFolder = folder: {
+  mkFolder = folder: rec {
     filesystem.provider = 0;
     id = folderId folder;
     mapped_path = folder;
-    name = slugify folder;
+    name = "f${toString id}";
   };
   users = lib.attrsToList cfg.users;
   mkUser = idx: let
