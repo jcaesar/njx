@@ -58,6 +58,11 @@ in {
       dns = ["10.13.43.1"];
     };
   };
+  services.tailscale = {
+    enable = true;
+    useRoutingFeatures = "server";
+    openFirewall = true;
+  };
 
   fileSystems."/mnt/host" = {
     fsType = "virtiofs";

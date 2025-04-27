@@ -104,6 +104,7 @@
   services.tailscale = {
     enable = true;
     port = 0; # auto?
+    useRoutingFeatures = "client";
   };
 
   networking.extraHosts = ''
