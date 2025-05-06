@@ -10,6 +10,7 @@ pkgs: prev: {
   rowserext = pkgs.callPackage ./rowserext.nix {};
   neolink = pkgs.callPackage ./neolink.nix {};
   ruri = pkgs.callPackage ./ruri.nix {};
-  colmap = import ./colmap.nix prev;
+  colmap-vulnerable = import ./colmap.nix prev;
+  windsurf = import ./windsurf.nix prev;
   vector-cloudwatchsyslogs = import ./vector-cloudwatchsyslogs.nix pkgs;
 }
