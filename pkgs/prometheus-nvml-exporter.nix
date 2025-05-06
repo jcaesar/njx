@@ -10,10 +10,14 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "jcaesar";
     repo = "prometheus-nvml-exporter";
-    rev = "1e8c0f0084b9863ac8408cd942f5fd9b8c836363";
-    hash = "sha256-3hXVpytETTPuzChO+v8Y4fTOHiU0k0H6XQFEdn3iYsY=";
+    rev = "94c0d5e8688ca0c208db73d32f9d46ab4139694f";
+    hash = "sha256-4T58/GtaEcIGpfP+nA/VmzkINUJ+R43I2aEOLj9Kk04=";
   };
-  cargoLock.lockFile = "${src}/Cargo.lock";
+  cargoLock = {
+    lockFile = "${src}/Cargo.lock";
+    allowBuiltinFetchGit = true;
+  };
+  useFetchCargoVendor = true;
 
   meta = with lib; {
     description = "nvml / nvidia graphics card prometheus metrics exporter";
