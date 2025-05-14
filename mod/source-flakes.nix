@@ -20,7 +20,7 @@
       }
     )
     (
-      lib.mkIf (!config.njx.source-flakes) {
+      lib.mkIf (!config.njx.source-flakes && flakes.nixpkgs ? rev) {
         nix.registry.n.to = {
           type = "github";
           owner = "NixOS";
