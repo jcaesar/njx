@@ -23,6 +23,7 @@ in {
     ./prometheus-fix.nix
     ./he-tunnel.nix
     ./sftpgo.nix
+    ./synapse-utilities.nix
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")
