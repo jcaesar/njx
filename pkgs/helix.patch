@@ -1,0 +1,13 @@
+diff --git a/helix-loader/src/config.rs b/helix-loader/src/config.rs
+index 1f414de6..ecde9cc8 100644
+--- a/helix-loader/src/config.rs
++++ b/helix-loader/src/config.rs
+@@ -11,7 +11,7 @@ pub fn default_lang_config() -> toml::Value {
+ pub fn user_lang_config() -> Result<toml::Value, toml::de::Error> {
+     let config = [
+         crate::config_dir(),
+-        crate::find_workspace().0.join(".helix"),
++        //crate::find_workspace().0.join(".helix"),
+     ]
+     .into_iter()
+     .map(|path| path.join("languages.toml"))

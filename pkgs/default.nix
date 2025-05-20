@@ -13,4 +13,5 @@ pkgs: prev: {
   colmap-vulnerable = import ./colmap.nix prev;
   windsurf = import ./windsurf.nix prev;
   vector-cloudwatchsyslogs = import ./vector-cloudwatchsyslogs.nix pkgs;
+  helix = import ./helix.nix prev;
 }
