@@ -20,7 +20,7 @@
 
   boot.loader = {
     systemd-boot = {
-      enable = true;
+      enable = lib.mkDefault true;
       configurationLimit = 15;
       editor = false;
     };

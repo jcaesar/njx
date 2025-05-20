@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }: {
   njx."firefox/default" = true;
@@ -52,6 +53,7 @@
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
+    fcitx5.waylandFrontend = true;
     fcitx5.addons = with pkgs; [
       fcitx5-mozc
       fcitx5-anthy
@@ -61,14 +63,14 @@
 
   security.rtkit.enable = true;
   services.pipewire = {
-    enable = true;
+    enable = lib.mkDefault true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
     #jack.enable = true;
     wireplumber.enable = true;
   };
-  services.pulseaudio.enable = false;
+  services.pulseaudio.enable = lib.mkDefault false;
 
   environment.systemPackages = with pkgs; [
     glxinfo
