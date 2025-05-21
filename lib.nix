@@ -18,7 +18,12 @@ in {
       flakes.nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {inherit flakes system;};
-        modules = builtins.attrValues flakes.njx.nixosModules ++ [main];
+        modules =
+          builtins.attrValues (
+            flakes.njx.nixosModules
+            // flakes.self.nixosModules
+          )
+          ++ [main];
       };
   in {
     sysI = sys "x86_64-linux";
