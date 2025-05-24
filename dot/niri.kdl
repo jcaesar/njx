@@ -204,6 +204,31 @@ layout {
         top 8
         bottom 8
     }
+
+    // Set transparent workspace background color.
+    background-color "transparent"
+}
+
+// Make the wallpaper stationary, rather than moving with workspaces.
+layer-rule {
+    // This is for swaybg; change for other wallpaper tools.
+    // Find the right namespace by running niri msg layers.
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+
+// disable the workspace shadows in the overview.
+overview {
+    workspace-shadow {
+        off
+    }
+    zoom 0.15
+}
+
+gestures {
+    hot-corners {
+        off
+    }
 }
 
 // Add lines like this to spawn processes at startup.
@@ -377,6 +402,7 @@ binds {
     Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
     Mod+Ctrl+U         { move-column-to-workspace-down; }
     Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+O              { open-overview; }
 
     // Alternatively, there are commands to move just a single window:
     // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
