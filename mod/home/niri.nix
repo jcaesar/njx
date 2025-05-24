@@ -19,8 +19,8 @@
     '';
   };
   lockExe = getExe lock;
+  niri = getExe nixosConfig.programs.niri.package;
   windowPickExe = let
-    niri = getExe pkgs.niri;
     nu = getExe pkgs.nushell;
     fuzzel = getExe pkgs.fuzzel;
   in
@@ -82,7 +82,7 @@ in {
     timeouts = [
       {
         timeout = 300;
-        command = "${getExe nixosConfig.programs.niri.package} msg action power-off-monitors";
+        command = "${niri} msg action power-off-monitors";
       }
       {
         timeout = 310;
@@ -97,14 +97,20 @@ in {
   };
 
   home.file.".config/niri/config.kdl" = lib.mkIf nixosConfig.programs.niri.enable {
-    source = pkgs.substituteAll {
+    source = pkgs.replaceVarsWith {
       src = ../../dot/niri.kdl;
-      lock = lockExe;
-      windowpick = windowPickExe;
-      brightnessctl = getExe pkgs.brightnessctl;
-      wpctl = getExe' pkgs.wireplumber "wpctl";
-      fuzzel = getExe config.programs.fuzzel.package;
-      alacritty = getExe pkgs.alacritty;
+      replacements = {
+        lock = lockExe;
+        windowpick = windowPickExe;
+        brightnessctl = getExe pkgs.brightnessctl;
+        wpctl = getExe' pkgs.wireplumber "wpctl";
+        fuzzel = getExe config.programs.fuzzel.package;
+        alacritty = getExe pkgs.alacritty;
+        # stuff for wpctl, tell replaceVars to ignore it
+        DEFAULT_AUDIO_SINK = null;
+        DEFAULT_AUDIO_SOURCE = null;
+      };
+      preCheck = ''${niri} validate -c "$target"'';
     };
   };
   home.file.".config/waybar/config.jsonc".text = builtins.toJSON (import ../../dot/waybar.nix);
