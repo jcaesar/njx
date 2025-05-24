@@ -94,7 +94,7 @@
       imagemagick
       libreoffice-still
       rusti-cal # rustier cal
-      gimp
+      gimp3
       picard
       inkscape
       typst # better tex?
