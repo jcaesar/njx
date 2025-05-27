@@ -21,7 +21,7 @@ in {
         modules =
           builtins.attrValues (
             flakes.njx.nixosModules
-            // flakes.self.nixosModules
+            // (flakes.self.nixosModules or {})
           )
           ++ [main];
       };
