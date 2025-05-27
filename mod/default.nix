@@ -24,6 +24,7 @@ in {
     ./he-tunnel.nix
     ./sftpgo.nix
     ./synapse-utilities.nix
+    ./helix.nix
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")
