@@ -8,6 +8,7 @@
   njx.graphical = true;
   njx.dlna = true;
   njx.bluetooth = true;
+  njx.foot = true;
 
   networking.hostName = "pekinese";
 

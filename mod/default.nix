@@ -25,6 +25,7 @@ in {
     ./sftpgo.nix
     ./synapse-utilities.nix
     ./helix.nix
+    (mkModOption "foot")
     (mkModOption "base")
     (mkModOption "binfmt")
     (mkModOption "bluetooth")

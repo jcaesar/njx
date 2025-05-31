@@ -35,11 +35,15 @@
         | into int
       ${niri} msg action focus-window --id ($windows.id | get $sel)
     '';
+  terminal =
+    if nixosConfig.njx.foot or false
+    then pkgs.foot
+    else pkgs.alacritty;
 in {
   programs.fuzzel = {
     enable = true;
     settings = {
-      main.terminal = getExe pkgs.alacritty;
+      main.terminal = getExe terminal;
       main.layer = "overlay";
       colors.background = "00000077";
     };
@@ -105,7 +109,7 @@ in {
         brightnessctl = getExe pkgs.brightnessctl;
         wpctl = getExe' pkgs.wireplumber "wpctl";
         fuzzel = getExe config.programs.fuzzel.package;
-        alacritty = getExe pkgs.alacritty;
+        terminal = getExe terminal;
         # stuff for wpctl, tell replaceVars to ignore it
         DEFAULT_AUDIO_SINK = null;
         DEFAULT_AUDIO_SOURCE = null;
