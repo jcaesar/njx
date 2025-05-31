@@ -6,8 +6,9 @@
 }: let
   inherit (builtins) genList length elemAt attrValues;
   inherit (lib) types mkOption flatten mapAttrsToList unique listToAttrs mkIf;
-  cfg = config.services.sftpgo.overwriteUserData;
-  enable = config.services.sftpgo.enable && cfg != {} && cfg != null;
+  sCfg = config.services.sftpgo;
+  cfg = sCfg.overwriteUserData;
+  enable = sCfg.enable && cfg != {} && cfg != null;
   folders = unique (
     flatten
     (mapAttrsToList (_: user: attrValues user.mounts) cfg.users)
@@ -67,9 +68,13 @@
       --slurpfile data ${settingsJson} \
       --slurpfile pws /etc/secrets/sftpgo.json \
       -n '$data[] | . * {users: (.["users"] | [.[] | . + {password: ($pws[0][.username])}])}' \
-      >${config.services.sftpgo.loadDataFile}
+      >${sCfg.loadDataFile}
   '';
 in {
+  config.assertions = lib.singleton {
+    assertion = lib.all (x: !x.enable_web_admin) sCfg.settings.httpd.bindings || !enable;
+    message = "services.sftpgo.settings.http.bindings.*.enable_web_admin is enabled, but services.sftpgo.overwriteUserData will reset the password for that on each startup. Not a good idea.";
+  };
   options.services.sftpgo.overwriteUserData.passwordFile = mkOption {
     type = types.path;
     description = ''
