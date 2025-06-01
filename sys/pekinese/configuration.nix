@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }: {
   nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
@@ -47,6 +48,20 @@
     mount $disk""a /mnt/boot
     ```
   '';
+  fileSystems.pridedav = {
+    fsType = "davfs";
+    mountPoint = "/media/pride";
+    device = "https://pride.scale.liftm.de:8089";
+    options = ["noexec" "nosuid" "ro"];
+  };
+  njx.manual.davfs = ''
+    `${config.environment.etc."davfs2/secrets".source}` must hold one line like:
+    ```
+    ${config.fileSystems.pridedav.mountPoint} ${config.networking.hostName} $password
+    ```
+  '';
+  services.davfs2.enable = true;
+  environment.etc."davfs2/secrets".source = "/etc/secrets/davfs";
 
   networking.supplicant.wlp0s20f3.configFile.writable = true;
   networking.supplicant.wlp0s20f3.configFile.path = "/etc/wpa_supplicant.conf";
