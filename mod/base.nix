@@ -2,6 +2,7 @@
   pkgs,
   lib,
   flakes,
+  config,
   ...
 }: {
   nix.channel.enable = false;
@@ -13,6 +14,7 @@
 
   nixpkgs.overlays = lib.attrValues flakes.njx.overlays;
   nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.keep-outputs = !config.njx.slim; # don't throw away build dependencies.
   programs.command-not-found.enable = false; # doesn't work anyway
   njx.source-flakes = lib.mkDefault true;
 
