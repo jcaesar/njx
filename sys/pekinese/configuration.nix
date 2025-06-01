@@ -51,11 +51,11 @@
   fileSystems.pridedav = {
     fsType = "davfs";
     mountPoint = "/media/pride";
-    device = "https://pride.scale.liftm.de:8089";
+    device = "http://pride.scale.liftm.de:8089";
     options = ["noexec" "nosuid" "ro"];
   };
   njx.manual.davfs = ''
-    `${config.environment.etc."davfs2/secrets".source}` must hold one line like:
+    `${config.environment.etc."davfs2/secrets".source}` must be mode 600 and hold one line like:
     ```
     ${config.fileSystems.pridedav.mountPoint} ${config.networking.hostName} $password
     ```
