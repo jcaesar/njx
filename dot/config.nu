@@ -57,6 +57,7 @@ $env.config = {
       PWD: [{|before, after| do $load_direnv }]
     }
   }
+  float_precision: 6, # https://xkcd.com/2170/
 }
 $env.PATH = (
   $env.PATH |
