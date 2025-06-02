@@ -11,10 +11,9 @@
         bufferline = "multiple";
         true-color = true;
         lsp.display-messages = true;
+        soft-wrap.enable = true;
       };
-      keys.normal = {
-        "C-s" = "split_selection_on_newline";
-      };
+      keys.normal."C-s" = "split_selection_on_newline";
     };
     languages = {
       language = [
