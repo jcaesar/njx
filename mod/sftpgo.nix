@@ -72,7 +72,7 @@
   '';
 in {
   config.assertions = lib.singleton {
-    assertion = lib.all (x: !x.enable_web_admin) sCfg.settings.httpd.bindings || !enable;
+    assertion = lib.all (x: x.port != 0 -> x.enable_web_admin) sCfg.settings.httpd.bindings || !enable;
     message = "services.sftpgo.settings.http.bindings.*.enable_web_admin is enabled, but services.sftpgo.overwriteUserData will reset the password for that on each startup. Not a good idea.";
   };
   options.services.sftpgo.overwriteUserData.passwordFile = mkOption {
