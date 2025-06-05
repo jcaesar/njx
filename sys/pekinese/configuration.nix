@@ -51,7 +51,7 @@
   fileSystems.pridedav = {
     fsType = "davfs";
     mountPoint = "/media/pride";
-    device = "http://pride.scale.liftm.de:8089";
+    device = "http://pride.net.liftm.de:8089";
     options = ["noexec" "nosuid" "ro"];
   };
   njx.manual.davfs = ''
