@@ -78,7 +78,7 @@
   networking.firewall.allowedTCPPorts = [9418 1337];
   networking.useDHCP = lib.mkDefault false;
 
-  services.xserver.displayManager.gdm.autoSuspend = false;
+  services.displayManager.gdm.autoSuspend = false;
 
   zramSwap = lib.mkDefault {
     enable = true;
