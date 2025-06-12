@@ -40,5 +40,6 @@ in {
     (mkModOption "slim")
     (mkModOption "sysrq")
     (mkModOption "mail")
+    (mkModOption "nix-lowprio")
   ];
 }

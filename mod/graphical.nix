@@ -6,6 +6,7 @@
 }: {
   njx."firefox/default" = true;
   njx.sysrq = true;
+  njx.nix-lowprio = true;
 
   services.logind.powerKey = "suspend";
 
