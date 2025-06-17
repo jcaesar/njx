@@ -12,4 +12,5 @@
     ./stehauf.nix
     ./xdg.nix
   ];
+  services.pueue.enable = true;
 }
