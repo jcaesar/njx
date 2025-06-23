@@ -1,8 +1,10 @@
 {
+  lib,
   paramiko,
   rustworkx,
   pynacl,
   tqdm,
+  nix,
   buildPythonApplication,
 }:
 buildPythonApplication {
@@ -14,5 +16,8 @@ buildPythonApplication {
   installPhase = ''
     install -D ${./.}/installed.py $out/bin/njx-installed
     install -D ${./.}/delete_generations.py $out/bin/njx-delete-generations
+    for f in $out/bin/njx-{installed,delete-generations}; do
+      wrapProgram $f --suffix PATH : ${lib.makeBinPath [ nix ]}
+    done
   '';
 }

@@ -80,7 +80,7 @@ def exec_decode(h, cmd, f):
             try:
                 ex = " ".join(cmd)
                 if h == local:
-                    out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+                    out = subprocess.check_output(cmd)
                     conn = None
                 else:
                     conn = pooled_conn(h)
@@ -178,12 +178,12 @@ def exec_where_avail(cmd, targets):
     shown = {k: v for c in tqdm(pool.imap(showdrv, showtasks), total=len(showtasks), unit="exec", desc=" ".join(cmd) + " …") for k, v in c.items()}
     return shown
 
-path_info = exec_where_avail(["nix", "path-info", "--recursive", "--json"], [p for h in ondisk for p in h["roots"]])
+path_info = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "path-info", "--recursive", "--json"], [p for h in ondisk for p in h["roots"]])
 no_deriver = {k for k,v in path_info.items() if v.get("deriver", "") == ""}
 if no_deriver != set():
     print("No deriver: " + " ".join(no_deriver), file = sys.stderr)
 derivers = {v["deriver"] for v in path_info.values() if v.get("deriver", "") != ""}
-derivations = exec_where_avail(["nix", "derivation", "show"], derivers)
+derivations = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "derivation", "show"], derivers)
 
 g = rx.PyDiGraph(check_cycle=True)
 drvnodes = {}
