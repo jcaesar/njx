@@ -69,7 +69,7 @@
       cargo-watch
       cargo-edit
       gcc
-      python3.pkgs.python-fx
+      # python3.pkgs.python-fx # TODO fut1 vs py13
       man-pages
       expect
       (python3.withPackages (ps:
