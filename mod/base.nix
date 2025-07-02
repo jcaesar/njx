@@ -19,6 +19,15 @@
   njx.source-flakes = lib.mkDefault true;
 
   home-manager.sharedModules = [./home/generation-cleanup.nix];
+  system.activationScripts.nochannels = ''
+    rm -rf /nix/var/nix/profiles/per-user/root/channels /root/.nix-defexpr
+  '';
+  system.userActivationScripts.nochannels = ''
+    (
+      set -u
+      rm -rf "$HOME/.nix-defexpr"
+    )
+  '';
 
   boot.loader = {
     systemd-boot = {
