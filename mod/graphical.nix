@@ -114,13 +114,23 @@
       wofi # worse rofi
       swaylock
       swayidle
-      waybar
       kdePackages.polkit-kde-agent-1
       brightnessctl
       swww
       xwayland-satellite
       ffmpeg
     ];
+  programs.waybar.enable = lib.mkIf config.programs.niri.enable true;
+  programs.waybar.package = pkgs.waybar.override {
+    gpsSupport = false;
+    jackSupport = false;
+    mpdSupport = config.services.mpd.enable;
+    sndioSupport = false;
+    upowerSupport = config.services.upower.enable;
+    wireplumberSupport = config.services.pipewire.enable;
+    pulseSupport = config.services.pulseaudio.enable;
+    cavaSupport = false;
+  };
 
   system.systemBuilderCommands = let
     # reproduce nonexposed envs from nixos/modules/hardware/opengl.nix
