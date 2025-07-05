@@ -2,7 +2,6 @@
   outputs = {
     nixpkgs,
     self,
-    nix-on-droid,
     ...
   } @ flakes': let
     flakes = flakes' // {njx = self;};
@@ -24,7 +23,6 @@
       home-manager = flakes.home-manager.nixosModules.home-manager;
       disko = flakes.disko.nixosModules.disko;
     };
-    nixOnDroidConfigurations.default = import ./sys/fon/meta.nix flakes;
     overlays.pkgs = import ./pkgs;
     overlays.fixes = import ./fixes.nix;
     formatter = eachSystem (pkgs: pkgs.alejandra);
@@ -47,10 +45,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     home-manager.url = "github:nix-community/home-manager";
     disko.url = "github:nix-community/disko";
-    nix-on-droid.url = "github:nix-community/nix-on-droid/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    nix-on-droid.inputs.nixpkgs.follows = "nixpkgs";
-    nix-on-droid.inputs.home-manager.follows = "home-manager";
   };
 }

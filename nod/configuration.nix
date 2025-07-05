@@ -2,10 +2,11 @@
   config,
   lib,
   pkgs,
+  flakes,
   ...
 }: {
   imports = [
-    ../../mod/source-flakes.nix
+    "${flakes.njx}/mod/source-flakes.nix"
   ];
   njx.source-flakes = true;
 
@@ -94,5 +95,6 @@
     config = ./home.nix;
     backupFileExtension = "hm-bak";
     useGlobalPkgs = true;
+    extraSpecialArgs = {inherit flakes;};
   };
 }
