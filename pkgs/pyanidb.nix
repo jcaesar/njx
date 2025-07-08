@@ -12,7 +12,8 @@ buildPythonPackage {
     rev = "6391c5d5598ac820843624854824e02f88ea4946";
     hash = "sha256-aBqwvcXXELgIJOQICnOr6HecWNUkUdyqMaC4UNrU98M=";
   };
-  propagatedBuildInputs = [setuptools];
+  pyproject = true;
+  build-system = [setuptools];
   doCheck = false;
   postInstall = ''
     install -Dm444 ./openssl.cnf.legacy $out/share/openssl.legacy.cnf
