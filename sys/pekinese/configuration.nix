@@ -63,27 +63,31 @@
   services.davfs2.enable = true;
   environment.etc."davfs2/secrets".source = "/etc/secrets/davfs";
 
-  networking.supplicant.wlp0s20f3.configFile.writable = true;
-  networking.supplicant.wlp0s20f3.configFile.path = "/etc/wpa_supplicant.conf";
-  networking.supplicant.wlp0s20f3.userControlled.enable = true;
-  systemd.network = {
-    enable = true;
-    networks."12-wifi-dhcp-required" = {
-      matchConfig.Name = ["wlp0s20f3"];
-      DHCP = "yes";
-    };
-    networks."12-wired-dhcp-optional" = {
-      matchConfig.Name = ["enp0s31f6"];
-      linkConfig.RequiredForOnline = false;
-      DHCP = "yes";
-    };
-  };
-  njx.wireguardToDoggieworld = {
-    # ChUBhy0Mmeki9NKVwba0fBVWx/U6BRRwU+WKFr0jOyY=
-    enable = true;
-    listenPort = 35633;
-    finalOctet = 13;
-  };
+  # networking.supplicant.wlp0s20f3.configFile.writable = true;
+  # networking.supplicant.wlp0s20f3.configFile.path = "/etc/wpa_supplicant.conf";
+  # networking.supplicant.wlp0s20f3.userControlled.enable = true;
+  # systemd.network = {
+  #   enable = true;
+  #   networks."12-wifi-dhcp-required" = {
+  #     matchConfig.Name = ["wlp0s20f3"];
+  #     DHCP = "yes";
+  #   };
+  #   networks."12-wired-dhcp-optional" = {
+  #     matchConfig.Name = ["enp0s31f6"];
+  #     linkConfig.RequiredForOnline = false;
+  #     DHCP = "yes";
+  #   };
+  # };
+  # njx.wireguardToDoggieworld = {
+  #   # ChUBhy0Mmeki9NKVwba0fBVWx/U6BRRwU+WKFr0jOyY=
+  #   enable = true;
+  #   listenPort = 35633;
+  #   finalOctet = 13;
+  # };
+  networking.networkmanager.enable = lib.mkForce true; # betraying principles
+  networking.modemmanager.enable = true;
+  networking.networkmanager.wifi.powersave = true;
+  users.users.julius.extraGroups = ["networkmanager"];
 
   services.xserver.enable = true;
   programs.niri.enable = true;
