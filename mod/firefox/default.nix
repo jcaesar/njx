@@ -125,6 +125,7 @@ in
             "browser.newtabpage.activity-stream.telemetry" = lock false;
             "browser.urlbar.speculativeConnect.enabled" = false;
             "browser.urlbar.showSearchTerms.enabled" = false;
+            "browser.urlbar.trimURLs" = false;
           };
           SearchEngines = {
             Remove = ["Bing" "@bing" "bing" "Google" "Wikipedia (en)" "Amazon" "Amazon.co.jp" "Amazon.de"];
