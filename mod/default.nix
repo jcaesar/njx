@@ -25,6 +25,7 @@ in {
     ./sftpgo.nix
     ./synapse-utilities.nix
     ./helix.nix
+    ./log-to-aws.nix
     (mkModOption "foot")
     (mkModOption "base")
     (mkModOption "binfmt")
