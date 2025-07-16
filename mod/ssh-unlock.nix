@@ -40,7 +40,7 @@ in {
       kernelModules = cfg.modules;
       systemd = {
         enable = true;
-        network = {
+        network = lib.mkDefault {
           inherit (config.systemd.network) enable config links netdevs networks;
         };
       };
