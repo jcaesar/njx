@@ -15,4 +15,5 @@ pkgs: prev: {
   vector-cloudwatchsyslogs = import ./vector-cloudwatchsyslogs.nix pkgs;
   rq = import ./rq.nix prev;
   ghcr-login = pkgs.callPackage ./ghcr-login.nix {};
+  opentripplanner = pkgs.callPackage ./opentripplanner.nix {};
 }
