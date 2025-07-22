@@ -128,7 +128,7 @@
     sndioSupport = false;
     upowerSupport = config.services.upower.enable;
     wireplumberSupport = config.services.pipewire.enable;
-    pulseSupport = config.services.pulseaudio.enable;
+    pulseSupport = config.services.pulseaudio.enable || config.services.pipewire.enable;
     cavaSupport = false;
   };
 
