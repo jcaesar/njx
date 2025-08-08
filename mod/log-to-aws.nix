@@ -43,7 +43,9 @@ in {
       serviceConfig.LoadCredential = "cloudwatch:/etc/secrets/cloudwatch";
       environment.VECTOR_LOG = "warn"; # It'll log "Putting events successfull" to the syslog, and then try to log that. Indefinitely.
     };
-    njx.manual.vector-aws-cloudwatch = let name = config.networking.hostName; in ''
+    njx.manual.vector-aws-cloudwatch = let
+      name = config.networking.hostName;
+    in ''
       1. Create access
          ```
          aws iam create-user --user-name ${name}-log-appender

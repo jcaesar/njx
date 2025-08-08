@@ -26,6 +26,7 @@ in {
     ./synapse-utilities.nix
     ./helix.nix
     ./log-to-aws.nix
+    ./openspeedtest.nix
     (mkModOption "foot")
     (mkModOption "base")
     (mkModOption "binfmt")
