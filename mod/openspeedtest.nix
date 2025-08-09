@@ -52,7 +52,8 @@ in {
             add_header 'Access-Control-Allow-Origin' "$http_origin" always;
             add_header 'Access-Control-Allow-Methods' "GET, POST, OPTIONS" always;
             return 200;
-        } else {
+        }
+        if ($request_method != OPTIONS) {
           add_header 'Access-Control-Allow-Origin' "*" always;
           add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With' always;
           add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
