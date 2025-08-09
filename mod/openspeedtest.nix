@@ -42,11 +42,6 @@ in {
       # taken from https://github.com/openspeedtest/Nginx-Configuration/blob/f452c9b25bd28b29f9d23b28b6c1ce709bcfde6c/OpenSpeedTest-Server.conf#L53
       # They ask to donate: https://go.openspeedtest.com/Donate
       locations."/".extraConfig = ''
-        add_header 'Access-Control-Allow-Origin' "*" always;
-        add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-        add_header Cache-Control 'no-store, no-cache, max-age=0, no-transform';
-        add_header Last-Modified $date_gmt;
         if_modified_since off;
         expires off;
         etag off;
@@ -56,9 +51,13 @@ in {
             add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With' always;
             add_header 'Access-Control-Allow-Origin' "$http_origin" always;
             add_header 'Access-Control-Allow-Methods' "GET, POST, OPTIONS" always;
-            // Not added by upstream, but nginx complains if I don't put the following line:
-            add_header Cache-Control 'no-store, no-cache, max-age=0, no-transform';
             return 200;
+        } else {
+          add_header 'Access-Control-Allow-Origin' "*" always;
+          add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With' always;
+          add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+          add_header Cache-Control 'no-store, no-cache, max-age=0, no-transform';
+          add_header Last-Modified $date_gmt;
         }
       '';
       locations."~* ^.+\\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$".extraConfig = ''
