@@ -32,7 +32,7 @@ in {
     } "pkg" {};
     nginx-host = lib.mkOption {
       description = "add config for openspeedtest to this vhost on nginx";
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
       default = null;
     };
   };
