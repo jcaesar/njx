@@ -53,6 +53,7 @@
     imports = [common installer];
     isoImage.squashfsCompression = squashzstd;
     programs.ssh.setXAuthLocation = lib.mkForce false; # conflict between minimal and ssh modules
+    networking.networkmanager.enable = lib.mkForce topCfg.networking.networkmanager.enable; # isos have the same network cfg as the real thing
   };
   sd = {
     lib,
