@@ -94,4 +94,8 @@
     memoryMax = 8 * 1024 * 1024 * 1024;
     memoryPercent = 30;
   };
+  systemd.services."systemd-zram-setup@" = {
+    restartIfChanged = false;
+    stopIfChanged = false;
+  };
 }
