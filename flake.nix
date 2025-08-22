@@ -17,6 +17,7 @@
       pitivi = sysA ./sys/pitivi.nix;
       gegensprech = sysA ./sys/gegensprech.nix;
       basenji = sysI ./sys/basenji.nix;
+      westie = sysI ./sys/westie.nix;
     };
     nixosModules = {
       njx = import ./mod;
