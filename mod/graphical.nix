@@ -8,7 +8,10 @@
   njx.sysrq = true;
   njx.nix-lowprio = true;
 
-  services.logind.powerKey = "suspend";
+  services.logind.settings.Login = {
+    HandlePowerKey = "suspend";
+    HandleLidSwitch = "ignore";
+  };
 
   nix = {
     daemonCPUSchedPolicy = "idle";
