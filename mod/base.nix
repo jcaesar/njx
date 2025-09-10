@@ -75,6 +75,7 @@
     helix # better vim
     rsync # better scp
     sshfs # use it for backups. TODO script
+    wireguard-tools
   ];
   programs.nh.enable = true; # better nixos-rebuild
   services.openssh = {
