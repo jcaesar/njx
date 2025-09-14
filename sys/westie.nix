@@ -45,9 +45,17 @@
   '';
   systemd.network = {
     enable = true;
-    networks.whatev = {
-      matchConfig.Name = "enp*";
+    netdevs.br.netdevConfig = {
+      Kind = "bridge";
+      Name = "br";
+    };
+    networks.br = {
+      matchConfig.Name = "br";
       DHCP = "yes";
+    };
+    networks.phy = {
+      matchConfig.Name = "enp*";
+      networkConfig.Bridge = "br";
     };
   };
   system.stateVersion = "25.11";
