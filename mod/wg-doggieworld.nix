@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  options,
   ...
 }: let
   key = "wireguardToDoggieworld";
@@ -25,12 +24,6 @@ in {
     v4Addr = lib.mkOption {
       type = lib.types.str;
     };
-    network = lib.mkOption {
-      type = options.systemd.network.networks.type.nestedTypes.elemType;
-    };
-    netdev = lib.mkOption {
-      type = options.systemd.network.netdevs.type.nestedTypes.elemType;
-    };
   };
   config = lib.mkIf cfg.enable {
     njx.manual.wg-doggieworld = ''
@@ -44,13 +37,14 @@ in {
       ```
       and add that key for `${cfg.v4Addr}` on doggieworld.
     '';
-    njx.${key} = {
-      v4Addr = lib.mkForce "10.13.38.${toString cfg.finalOctet}";
-      netdev = {
-        netdevConfig =  {
-          Kind = lib.mkDefault "wireguard";
-          Name = lib.mkDefault "wg0";
-          #MTUBytes = lib.mkDefault "1350";
+    njx.${key}.v4Addr = lib.mkForce "10.13.38.${toString cfg.finalOctet}";
+    systemd.network = {
+      enable = true;
+      netdevs."42-wg-dev" = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg0";
+          #MTUBytes = "1350";
         };
         wireguardConfig = {
           PrivateKeyFile = cfg.privateKeyFile;
@@ -58,27 +52,24 @@ in {
         };
         wireguardPeers = [
           {
-            PublicKey =  "3dY3B1IlbCuBb8FrZ472u+cGXihRGE6+qmo5RZlHdFg=";
+            PublicKey = "3dY3B1IlbCuBb8FrZ472u+cGXihRGE6+qmo5RZlHdFg=";
             AllowedIPs = ["10.13.38.0/24" "10.13.44.0/24" "fc00:1337:dead:beef:caff::/96"];
-            Endpoint =  "128.199.185.74:13518";
+            Endpoint = "128.199.185.74:13518";
             PersistentKeepalive = 29;
           }
         ];
       };
-      network = {
+      networks."42-wg-net" = {
         matchConfig.Name = "wg0";
         address = [
           "${cfg.v4Addr}/24"
           "fc00:1337:dead:beef:caff::${toString cfg.finalOctet}/96"
         ];
         DHCP = "no";
-        networkConfig.IPv6AcceptRA = false;
+        networkConfig = {
+          IPv6AcceptRA = false;
+        };
       };
-    };
-    systemd.network = {
-      enable = true;
-      netdevs."42-wg-dev" = cfg.netdev;
-      networks."42-wg-net" = cfg.network;
     };
     users.users.root.packages = [pkgs.wireguard-tools];
   };
