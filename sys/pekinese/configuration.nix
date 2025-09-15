@@ -83,6 +83,7 @@
     enable = true;
     listenPort = 35633;
     finalOctet = 13;
+    netdev.netdevConfig.MTUBytes = 1234;
   };
 
   services.xserver.enable = true;
