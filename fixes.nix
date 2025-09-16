@@ -7,4 +7,13 @@ final: prev: {
       };
     };
   };
+  wasmtime = prev.wasmtime.overrideAttrs (old: {
+    postInstall =
+      if prev.hostPlatform.isStatic
+      then ''
+        touch $out/lib/foo.so
+        ${old.postInstall}
+      ''
+      else old.postInstall;
+  });
 }
