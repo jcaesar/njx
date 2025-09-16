@@ -7,7 +7,7 @@
   services.sshd.enable = true;
   users.users.root.openssh.authorizedKeys.keys = (import ../private.nix).terminalKeys;
   njx.sshUnlock.keys = (import ../private.nix).terminalKeys;
-  njx.sshUnlock.modules = ["tg3" "e1000e"];
+  njx.sshUnlock.modules = ["tg3" "e1000e" "bridge"];
   fileSystems."/" = {
     fsType = "btrfs";
     device = "/dev/mapper/nixroot";
