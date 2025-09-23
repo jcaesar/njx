@@ -4,14 +4,14 @@
   lib,
 }:
 rustPlatform.buildRustPackage rec {
-  pname = "prometheus-nvml-exporter";
+  pname = "cgroup-memory-prometheus-ex";
   version = "0.1.0";
 
   src = fetchFromGitHub {
     owner = "jcaesar";
-    repo = "prometheus-nvml-exporter";
-    rev = "33329c603488ed86ac3dd91939dcb77add972677";
-    hash = "sha256-+UM8ZSlzJbc98jqAIidVY7bNEAmmvuYw+SrYLLGF/XM=";
+    repo = pname;
+    rev = "07667fbd8689eccea14699e49e3df0da5e2c04c0";
+    hash = "sha256-e05QKX86CsW+b5xqJw1bEllcr7OtKliZEGBF5Oi2h3E=";
   };
   cargoLock = {
     lockFile = "${src}/Cargo.lock";
@@ -19,10 +19,10 @@ rustPlatform.buildRustPackage rec {
   };
 
   meta = with lib; {
-    description = "nvml / nvidia graphics card prometheus metrics exporter";
+    description = "Exports a single vector of metrics for the exclusive memory use per cgroup";
     license = licenses.mit;
     platforms = platforms.linux;
     homepage = "https://github.com/jcaesar/${pname}";
-    mainProgram = "${pname}";
+    mainProgram = "cgroup-mem-exporter";
   };
 }

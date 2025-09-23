@@ -16,4 +16,5 @@ pkgs: prev: {
   rq = import ./rq.nix prev;
   ghcr-login = pkgs.callPackage ./ghcr-login.nix {};
   opentripplanner = pkgs.callPackage ./opentripplanner.nix {};
+  cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
 }
