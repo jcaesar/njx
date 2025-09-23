@@ -61,7 +61,8 @@ def kept_name(p):
         return f"{p['profile']}"
 if keep_only_bootcurrent:
     to_be_kept = [kept_name(p) for p in roots]
-    to_be_deleted = [str(p["profile"]) for p in profiles if p["profile"] not in keep_indexes]
+    to_be_kept_idxs = [p["profile"] for p in roots]
+    to_be_deleted = [str(p["profile"]) for p in profiles if p["profile"] not in to_be_kept_idxs]
 else:
     delete_before = min(r["profile"] for r in roots)
     to_be_deleted = [str(p["profile"]) for p in profiles if p["profile"] < delete_before]
