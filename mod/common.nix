@@ -28,6 +28,7 @@
   hardware.graphics.enable = true;
 
   users.users.julius = {
+    linger = true;
     isNormalUser = true;
     extraGroups = ["wheel"];
     #openssh.authorizedKeys.keys = common.sshKeys.client;
