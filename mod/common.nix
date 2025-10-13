@@ -10,7 +10,7 @@
   systemd.oomd = {
     enableUserSlices = true;
     enableSystemSlice = true;
-    extraConfig.SwapUsedLimitPercent = "90%";
+    settings.OOM.SwapUsedLimitPercent = "90%";
   };
 
   environment.variables = {
