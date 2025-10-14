@@ -200,6 +200,14 @@ for k, v in path_info.items():
             g.add_edge(kn, drvnode(ref), ())
 
 installed = set()
+no_info = set()
+no_deriver = set()
+no_derivation = set()
+no_pv = set()
+
+def drv_starts(s, sta):
+    return s.startswith("/nix/store/") and s[len("/nix/store/lw3najqhgyfrv58lc48c9072ayqxipvx-"):].startswith(sta)
+
 for x in ondisk:
     host = x["host"]
     root = g.add_node(f"[{host}]")
@@ -208,18 +216,58 @@ for x in ondisk:
     for _,l in rx.dfs_edges(g, root):
         info = path_info.get(g[l], None)
         if info is None:
+            no_info |= {g[l]}
             continue
-        drv = derivations.get(info.get("deriver", None), None)
+        drvr = info.get("deriver", None)
+        if drvr is None:
+            if not g[l].endswith(".drv"):
+                no_deriver |= {g[l]}
+        drv = derivations.get(drvr, None)
         if drv is None:
+            no_derivation |= {drvr}
             continue
-        FW = "linux-firmware-" # special casing for this. there's probably a few others, but this one seems most important
-        if (name := drv["env"].get("pname")) is not None and (ver := drv["env"].get("version")) is not None:
-            installed |= {(name, ver, host)}
-        elif (name := drv["env"].get("name", "")).startswith(FW):
-            installed |= {(FW[:-1], name[len(FW):], host)}
+        if jsonattrs := drv["env"].get("__json"):
+            drv["env"] |= json.loads(jsonattrs)
+        name = drv["env"].get("pname")
+        ver = drv["env"].get("version")
+        pv_ignore_prefixes = [
+            "unit-",
+            "X-Restart-Triggers-",
+            "X-Reload-Triggers-",
+            "hm_",
+        ]
+        pv_ignore_suffixes = [
+            ".pam.drv",
+            ".conf.drv",
+            ".sh.drv",
+            ".toml.drv",
+            "-path.drv",
+            "-nixos-help.drv",
+            "-env.drv",
+            "-environment.drv",
+            "-etc.drv",
+        ]
+        if name is None or ver is None:
+            if any(drv_starts(drvr, pfx) for pfx in pv_ignore_prefixes):
+                pass
+            elif any(drvr.endswith(sfx) for sfx in pv_ignore_suffixes):
+                pass
+            else:
+                no_pv |= {drvr}
+            continue
+        installed |= {(name, ver, host)}
 
 installed = [{"name": n, "version": ver, "host": h} for n, ver, h in sorted(installed)]
-print("Dumping install information ({} entries)".format(len(installed)), file = sys.stderr)
+eee = {
+    "No install info (shouldn't happen?)": no_info,
+    "No deriver": no_deriver,
+    "Derivation file not found": no_derivation,
+    "No pname/version": no_pv,
+}
+for e, ee in eee.items():
+    if len(ee) > 0:
+        print(f"{e}:\n {"\n ".join(map(str, ee))}", file = sys.stderr)
+print(f"Dumping install information ({len(installed)} entries)", file = sys.stderr)
 json.dump(installed, sys.stdout)
 
 def main():
