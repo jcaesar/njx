@@ -4,12 +4,10 @@ import os
 import paramiko
 from multiprocessing.pool import ThreadPool
 from collections import defaultdict, deque
-from tqdm import tqdm
 from json import JSONDecoder
 import json
 import random
 import subprocess
-import rustworkx as rx
 import sys
 import threading
 import time
@@ -143,7 +141,7 @@ def gather(h):
     }
     pool_conn(h, conn)
     return ret
-ondisk = list(tqdm(pool.imap(gather, set([local] + remote)), total=1 + len(remote), unit="host", desc="gc roots, ls /nix/store"))
+ondisk = list(pool.imap(gather, set([local] + remote)))
 
 def exec_where_avail(cmd, targets):
     showpossible = defaultdict(lambda: []) # where derivations are available
@@ -175,7 +173,7 @@ def exec_where_avail(cmd, targets):
             return ret
         return exec_decode(h, cmd + c, decode)
     random.shuffle(showtasks)
-    shown = {k: v for c in tqdm(pool.imap(showdrv, showtasks), total=len(showtasks), unit="exec", desc=" ".join(cmd) + " …") for k, v in c.items()}
+    shown = {k: v for c in pool.imap(showdrv, showtasks) for k, v in c.items()}
     return shown
 
 path_info = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "path-info", "--recursive", "--json"], [p for h in ondisk for p in h["roots"]])
@@ -185,19 +183,11 @@ if no_deriver != set():
 derivers = {v["deriver"] for v in path_info.values() if v.get("deriver", "") != ""}
 derivations = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "derivation", "show"], derivers)
 
-g = rx.PyDiGraph(check_cycle=True)
-drvnodes = {}
-def drvnode(k):
-    if (n := drvnodes.get(k)) is not None:
-        return n
-    n = g.add_node(k)
-    drvnodes[k] = n
-    return n
+g = defaultdict(lambda: set())
 for k, v in path_info.items():
-    kn = drvnode(k)
     for ref in v["references"]:
         if k != ref:
-            g.add_edge(kn, drvnode(ref), ())
+            g[k] |= {ref}
 
 installed = set()
 no_info = set()
@@ -210,18 +200,18 @@ def drv_starts(s, sta):
 
 for x in ondisk:
     host = x["host"]
-    root = g.add_node(f"[{host}]")
-    for f in x["roots"]:
-        g.add_edge(root, drvnode(f), ())
-    for _,l in rx.dfs_edges(g, root):
-        info = path_info.get(g[l], None)
+    g_todo = set(x["roots"])
+    while len(g_todo) > 0:
+        l = g_todo.pop()
+        g_todo |= g[l]
+        info = path_info.get(l, None)
         if info is None:
-            no_info |= {g[l]}
+            no_info |= {l}
             continue
         drvr = info.get("deriver", None)
         if drvr is None:
-            if not g[l].endswith(".drv"):
-                no_deriver |= {g[l]}
+            if not l.endswith(".drv"):
+                no_deriver |= {l}
         drv = derivations.get(drvr, None)
         if drv is None:
             no_derivation |= {drvr}

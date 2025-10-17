@@ -1,16 +1,14 @@
 {
   lib,
   paramiko,
-  rustworkx,
   pynacl,
-  tqdm,
   nix,
   buildPythonApplication,
 }:
 buildPythonApplication {
   pname = "njx";
   version = "0.1.0";
-  propagatedBuildInputs = [paramiko rustworkx pynacl tqdm];
+  propagatedBuildInputs = [paramiko pynacl];
   src = ./.;
   format = "other";
   installPhase = ''
