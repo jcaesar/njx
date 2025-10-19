@@ -1,8 +1,12 @@
 #!/usr/bin/env nu
 
 def main [] {
+  let machines = nix eval --json '.#nixosConfigurations' --apply builtins.attrNames | from json
   git tag 
-  | lines | parse "{machine}-{rev}"  | group-by machine 
+  | lines
+  | parse "{machine}-{rev}"
+  | where machine in $machines
+  | group-by machine 
   | items {|machine, revs| 
     let tag = $"($machine)-($revs.rev | into int | math max)"
     let rev = (git rev-list -n1 $tag | cut -c-7)
