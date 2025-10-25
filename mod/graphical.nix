@@ -112,6 +112,8 @@
       #qt6-wayland
       wl-clipboard
       waypipe
+      wireshark
+      hydra-check
     ]
     ++ lib.optionals config.programs.niri.enable [
       wofi # worse rofi
