@@ -24,7 +24,9 @@
     hanazono
     noto-fonts
     noto-fonts-cjk-sans
-    noto-fonts-emoji
+    noto-fonts-cjk-serif
+    noto-fonts-monochrome-emoji
+    noto-fonts-color-emoji
     liberation_ttf
     fira-code
     fira-code-symbols
@@ -77,7 +79,7 @@
   services.pulseaudio.enable = lib.mkDefault false;
 
   environment.systemPackages = with pkgs; [
-    glxinfo
+    mesa-demos
   ];
 
   users.users.julius.packages = with pkgs;
