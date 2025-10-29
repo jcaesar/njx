@@ -7,7 +7,4 @@ final: prev: {
       };
     };
   };
-  etcd = prev.etcd.override {
-    buildGoModule = a: final.buildGoModule (a // {doCheck = false;});
-  };
 }

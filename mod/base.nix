@@ -57,7 +57,7 @@
     fd # better find
     htop # better top
     zenith-nvidia # combined htop/nload/iotop
-    du-dust # better du
+    dust # better du
     iftop
     iotop
     smartmontools

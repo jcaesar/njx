@@ -18,7 +18,7 @@
     diffutils
     dnsutils
     dos2unix
-    du-dust # better du
+    dust # better du
     fd # better find
     file
     findutils
