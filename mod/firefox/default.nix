@@ -111,6 +111,7 @@ in
             "dom.private-attribution.submission.enabled" = lock false;
             # "xpinstall.signatures.required" = lock false; # Meh, can't install my custom extensions otherwise. only works on esr/devedition
             "browser.urlbar.update2.engineAliasRefresh" = true; # easy modifying of search engines from about:preferences
+            "browser.urlbar.quicksuggest.online.enabled" = false; # https://www.heise.de/news/Firefox-zeigt-kuenftig-Suchergebnisse-direkt-in-der-Adressleiste-10961625.html
 
             "browser.ctrlTab.sortByRecentlyUsed" = true;
             "network.captive-portal-service.enabled" = false;
