@@ -138,6 +138,11 @@
     pulseSupport = config.services.pulseaudio.enable || config.services.pipewire.enable;
     cavaSupport = false;
   };
+  services.greetd = lib.mkIf config.programs.niri.enable {
+    enable = true;
+    settings.default_session.command = "${lib.getExe' pkgs.greetd "agreety"} --cmd ${lib.getExe' pkgs.niri "niri-session"}";
+    useTextGreeter = true;
+  };
 
   system.systemBuilderCommands = let
     # reproduce nonexposed envs from nixos/modules/hardware/opengl.nix

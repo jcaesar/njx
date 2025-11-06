@@ -113,7 +113,7 @@
 
   # necessary for nextcloud to keep its login?
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.lightdm.enableGnomeKeyring = true;
+  # security.pam.services.lightdm.enableGnomeKeyring = true;
   programs.seahorse.enable = true;
 
   services.tailscale = {
