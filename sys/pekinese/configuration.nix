@@ -48,20 +48,6 @@
     mount $disk""a /mnt/boot
     ```
   '';
-  fileSystems.pridedav = {
-    fsType = "davfs";
-    mountPoint = "/media/pride";
-    device = "http://pride.net.liftm.de:8089";
-    options = ["noexec" "nosuid" "ro"];
-  };
-  njx.manual.davfs = ''
-    `${config.environment.etc."davfs2/secrets".source}` must be mode 600 and hold one line like:
-    ```
-    ${config.fileSystems.pridedav.mountPoint} ${config.networking.hostName} $password
-    ```
-  '';
-  services.davfs2.enable = true;
-  environment.etc."davfs2/secrets".source = "/etc/secrets/davfs";
 
   networking.supplicant.wlp0s20f3.configFile.writable = true;
   networking.supplicant.wlp0s20f3.configFile.path = "/etc/wpa_supplicant.conf";
