@@ -11,6 +11,7 @@
     ./nushell.nix
     ./stehauf.nix
     ./xdg.nix
+    ./shpool.nix
   ];
   services.pueue.enable = true;
 }
