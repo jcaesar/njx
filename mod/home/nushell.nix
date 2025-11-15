@@ -10,10 +10,12 @@
       enable = true;
       package = pkgs.nushell;
       configFile.source = ../../dot/config.nu;
+      plugins = with pkgs.nushellPlugins; [formats polars];
       shellAliases = {
         vi = "hx";
         vim = "hx";
         nano = "hx";
+        peu = "pueue"; # dyslexic fingers or so
       };
       # workaround for there not being nushell support for environment.variables
       extraEnv = lib.mkIf ((nixosConfig.environment or {}) ? variables) ''
