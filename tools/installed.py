@@ -215,7 +215,9 @@ for x in ondisk:
         if drv is None:
             no_derivation |= {drvr}
             continue
-        if jsonattrs := drv["env"].get("__json"):
+        if sattrs := drv.get("structuredAttrs"): # newer versions of nix derivation show seem to give out structured attrs like this
+            drv["env"] |= sattrs
+        elif jsonattrs := drv["env"].get("__json"): # that's what structuredAttrs looks like internally, and older versions will show that. pita
             drv["env"] |= json.loads(jsonattrs)
         name = drv["env"].get("pname")
         ver = drv["env"].get("version")
