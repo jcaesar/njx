@@ -47,12 +47,12 @@ def ssh_exec_out(conn, cmd, host):
         stdout.channel.set_combine_stderr(True)
         stdin.channel.shutdown_write()
         return stdout.read()
-    except:
+    except Exception:
         raise Exception(f"Error executing on {host}")
 def keepalive():
     next = time.monotonic()
     while True:
-        for h, c in ssh.items():
+        for h, c in conn_pool.items():
             ssh_exec_out(c, "true", h)
         next += 29
         time.sleep(max(10, next - time.monotonic()))
@@ -83,33 +83,32 @@ def exec_decode(h, cmd, f):
                 else:
                     conn = pooled_conn(h)
                     out = ssh_exec_out(conn, ex, h)
-            except Exception as e:
+            except Exception:
                 raise Exception(f"Failed to execute on {h}: {ex}")
             try:
-                if type(out) == bytes:
+                if isinstance(out, bytes):
                     out = out.decode("utf-8")
                 ret = f(out)
-            except Exception as e:
+            except Exception:
                 trunc = out[:100] + " … " + out[-100:] if len(out) > 200 else out
                 raise Exception(f"Failed to decode out of {h} executing {ex}: {trunc}")
             pool_conn(h, conn)
             return ret
-        except:
+        except Exception:
             if tries > 3:
                 raise
             time.sleep(3)
 
 def single(iterable):
-    iter_obj = iter(iterable)
+    iterator = iter(iterable)
     try:
-        first_item = next(iter_obj)
+        one = next(iterator)
     except StopIteration:
         raise ValueError("Iterator is empty")
-
     try:
-        second_item = next(iter_obj)
+        next(iterator)
     except StopIteration:
-        return first_item
+        return one
     else:
         raise ValueError("Iterator contains more than one item")
 
@@ -202,16 +201,16 @@ for x in ondisk:
     host = x["host"]
     g_todo = set(x["roots"])
     while len(g_todo) > 0:
-        l = g_todo.pop()
-        g_todo |= g[l]
-        info = path_info.get(l, None)
+        ll = g_todo.pop()
+        g_todo |= g[ll]
+        info = path_info.get(ll, None)
         if info is None:
-            no_info |= {l}
+            no_info |= {ll}
             continue
         drvr = info.get("deriver", None)
         if drvr is None:
-            if not l.endswith(".drv"):
-                no_deriver |= {l}
+            if not ll.endswith(".drv"):
+                no_deriver |= {ll}
         drv = derivations.get(drvr, None)
         if drv is None:
             no_derivation |= {drvr}
