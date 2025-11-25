@@ -221,6 +221,7 @@ for x in ondisk:
             drv["env"] |= json.loads(jsonattrs)
         name = drv["env"].get("pname")
         ver = drv["env"].get("version")
+        vname = drv["env"].get("name")
         pv_ignore_prefixes = [
             "unit-",
             "X-Restart-Triggers-",
@@ -238,6 +239,9 @@ for x in ondisk:
             "-environment.drv",
             "-etc.drv",
         ]
+        if vname is not None and ver is not None and name is None and vname.endswith(f"-{ver}"):
+            # etcd only?
+            name = vname[:-len(ver)-1]
         if name is None or ver is None:
             if any(drv_starts(drvr, pfx) for pfx in pv_ignore_prefixes):
                 pass
