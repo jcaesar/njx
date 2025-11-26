@@ -8,14 +8,13 @@
 in {
   programs.git = {
     enable = true;
-    difftastic.enable = true;
     ignores = [".*.swp"];
-    aliases = {
-      l = "log --oneline --decorate --all --graph";
-      lg = "log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'";
-      quickserve = "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/";
-    };
-    extraConfig = {
+    settings = {
+      aliases = {
+        l = "log --oneline --decorate --all --graph";
+        lg = "log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'";
+        quickserve = "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/";
+      };
       pull.ff = "only";
       rerere.enable = true;
       user.name = "Julius Michaelis";
@@ -24,4 +23,6 @@ in {
       "credential \"https://gist.github.com\"".helper = creds;
     };
   };
+  programs.difftastic.enable = true;
+  programs.difftastic.git.enable = true;
 }

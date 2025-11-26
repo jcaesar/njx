@@ -18,8 +18,10 @@ pkgs: prev: {
   opentripplanner = pkgs.callPackage ./opentripplanner.nix {};
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   planetutils = pkgs.python3.pkgs.callPackage ./planetutils.nix {};
-  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ pkgs.lib.singleton (final: prev: {
-    contextily = final.callPackage ./contextily.nix {};
-    gtfs-lite = final.callPackage ./gtfs-lite.nix {};
-  });
+  pythonPackagesExtensions =
+    prev.pythonPackagesExtensions
+    ++ pkgs.lib.singleton (final: prev: {
+      contextily = final.callPackage ./contextily.nix {};
+      gtfs-lite = final.callPackage ./gtfs-lite.nix {};
+    });
 }
