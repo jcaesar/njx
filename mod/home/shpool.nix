@@ -6,7 +6,7 @@
 }: {
   config = lib.mkMerge [
     {
-      services.shpool.enable = (nixosConfig.njx.common or false) && !(nixosConfig.njx.graphical or true);
+      services.shpool.enable = lib.mkDefault ((nixosConfig.njx.common or false) && !(nixosConfig.njx.graphical or true));
     }
     (lib.mkIf config.services.shpool.enable {
       services.shpool.settings = lib.mkIf config.programs.nushell.enable (
