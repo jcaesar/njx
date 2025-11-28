@@ -10,7 +10,7 @@ in {
     enable = true;
     ignores = [".*.swp"];
     settings = {
-      aliases = {
+      alias = {
         l = "log --oneline --decorate --all --graph";
         lg = "log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'";
         quickserve = "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/";
