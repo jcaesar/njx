@@ -81,6 +81,7 @@
     pyanidb
     geary
     wl-clipboard
+    piper-tts-small
   ];
   njx.mail = true;
 

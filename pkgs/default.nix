@@ -18,6 +18,10 @@ pkgs: prev: {
   opentripplanner = pkgs.callPackage ./opentripplanner.nix {};
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   planetutils = pkgs.python3.pkgs.callPackage ./planetutils.nix {};
+  piper-tts-small = pkgs.piper-tts.override {
+    withTrain = false;
+    withAlignment = false;
+  };
   pythonPackagesExtensions =
     prev.pythonPackagesExtensions
     ++ pkgs.lib.singleton (final: prev: {
