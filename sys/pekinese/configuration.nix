@@ -14,7 +14,6 @@
   networking.hostName = "pekinese";
 
   boot.loader.systemd-boot.editor = lib.mkForce true;
-  boot.supportedFilesystems = ["bcachefs"];
   boot.initrd.availableKernelModules = import ./bootmods.nix;
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
@@ -24,13 +23,17 @@
   # system.etc.overlay.enable = true; # broken?
 
   fileSystems."/" = {
-    device = "/dev/disk/by-partlabel/primary";
-    fsType = "bcachefs";
-    options = ["compression=zstd"];
+    device = "/dev/mapper/nixroot";
+    fsType = "btrfs";
+    options = ["discard" "compress"];
   };
   fileSystems."/boot" = {
     device = "/dev/disk/by-partlabel/ESP";
     fsType = "vfat";
+  };
+  boot.initrd.luks.devices.nixroot = {
+    device = "/dev/disk/by-partlabel/primary";
+    allowDiscards = true;
   };
   njx.manual.partitioning = ''
     ```
@@ -41,11 +44,7 @@
     parted $disk -- mkpart primary 1G 100%
     parted $disk -- set 1 esp on
     mkfs.fat -F 32 $disk""a
-    keyctl link @u @s # bug
-    bcachefs format --encrypted --label nixroot $disk""b # Labels don't work. :(
-    mount $disk""b /mnt
-    mkdir /mnt/boot
-    mount $disk""a /mnt/boot
+    … # rest undoc
     ```
   '';
 

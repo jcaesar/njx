@@ -11,7 +11,6 @@
   "autofs4"
   "backlight"
   "battery"
-  "bcachefs"
   "bridge"
   "button"
   "ccm"
