@@ -23,6 +23,8 @@
     deadnix
     # vulnix # todo
     git # better svn/hg
+    nmap
+    wol
   ];
 
   hardware.graphics.enable = true;
@@ -47,13 +49,11 @@
       difftastic # much better diff
       oha # http bench
       sshfs
-      wol
       pwgen
       binutils
       # binwalk
       bubblewrap # pretend its firejail+steamrun: bwrap --unshare-all --share-net --die-with-parent --setenv PATH /bin  --overlay-src (realpath /run/current-system/sw) --tmp-overlay /  --ro-bind /nix/store /nix/store --bind /tmp/foo /tmp --bind /run/user/1000/wayland-1 /run/user/1000/wayland-1 --ro-bind /etc /etc  --ro-bind /run/systemd/resolve /run/systemd/resolve --dev-bind /dev /dev --proc /proc /bin/nu
       urlencode
-      nmap
       dos2unix
       dnsutils
       tokei # better cloc
