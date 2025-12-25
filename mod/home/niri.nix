@@ -73,16 +73,10 @@ in {
 
   services.swayidle = lib.mkIf nixosConfig.programs.niri.enable {
     enable = true;
-    events = [
-      {
-        event = "before-sleep";
-        command = lockExe;
-      }
-      {
-        event = "lock";
-        command = lockExe;
-      }
-    ];
+    events = {
+      "before-sleep" = lockExe;
+      "lock" = lockExe;
+    };
     timeouts = [
       {
         timeout = 300;
