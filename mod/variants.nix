@@ -58,9 +58,13 @@
   sd = {
     lib,
     config,
+    pkgs,
+    modulesPath,
     ...
   }: {
-    imports = [common installer];
+    imports = [common installer
+"${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
+    ];
     fileSystems = lib.mkForce {
       "/" = {
         device = "/dev/disk/by-label/NIXOS_SD";
@@ -87,6 +91,13 @@
       ];
     in
       lib.mkIf (cfg ? diskoScript) {source = mov.diskoScript;};
+
+    # https://github.com/NixOS/nixpkgs/issues/82455#issuecomment-959797355
+    system.build.firmware = pkgs.runCommand "firmware" {} ''
+      mkdir firmware $out
+      ${config.sdImage.populateFirmwareCommands}
+      cp -r firmware/* $out
+    '';
   };
   vm = {
     lib,
@@ -138,8 +149,8 @@ in {
   system.build.installerGui = ext [iso "${modulesPath}/installer/cd-dvd/installation-cd-graphical-gnome.nix"];
   # nix build --show-trace -vL .#nixosConfigurations.${host}.system.build.netboot.kexecTree
   system.build.netboot = ext [netboot];
-  system.build.aarchSd = ext [sd "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"];
-  system.build.aarchSdInstaller = ext [sd "${modulesPath}/installer/sd-card/sd-image-aarch64-new-kernel-no-zfs-installer.nix"];
+  system.build.aarchSd = ext [sd];
+  system.build.aarchSdInstaller = ext [sd];
   # env $"SHARED_DIR=(pwd)/share" nix run -vL .#nixosConfigurations.(hostname).system.build.test.vm
   system.build.test = ext [vm];
   system.build.testGui = ext [guivm];
