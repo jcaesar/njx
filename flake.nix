@@ -12,7 +12,6 @@
     inherit flakes;
     lib = import ./lib.nix {inherit self nixpkgs;};
     nixosConfigurations = {
-      mictop = sysI ./sys/mictop.nix;
       pekinese = sysI ./sys/pekinese/configuration.nix;
       pitivi = sysA ./sys/pitivi.nix;
       gegensprech = sysA ./sys/gegensprech.nix;
