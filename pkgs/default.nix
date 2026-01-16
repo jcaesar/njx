@@ -27,5 +27,8 @@ pkgs: prev: {
     ++ pkgs.lib.singleton (final: prev: {
       contextily = final.callPackage ./contextily.nix {};
       gtfs-lite = final.callPackage ./gtfs-lite.nix {};
+      cykhash = final.callPackage ./cykhash.nix {};
+      pyrobuf = final.callPackage ./pyrobuf.nix {};
+      pyrosm = final.callPackage ./pyrosm.nix {};
     });
 }
