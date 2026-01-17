@@ -127,6 +127,7 @@ in
             "browser.urlbar.speculativeConnect.enabled" = false;
             "browser.urlbar.showSearchTerms.enabled" = false;
             "browser.urlbar.trimURLs" = false;
+            "browser.urlbar.resultMenu.keyboardAccessible" = false;
           };
           SearchEngines = {
             Remove = ["Bing" "@bing" "bing" "Google" "Wikipedia (en)" "Amazon" "Amazon.co.jp" "Amazon.de"];
