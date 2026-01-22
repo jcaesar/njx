@@ -1,4 +1,5 @@
 {
+  lib,
   geopy,
   matplotlib,
   mercantile,
@@ -13,13 +14,13 @@
 }:
 buildPythonPackage {
   pname = "contextily";
-  version = "1.6.2";
+  version = "1.7.0";
   pyproject = true;
   src = fetchFromGitHub {
     owner = "geopandas";
     repo = "contextily";
-    rev = "refs/tags/v1.6.2";
-    hash = "sha256-ucpK0YHQ95IdXbx/0Xtinuyj0UxTLx+JLN/EKoA+WOk=";
+    tag = "v1.7.0";
+    hash = "sha256-qAc4WM64b026kuwARLAXgJFXMU8I2O4nXh5aDxzThtI=";
   };
   nativeBuildInputs = [setuptools-scm];
   propagatedBuildInputs = [
@@ -32,4 +33,11 @@ buildPythonPackage {
     joblib
     xyzservices
   ];
+
+  meta = {
+    description = "Context geo-tiles in Python";
+    license = lib.licenses.bsd3;
+    maintainers = [lib.maintainers.jcaesar];
+    homepage = "https://github.com/geopandas/contextily/";
+  };
 }

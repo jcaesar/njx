@@ -62,8 +62,10 @@
     modulesPath,
     ...
   }: {
-    imports = [common installer
-"${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
+    imports = [
+      common
+      installer
+      "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     ];
     fileSystems = lib.mkForce {
       "/" = {
