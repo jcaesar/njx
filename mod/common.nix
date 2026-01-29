@@ -60,7 +60,7 @@
       cyrly
       qemu_kvm
       alejandra
-      nixfmt-rfc-style
+      nixfmt
       nix-update
       nix-tree
       nix-output-monitor # better nix build
