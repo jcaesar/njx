@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: {
   programs.helix = {
     enable = true;
     defaultEditor = true;
@@ -28,8 +28,15 @@
           name = "nix";
           language-servers = ["nixd"];
         }
+        {
+          name = "markdown";
+          language-servers = ["markdown-oxide" "ltex-ls-plus"];
+        }
       ];
-      language-server.nixd.command = "${pkgs.nixd}/bin/nixd";
+      language-server =
+        lib.genAttrs
+        ["nixd" "markdown-oxide" "ltex-ls-plus"]
+        (l: {command = lib.getExe pkgs."${l}";});
     };
     extraPackages = let
       p = with pkgs; [rust-analyzer rustfmt];
