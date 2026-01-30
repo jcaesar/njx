@@ -1,4 +1,8 @@
-{pkgs, lib, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs.helix = {
     enable = true;
     defaultEditor = true;
@@ -30,13 +34,16 @@
         }
         {
           name = "markdown";
-          language-servers = ["markdown-oxide" "ltex-ls-plus"];
+          language-servers = ["ltex-ls-plus"];
+          # markdown-oxide is dumb as a brick (recognizes # in code blocks as sections)
+          # marksman will pull in a .net
         }
       ];
-      language-server =
-        lib.genAttrs
-        ["nixd" "markdown-oxide" "ltex-ls-plus"]
-        (l: {command = lib.getExe pkgs."${l}";});
+      language-server = {
+        nixd.command = lib.getExe pkgs.nixd;
+        ltex-ls-plus.command = lib.getExe pkgs.ltex-ls-plus;
+        ltex-ls-plus.args = ["%{buffer_name}"];
+      };
     };
     extraPackages = let
       p = with pkgs; [rust-analyzer rustfmt];
