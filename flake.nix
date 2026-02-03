@@ -25,14 +25,7 @@
     overlays.pkgs = import ./pkgs;
     overlays.fixes = import ./fixes.nix;
     formatter = eachSystem (pkgs: pkgs.alejandra);
-    checks = eachSystem (
-      pkgs: let
-        myPkgs = genAttrs (attrNames (self.overlays.pkgs null null)) (p: pkgs.${p});
-        aggSys = allToplevels self.nixosConfigurations pkgs;
-      in
-        myPkgs // aggSys
-    );
-    packages = eachSystem (pkgs: {inherit (pkgs) njx;});
+    packages = eachSystem (pkgs: genAttrs (attrNames (self.overlays.pkgs null null)) (p: pkgs.${p}));
     apps = eachSystem (pkgs:
       genAttrs ["slack" "apply" "tag"] (n:
         app "${pkgs.njx-repo-scripts}/bin/${n}.nu")

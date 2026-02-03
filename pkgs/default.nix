@@ -11,7 +11,6 @@ pkgs: prev: {
   neolink = pkgs.callPackage ./neolink.nix {};
   ruri = pkgs.callPackage ./ruri.nix {};
   colmap-vulnerable = import ./colmap.nix prev;
-  windsurf = import ./windsurf.nix prev;
   vector-cloudwatchsyslogs = import ./vector-cloudwatchsyslogs.nix pkgs;
   rq = import ./rq.nix prev;
   ghcr-login = pkgs.callPackage ./ghcr-login.nix {};
