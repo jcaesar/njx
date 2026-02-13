@@ -17,6 +17,7 @@
         "java.sql"
         "java.xml"
         "jdk.unsupported"
+        "jdk.management.agent" # gives access to javax.media.jai "java advanced imagesomething" - what are they smoking, I want some
       ];
       jdk = jdk_headless;
     },
