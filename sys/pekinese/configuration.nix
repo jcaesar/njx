@@ -102,6 +102,13 @@
   # security.pam.services.lightdm.enableGnomeKeyring = true;
   programs.seahorse.enable = true;
 
+  # programs.wireshark = {
+  #   enable = true;
+  #   dumpcap.enable = true;
+  #   usbmon.enable = true;
+  # };
+  # users.users.julius.extraGroups = ["wireshark"];
+
   services.tailscale = {
     enable = true;
     port = 0; # auto?
