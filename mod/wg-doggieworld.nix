@@ -24,6 +24,7 @@ in {
     v4Addr = lib.mkOption {
       type = lib.types.str;
     };
+    v6Endpoint = lib.mkEnableOption "connect via ipv6";
   };
   config = lib.mkIf cfg.enable {
     njx.manual.wg-doggieworld = ''
@@ -54,7 +55,11 @@ in {
           {
             PublicKey = "3dY3B1IlbCuBb8FrZ472u+cGXihRGE6+qmo5RZlHdFg=";
             AllowedIPs = ["10.13.38.0/24" "10.13.44.0/24" "fc00:1337:dead:beef:caff::/96"];
-            Endpoint = "128.199.185.74:13518";
+            Endpoint = "${
+              if cfg.v6Endpoint
+              then "[2400:6180:0:d0::241]"
+              else "128.199.185.74"
+            }:13518";
             PersistentKeepalive = 29;
           }
         ];
