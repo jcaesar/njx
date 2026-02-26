@@ -115,6 +115,8 @@
     useRoutingFeatures = "client";
   };
 
+  environment.systemPackages = [pkgs.iodine];
+
   networking.extraHosts = ''
     0.0.0.0 pr0gramm.com
   '';
