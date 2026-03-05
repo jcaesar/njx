@@ -81,6 +81,8 @@
     geary
     wl-clipboard
     piper-tts-small
+    vdirsyncer
+    khal
   ];
   njx.mail = true;
 

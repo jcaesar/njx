@@ -88,7 +88,7 @@
       mpv
       yt-dlp
       vlc # better windows media player
-      helvum # pipewire patch bay
+      # crosspipe # pipewire patch bay - helvum replacement and I'm not trusting it yet
       pulseaudio
       pavucontrol
       dunst # better du
