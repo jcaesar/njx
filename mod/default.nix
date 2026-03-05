@@ -43,5 +43,7 @@ in {
     (mkModOption "sysrq")
     (mkModOption "mail")
     (mkModOption "nix-lowprio")
+    (mkModOption "not-a-router")
+    (mkModOption "logbash")
   ];
 }
