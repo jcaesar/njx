@@ -85,6 +85,5 @@
         ]))
     ];
     shell = pkgs.nushell;
-    password = "";
   };
 }
