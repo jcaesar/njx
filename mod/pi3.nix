@@ -57,7 +57,7 @@
   boot.extraModprobeConfig = ''
     # supposed to disable sae, which isn't working and will lead to unnecessary failure on sae-mixed
     # https://raspberrypi.stackexchange.com/questions/91659/rpi-3b-wlan0-wifi-adapter-broken/140524#140524
-    brcmfmac roamoff=1 feature_disable=0x82000
+    options brcmfmac roamoff=1 feature_disable=0x82000
   '';
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
