@@ -49,6 +49,12 @@ in {
         ];
     });
     user = "gegensprech";
+    arguments = "--mdns=avahi";
+  };
+  services.avahi = {
+    enable = true;
+    openFirewall = true;
+    publish.enable = true;
   };
   security.rtkit.enable = true;
   services.pipewire = {
