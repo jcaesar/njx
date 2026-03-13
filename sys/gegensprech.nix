@@ -37,7 +37,17 @@ in {
   services.shairport-sync = {
     enable = true;
     openFirewall = true;
-    settings.general.output_backend = "pw";
+    settings.general.name = "mamp";
+    settings.general.output_backend = "pipewire";
+    package = pkgs.shairport-sync.overrideAttrs (old: {
+      configureFlags =
+        old.configureFlags
+        ++ [
+          # todo pr
+          "--with-pipewire"
+          "--with-pulseaudio"
+        ];
+    });
     user = "gegensprech";
   };
   security.rtkit.enable = true;
