@@ -15,7 +15,8 @@ in {
   users.users.root.openssh.authorizedKeys.keys = private.terminalKeys ++ [private.prideKey];
   users.users.gegensprech = {
     isNormalUser = true;
-    packages = with pkgs; [gegensprech];
+    isSystemUser = lib.mkForce false; # so shairport can run as this user
+    packages = with pkgs; [gegensprech wiremix];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
     extraGroups = ["gpio" "audio" "video"];
@@ -33,6 +34,12 @@ in {
         send: true
         play: false
   '';
+  services.shairport-sync = {
+    enable = true;
+    openFirewall = true;
+    settings.general.output_backend = "pw";
+    user = "gegensprech";
+  };
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -41,6 +48,44 @@ in {
     pulse.enable = true;
     # https://wiki.nixos.org/w/index.php?title=PipeWire&oldid=21060#Headless_operation
     socketActivation = false;
+    extraConfig.pipewire.udj6remap."context.modules" = let
+      remap = {
+        channels,
+        idx,
+      }: {
+        name = "libpipewire-module-loopback";
+        args = {
+          "node.description" = "UDJ6 ${idx}";
+          "capture.props" = {
+            "node.name" = "UDJ6_${idx}";
+            "media.class" = "Audio/Sink";
+            "audio.position" = ["FL" "FR"];
+          };
+          "playback.props" = {
+            "node.name" = "playback.UDJ6_${idx}";
+            "audio.position" = channels;
+            "target.object" = "alsa_output.usb-ESI_Audiotechnik_GmbH_UDJ6-00.analog-surround-51";
+            # "node.dont-reconnect" = true;
+            "stream.dont-remix" = true;
+            "node.passive" = true;
+          };
+        };
+      };
+    in
+      map remap [
+        {
+          idx = "front";
+          channels = ["FC" "FL"];
+        }
+        {
+          idx = "34";
+          channels = ["FR" "LFE"];
+        }
+        {
+          idx = "56";
+          channels = ["RL" "RR"];
+        }
+      ];
   };
   environment.systemPackages = with pkgs; [alsa-utils dtc libraspberrypi];
   systemd.user.services.wireplumber.wantedBy = ["default.target"];
