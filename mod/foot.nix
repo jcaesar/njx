@@ -7,7 +7,7 @@
         font = "DejaVuSansMono:size=6.5";
         dpi-aware = "yes";
       };
-      colors.alpha = 0.8;
+      colors-dark.alpha = 0.8;
       mouse.hide-when-typing = "yes";
     };
   };
