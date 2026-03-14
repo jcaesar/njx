@@ -43,40 +43,42 @@
   services.smartd.notifications.wall.enable = true;
   networking.networkmanager.enable = false;
 
-  environment.systemPackages = with pkgs; [
-    pv
-    jq
-    rq
-    wget
-    xh # "better" httpie
-    screen
-    tmux # better screen
-    lls # better ss -loptun
-    nload
-    ripgrep # better grep -R
-    fd # better find
-    htop # better top
-    zenith-nvidia # combined htop/nload/iotop
-    dust # better du
-    iftop
-    iotop
-    smartmontools
-    efibootmgr
-    openssl
-    nvd
-    nix-diff
-    miniserve # better python -m http.server
-    inotify-tools
-    tcpdump
-    lshw
-    cyme # better lsusb
-    libtree # better ldd
-    njx
-    helix # better vim
-    rsync # better scp
-    sshfs # use it for backups. TODO script
-    wireguard-tools
-  ];
+  environment.systemPackages = with pkgs;
+    [
+      pv
+      jq
+      rq
+      wget
+      xh # "better" httpie
+      screen
+      tmux # better screen
+      lls # better ss -loptun
+      nload
+      ripgrep # better grep -R
+      fd # better find
+      htop # better top
+      zenith-nvidia # combined htop/nload/iotop
+      dust # better du
+      iftop
+      iotop
+      smartmontools
+      efibootmgr
+      openssl
+      nvd
+      nix-diff
+      miniserve # better python -m http.server
+      inotify-tools
+      tcpdump
+      lshw
+      cyme # better lsusb
+      libtree # better ldd
+      njx
+      helix # better vim
+      rsync # better scp
+      sshfs # use it for backups. TODO script
+      wireguard-tools
+    ]
+    ++ (lib.optional config.services.pipewire.enable wiremix);
   programs.nh.enable = true; # better nixos-rebuild
   services.openssh = {
     settings.PasswordAuthentication = false;

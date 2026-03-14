@@ -73,6 +73,7 @@
       # python3.pkgs.python-fx # TODO fut1 vs py13
       man-pages
       expect
+      timg # sixels image viewer
       (python3.withPackages (ps:
         with ps; [
           netaddr

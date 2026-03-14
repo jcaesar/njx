@@ -16,7 +16,7 @@ in {
   users.users.gegensprech = {
     isNormalUser = true;
     isSystemUser = lib.mkForce false; # so shairport can run as this user
-    packages = with pkgs; [gegensprech wiremix];
+    packages = with pkgs; [gegensprech];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
     extraGroups = ["gpio" "audio" "video"];
