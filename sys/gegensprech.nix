@@ -16,7 +16,7 @@ in {
   users.users.gegensprech = {
     isNormalUser = true;
     isSystemUser = lib.mkForce false; # so shairport can run as this user
-    packages = with pkgs; [gegensprech];
+    packages = with pkgs; [gegensprech bluetui];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
     extraGroups = ["gpio" "audio" "video"];
@@ -56,6 +56,7 @@ in {
     openFirewall = true;
     publish.enable = true;
   };
+  njx.bluetooth = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

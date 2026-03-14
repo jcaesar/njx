@@ -1,8 +1,13 @@
-{pkgs, ...}: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
-  home-manager.users.julius = {...}: {
+  home-manager.users.julius = lib.mkIf config.njx.common {
     systemd.user.services.mpris-proxy = {
       Unit.Description = "Mpris proxy";
       Unit.After = ["network.target" "sound.target"];
