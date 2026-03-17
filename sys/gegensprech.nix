@@ -16,7 +16,7 @@ in {
   users.users.gegensprech = {
     isNormalUser = true;
     isSystemUser = lib.mkForce false; # so shairport can run as this user
-    packages = with pkgs; [gegensprech bluetui];
+    packages = with pkgs; [gegensprech bluetui mpv-unwrapped];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
     extraGroups = ["gpio" "audio" "video"];
@@ -38,7 +38,7 @@ in {
     enable = true;
     openFirewall = true;
     settings.general.name = "mamp";
-    settings.general.output_backend = "pipewire";
+    settings.general.output_backend = "pulseaudio";
     package = pkgs.shairport-sync.overrideAttrs (old: {
       configureFlags =
         old.configureFlags
@@ -58,51 +58,23 @@ in {
   };
   njx.bluetooth = true;
   security.rtkit.enable = true;
-  services.pipewire = {
+  services.pulseaudio = {
+    # really wanted to use pipewire, can't get it to be a bt speaker
+    # https://github.com/fdanis-oss/pw_wp_bluetooth_rpi_speaker/blob/57569e46b506782e503129f791809b2aae2b0ea6/speaker-agent.py didn't do anything
     enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # https://wiki.nixos.org/w/index.php?title=PipeWire&oldid=21060#Headless_operation
-    socketActivation = false;
-    extraConfig.pipewire.udj6remap."context.modules" = let
-      remap = {
-        channels,
-        idx,
-      }: {
-        name = "libpipewire-module-loopback";
-        args = {
-          "node.description" = "UDJ6 ${idx}";
-          "capture.props" = {
-            "node.name" = "UDJ6_${idx}";
-            "media.class" = "Audio/Sink";
-            "audio.position" = ["FL" "FR"];
-          };
-          "playback.props" = {
-            "node.name" = "playback.UDJ6_${idx}";
-            "audio.position" = channels;
-            "target.object" = "alsa_output.usb-ESI_Audiotechnik_GmbH_UDJ6-00.analog-surround-51";
-            # "node.dont-reconnect" = true;
-            "stream.dont-remix" = true;
-            "node.passive" = true;
-          };
-        };
-      };
-    in
-      map remap [
-        {
-          idx = "front";
-          channels = ["FC" "FL"];
-        }
-        {
-          idx = "34";
-          channels = ["FR" "LFE"];
-        }
-        {
-          idx = "56";
-          channels = ["RL" "RR"];
-        }
-      ];
+    zeroconf.publish.enable = true;
+    tcp = {
+      enable = true;
+      port = 4713;
+      openFirewall = true;
+      anonymousClients.allowAll = true;
+    };
+    extraConfig = ''
+      set-card-profile alsa_card.usb-ESI_Audiotechnik_GmbH_UDJ6-00 output:analog-surround-51
+      load-module module-remap-sink sink_name=UDJ6-56 master=alsa_output.usb-ESI_Audiotechnik_GmbH_UDJ6-00.analog-surround-51 channels=2 master_channel_map=rear-left,rear-right channel_map=front-left,front-right remix=no
+      load-module module-bluetooth-policy
+      load-module module-bluetooth-discover
+    '';
   };
   environment.systemPackages = with pkgs; [alsa-utils dtc libraspberrypi];
   systemd.user.services.wireplumber.wantedBy = ["default.target"];

@@ -78,7 +78,8 @@
       sshfs # use it for backups. TODO script
       wireguard-tools
     ]
-    ++ (lib.optional config.services.pipewire.enable wiremix);
+    ++ (lib.optional config.services.pipewire.enable wiremix)
+    ++ (lib.optional config.services.pulseaudio.enable pulsemixer);
   programs.nh.enable = true; # better nixos-rebuild
   services.openssh = {
     settings.PasswordAuthentication = false;
