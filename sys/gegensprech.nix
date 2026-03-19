@@ -16,6 +16,8 @@ in {
   users.users.gegensprech = {
     isNormalUser = true;
     isSystemUser = lib.mkForce false; # so shairport can run as this user
+    group = lib.mkForce "users";
+    uid = 1000;
     packages = with pkgs; [gegensprech bluetui mpv-unwrapped];
     openssh.authorizedKeys.keys = private.terminalKeys;
     linger = true;
@@ -51,6 +53,7 @@ in {
     user = "gegensprech";
     arguments = "--mdns=avahi";
   };
+  systemd.services.shairport-sync.environment.PULSE_SERVER = "unix:/run/user/${toString config.users.users.gegensprech.uid}/pulse/native"; # hacking around a bit much, are we?
   services.avahi = {
     enable = true;
     openFirewall = true;
@@ -62,6 +65,7 @@ in {
     # really wanted to use pipewire, can't get it to be a bt speaker
     # https://github.com/fdanis-oss/pw_wp_bluetooth_rpi_speaker/blob/57569e46b506782e503129f791809b2aae2b0ea6/speaker-agent.py didn't do anything
     enable = true;
+    package = pkgs.pulseaudioFull;
     zeroconf.publish.enable = true;
     tcp = {
       enable = true;
@@ -72,6 +76,7 @@ in {
     extraConfig = ''
       set-card-profile alsa_card.usb-ESI_Audiotechnik_GmbH_UDJ6-00 output:analog-surround-51
       load-module module-remap-sink sink_name=UDJ6-56 master=alsa_output.usb-ESI_Audiotechnik_GmbH_UDJ6-00.analog-surround-51 channels=2 master_channel_map=rear-left,rear-right channel_map=front-left,front-right remix=no
+      set-default-sink UDJ6-56
       load-module module-bluetooth-policy
       load-module module-bluetooth-discover
     '';
