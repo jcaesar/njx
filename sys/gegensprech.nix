@@ -80,6 +80,15 @@ in {
       load-module module-bluetooth-policy
       load-module module-bluetooth-discover
     '';
+    daemon.config = {
+      # https://old.reddit.com/r/SteamPlay/comments/kw0bws/psa_if_you_have_audio_crackling/gj233tm/
+      daemonize = "yes";
+      high-priority = "yes";
+      realtime-scheduling = "yes";
+      realtime-priority = 9;
+      default-fragments = 5;
+      default-fragment-size-msec = 2;
+    };
   };
   environment.systemPackages = with pkgs; [alsa-utils dtc libraspberrypi];
   systemd.user.services.wireplumber.wantedBy = ["default.target"];
