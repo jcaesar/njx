@@ -45,5 +45,6 @@ in {
     (mkModOption "nix-lowprio")
     (mkModOption "logbash")
     (mkModOption "sharkwire")
+    (mkModOption "slim-qemu")
   ];
 }
