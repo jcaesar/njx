@@ -10,6 +10,7 @@
   njx.dlna = true;
   njx.bluetooth = true;
   njx.foot = true;
+  njx.sharkwire = true;
 
   networking.hostName = "pekinese";
 
@@ -103,13 +104,6 @@
   services.gnome.gnome-keyring.enable = true;
   # security.pam.services.lightdm.enableGnomeKeyring = true;
   programs.seahorse.enable = true;
-
-  # programs.wireshark = {
-  #   enable = true;
-  #   dumpcap.enable = true;
-  #   usbmon.enable = true;
-  # };
-  # users.users.julius.extraGroups = ["wireshark"];
 
   services.tailscale = {
     enable = true;

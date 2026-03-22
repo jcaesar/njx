@@ -44,5 +44,6 @@ in {
     (mkModOption "mail")
     (mkModOption "nix-lowprio")
     (mkModOption "logbash")
+    (mkModOption "sharkwire")
   ];
 }
