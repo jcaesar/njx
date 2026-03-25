@@ -77,7 +77,7 @@
 
   users.users.julius.packages = with pkgs; [
     element-desktop
-    iamb
+    # iamb
     pyanidb
     geary
     wl-clipboard
