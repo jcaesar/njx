@@ -123,7 +123,7 @@
       swayidle
       kdePackages.polkit-kde-agent-1
       brightnessctl
-      swww
+      awww
       xwayland-satellite
       ffmpeg
     ];

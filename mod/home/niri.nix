@@ -88,8 +88,8 @@ in {
       }
     ];
   };
-  systemd.user.services.swww = lib.mkIf nixosConfig.programs.niri.enable {
-    Service.ExecStart = getExe' pkgs.swww "swww-daemon";
+  systemd.user.services.awww = lib.mkIf nixosConfig.programs.niri.enable {
+    Service.ExecStart = getExe' pkgs.awww "awww-daemon";
     Unit.PartOf = lib.singleton "graphical-session.target";
     Install.WantedBy = lib.singleton "graphical-session.target";
   };
