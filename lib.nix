@@ -2,7 +2,7 @@
   self,
   nixpkgs,
 }: let
-  inherit (nixpkgs.lib) concatStringsSep genAttrs attrValues;
+  inherit (nixpkgs.lib) genAttrs attrValues;
   genSystems = genAttrs ["x86_64-linux" "aarch64-linux"];
   pkgsForSystem = system:
     import nixpkgs {
@@ -28,18 +28,5 @@ in {
   in {
     sysI = sys "x86_64-linux";
     sysA = sys "aarch64-linux";
-  };
-  app = program: {
-    inherit program;
-    type = "app";
-  };
-  allToplevels = configs: pkgs: {
-    allSys = let
-      linkFor = sys: let em = sys.config.system; in "ln -s ${em.build.toplevel} $out/${em.name}";
-    in
-      pkgs.runCommandLocal "toplevels" {} ''
-        mkdir $out
-        ${concatStringsSep "\n" (map linkFor (attrValues configs))}
-      '';
   };
 }

@@ -7,7 +7,7 @@ runCommand "njx-repo-scripts" {
 }
 ''
   for f in ${./.}/*.nu; do
-    install -Dt $out/bin "$f"
+    install -D "$f" "$out/bin/njx-$(basename $f .nu)"
   done
   patchShebangs $out/bin
 ''

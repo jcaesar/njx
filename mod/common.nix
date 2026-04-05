@@ -65,6 +65,7 @@
       nix-tree
       nix-output-monitor # better nix build
       nixpkgs-review
+      njx-repo-scripts
       cargo
       rustc
       cargo-watch

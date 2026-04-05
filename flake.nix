@@ -6,7 +6,7 @@
   } @ flakes': let
     flakes = flakes' // {njx = self;};
     inherit (nixpkgs.lib) genAttrs attrNames;
-    inherit (self.lib) sysFs eachSystem app allToplevels;
+    inherit (self.lib) sysFs eachSystem;
     inherit (sysFs flakes) sysI sysA;
   in {
     inherit flakes;
@@ -24,13 +24,7 @@
     };
     overlays.pkgs = import ./pkgs;
     overlays.fixes = import ./fixes.nix;
-    formatter = eachSystem (pkgs: pkgs.alejandra);
     packages = eachSystem (pkgs: genAttrs (attrNames (self.overlays.pkgs null null)) (p: pkgs.${p}));
-    apps = eachSystem (pkgs:
-      genAttrs ["slack" "apply" "tag"] (n:
-        app "${pkgs.njx-repo-scripts}/bin/${n}.nu")
-      // genAttrs ["installed" "delete-generations"] (n:
-        app "${pkgs.njx}/bin/njx-${n}"));
   };
 
   inputs = {
