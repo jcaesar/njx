@@ -109,6 +109,15 @@ in {
     # blinky service needs to wait with startup for spi device
     SUBSYSTEM=="spidev", ACTION!="remove", TAG+="systemd"
   '';
+  boot.initrd.luks.devices.gegensprech-crypt.keyFile = "/boot/leakrets/filekey";
+  njx.manual.Encryption = ''
+    I give up on ssh-based luks unlock over wifi but I don't want to reinstall.
+    ```
+    umask 0377
+    dd if=/dev/random bs=512 count=4 of=${config.boot.initrd.luks.devices.gegensprech-crypt.keyFile}
+    ```
+  '';
+
 
   system.stateVersion = "24.05";
   home-manager.users.gegensprech.home.stateVersion = "24.05";
