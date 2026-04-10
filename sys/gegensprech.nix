@@ -110,11 +110,12 @@ in {
     SUBSYSTEM=="spidev", ACTION!="remove", TAG+="systemd"
   '';
   boot.initrd.luks.devices.gegensprech-crypt.keyFile = "/boot/leakrets/filekey";
-  njx.manual.Encryption = ''
+  njx.manual.Encryption = with config.boot.initrd.luks.devices.gegensprech-crypt; ''
     I give up on ssh-based luks unlock over wifi but I don't want to reinstall.
     ```
     umask 0377
-    dd if=/dev/random bs=512 count=4 of=${config.boot.initrd.luks.devices.gegensprech-crypt.keyFile}
+    dd if=/dev/random bs=512 count=4 of=${keyFile}
+    cryptsetup luksAddKey ${devce} ${keyFile} --pbkdf-memory=50000
     ```
   '';
 
