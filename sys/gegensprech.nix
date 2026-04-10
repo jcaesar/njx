@@ -7,7 +7,7 @@
   private = import ../private.nix;
 in {
   njx.pi3 = true;
-  njx."seeed-2mic/default" = true;
+  # njx."seeed-2mic/default" = true;
   njx.sshUnlock.keys = private.terminalKeys;
   boot.initrd.systemd.enable = true;
   networking.hostName = "gegensprech";
