@@ -115,7 +115,7 @@ in {
     ```
     umask 0377
     dd if=/dev/random bs=512 count=4 of=${keyFile}
-    cryptsetup luksAddKey ${devce} ${keyFile} --pbkdf-memory=50000
+    cryptsetup luksAddKey ${device} ${keyFile} --pbkdf-memory=50000
     ```
   '';
 
