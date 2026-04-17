@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-def main [repo: string = "."] {
+def checkrepo [repo: string] {
   let machines = nix eval --json $'($repo)#nixosConfigurations' --apply builtins.attrNames | from json
   git -C $repo tag 
   | lines
@@ -25,5 +25,9 @@ def main [repo: string = "."] {
       rev: $rev,
       tag: (git -C $repo tag --format '%(*authordate)' -n1 $tag | into datetime),
     } | merge ($dates | transpose -rid)
-  } | sort-by --reverse nixpkgs tag
+  }
+}
+
+def main [...repo: string] {
+  $repo | each { checkrepo $in } | flatten | sort-by --reverse nixpkgs tag
 }
