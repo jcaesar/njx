@@ -7,6 +7,11 @@ in {
   njx.slim = true;
   networking.hostName = "pitivi";
   networking.supplicant.wlan0.extraConf = "country=JP";
+  njx.btspeak = {
+    enable = true;
+    name = "mamp";
+    user = "media";
+  };
 
   systemd.network = {
     enable = true;
@@ -23,6 +28,7 @@ in {
     packages = with pkgs; [mpv];
     shell = pkgs.nushell;
     openssh.authorizedKeys.keys = private.terminalKeys;
+    uid = 1000;
   };
   environment.systemPackages = with pkgs; [libcec];
 
