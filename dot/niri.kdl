@@ -151,7 +151,7 @@ layout {
     // You can change how the focus ring looks.
     focus-ring {
         // Uncomment this line to disable the focus ring.
-        // off
+        off
 
         // How many logical pixels the ring extends out from the windows.
         width 2
@@ -211,6 +211,12 @@ layout {
 
     // Set transparent workspace background color.
     background-color "transparent"
+
+    shadow {
+        softness 8
+        offset x=0 y=0
+        spread 3
+    }
 }
 
 // Make the wallpaper stationary, rather than moving with workspaces.
@@ -301,8 +307,25 @@ window-rule {
 // Example: enable rounded corners for all windows.
 // (This example rule is commented out with a "/-" in front.)
 window-rule {
-    geometry-corner-radius 5
+    geometry-corner-radius 10
     clip-to-geometry true
+}
+
+// urgency ring
+window-rule {
+    match is-urgent=true
+    shadow {
+        on
+        color "#ff7700"
+    }
+}
+// fake focus ring
+window-rule {
+    match is-focused=true
+    shadow {
+        on
+        color "#7fc8ff"
+    }
 }
 
 binds {
