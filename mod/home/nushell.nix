@@ -10,7 +10,6 @@
       enable = true;
       package = pkgs.nushell;
       configFile.source = ../../dot/config.nu;
-      plugins = with pkgs.nushellPlugins; [formats polars];
       shellAliases = {
         vi = "hx";
         vim = "hx";
