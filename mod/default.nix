@@ -47,5 +47,6 @@ in {
     (mkModOption "logbash")
     (mkModOption "sharkwire")
     (mkModOption "slim-qemu")
+    (mkModOption "njx-cache")
   ];
 }

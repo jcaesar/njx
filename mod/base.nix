@@ -17,6 +17,7 @@
   nix.settings.keep-outputs = !config.njx.slim; # don't throw away build dependencies.
   programs.command-not-found.enable = false; # doesn't work anyway
   njx.source-flakes = lib.mkDefault true;
+  njx.njx-cache = lib.mkDefault true;
 
   home-manager.sharedModules = [./home/generation-cleanup.nix];
   system.activationScripts.nochannels = ''
