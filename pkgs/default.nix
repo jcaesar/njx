@@ -17,8 +17,6 @@ pkgs: prev: {
   opentripplanner = pkgs.callPackage ./opentripplanner.nix {};
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   planetutils = pkgs.python3.pkgs.callPackage ./planetutils.nix {};
-  nushell-plugin-plotters = pkgs.callPackage ./nushell-plugin-plotters/package.nix {};
-  nushell-plugin-file = pkgs.callPackage ./nushell-plugin-file.nix {};
   piper-tts-small = pkgs.piper-tts.override {
     withTrain = false;
     withAlignment = false;
