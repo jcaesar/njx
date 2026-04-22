@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   users.users.julius.packages = with pkgs; [
-    (himalaya.override {withFeatures = ["notmuch"];})
+    (himalaya.override {buildFeatures = ["notmuch"];})
     (writeScriptBin "notmuch" ''
       #!${runtimeShell}
       export XAPIAN_CJK_NGRAM=1
