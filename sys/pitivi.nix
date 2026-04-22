@@ -6,6 +6,7 @@ in {
   njx.sshUnlock.keys = private.terminalKeys;
   njx.slim = true;
   networking.hostName = "pitivi";
+  system.build.sfbs-group = "3-other-2-raspis";
   networking.supplicant.wlan0.extraConf = "country=JP";
   njx.btspeak = {
     enable = true;

@@ -13,6 +13,7 @@
   njx.sharkwire = true;
 
   networking.hostName = "pekinese";
+  system.build.sfbs-group = "1-core-2-terminal";
 
   boot.loader.systemd-boot.editor = lib.mkForce true;
   boot.initrd.availableKernelModules = import ./bootmods.nix;

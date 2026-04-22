@@ -11,6 +11,7 @@ in {
   njx.sshUnlock.keys = private.terminalKeys;
   boot.initrd.systemd.enable = true;
   networking.hostName = "gegensprech";
+  system.build.sfbs-group = "3-other-2-raspis";
   networking.supplicant.wlan0.extraConf = "country=JP";
   users.users.root.openssh.authorizedKeys.keys = private.terminalKeys ++ [private.prideKey];
   users.users.gegensprech = {
