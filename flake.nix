@@ -25,6 +25,7 @@
     overlays.pkgs = import ./pkgs;
     overlays.fixes = import ./fixes.nix;
     packages = eachSystem (pkgs: genAttrs (attrNames (self.overlays.pkgs null null)) (p: pkgs.${p}));
+    templates = import ./tmpl;
   };
 
   inputs = {
