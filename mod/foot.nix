@@ -9,7 +9,7 @@
       };
       colors-dark.alpha = 0.8;
       mouse.hide-when-typing = "yes";
-      bell.ugent = "yes";
+      bell.urgent = "yes";
     };
   };
 }
