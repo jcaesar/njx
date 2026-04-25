@@ -2,7 +2,7 @@
   nix = {
     settings = {
       substituters = [
-        "http://nix-cache.liftm.de/"
+        "https://nix-cache.liftm.de/"
       ];
       trusted-public-keys = [
         "nix-cache.liftm.de:Yq9o+2P3aw5miJmJtsjATsNGnKqXt0DCLOsu1nb/cLw="
