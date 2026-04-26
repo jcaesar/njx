@@ -6,7 +6,7 @@
   private = import ../private.nix;
 in {
   networking.hostName = "basenji";
-  system.build.sfbs-group = "2-infra-2-secondary";
+  system.build.sfbs-group = "0-infra-2";
 
   njx.base = true;
   users.users.root.openssh.authorizedKeys.keys = private.terminalKeys;
