@@ -77,7 +77,7 @@
   xdg.portal.wlr.enable = true;
 
   users.users.julius.packages = with pkgs; [
-    element-desktop
+    # element-desktop # not using it and electron is failing to compile this week
     # iamb
     pyanidb
     geary
