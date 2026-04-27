@@ -57,6 +57,7 @@ in {
       };
       merge.conflictstyle = "zdiff3";
     };
+    signing.format = "ssh";
   };
   programs.difftastic.enable = true;
   programs.difftastic.git.enable = true;

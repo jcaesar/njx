@@ -4,6 +4,7 @@
   in {
     enable = true;
     createDirectories = false;
+    setSessionVariables = false;
     desktop = "${home}/.local/xdg/desktop";
     documents = "${home}/docs";
     download = "${home}/downloads";
