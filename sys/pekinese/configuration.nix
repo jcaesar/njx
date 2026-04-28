@@ -79,6 +79,7 @@
   users.users.julius.packages = with pkgs; [
     # element-desktop # not using it and electron is failing to compile this week
     # iamb
+    yt-dlp
     pyanidb
     geary
     wl-clipboard
