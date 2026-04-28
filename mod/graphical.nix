@@ -86,6 +86,7 @@
     [
       xpra
       mpv
+      yt-dlp
       vlc # better windows media player
       # crosspipe # pipewire patch bay - helvum replacement and I'm not trusting it yet
       pulseaudio

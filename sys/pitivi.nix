@@ -26,7 +26,7 @@ in {
   users.users.root.openssh.authorizedKeys.keys = private.terminalKeys ++ [private.prideKey];
   users.users.media = {
     isNormalUser = true;
-    packages = with pkgs; [mpv yt-dlp];
+    packages = with pkgs; [mpv];
     shell = pkgs.nushell;
     openssh.authorizedKeys.keys = private.terminalKeys;
     uid = 1000;
