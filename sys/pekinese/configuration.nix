@@ -88,6 +88,16 @@
   ];
   njx.mail = true;
 
+  services.avahi = {
+    enable = true;
+    openFirewall = true;
+    publish.enable = true;
+  };
+  services.pipewire.extraConfig.pipewire.zeroconf-discover."context.modules" = lib.singleton {
+    name = "libpipewire-module-zeroconf-discover";
+    args = {};
+  };
+
   home-manager.users.julius = {
     services.nextcloud-client = {
       enable = true;
