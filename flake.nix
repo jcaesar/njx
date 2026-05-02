@@ -34,5 +34,6 @@
     disko.url = "github:nix-community/disko";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 }

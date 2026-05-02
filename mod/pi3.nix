@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  flakes,
   ...
 }: {
   njx.base = true;
@@ -44,7 +45,12 @@
     requires = ["boot.mount"];
   };
 
-  boot.kernelPackages = pkgs.linuxPackagesFor pkgs.linux_rpi3;
+  # I'm not so fond of nixos-hardware, but nixpkgs doesn't want to provide linux-rpi anymore.
+  boot.kernelPackages = let
+    flake = flakes.nixos-hardware.nixosModules.raspberry-pi-3;
+    mod = import flake {inherit lib pkgs;};
+  in
+    mod.boot.kernelPackages;
   nixpkgs.overlays = [
     (_final: super: {
       makeModulesClosure = x:
