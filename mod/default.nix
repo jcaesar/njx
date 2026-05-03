@@ -3,6 +3,7 @@
     lib,
     config,
     pkgs,
+    extendModules,
     ...
   } @ args: {
     options.njx.${name} = lib.mkEnableOption "/mod/${name}.nix";
