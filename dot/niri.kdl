@@ -346,8 +346,9 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return { spawn "@terminal@"; }
     Mod+D { spawn "@fuzzel@"; }
-    Super+Shift+L { spawn "@lock@"; }
-    Mod+W { spawn "@windowpick@"; }
+    Super+Shift+L { spawn "@lockExe@"; }
+    Mod+W { spawn "@windowPickExe@"; }
+    Mod+Y { spawn "@pickUrgentExe@"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.

@@ -20,21 +20,30 @@
   };
   lockExe = getExe lock;
   niri = getExe nixosConfig.programs.niri.package;
-  windowPickExe = let
-    nu = getExe pkgs.nushell;
-    fuzzel = getExe pkgs.fuzzel;
-  in
-    pkgs.writeScript "niriswitch" ''
-      #!${nu}
-      # based on https://git.ersei.net/nix-configs.git/tree/home/common/wayland/niri.nix?id=a5b7a6a7d92bb6f56c6ec374499bf40acebffefc#n39
-      let windows = ${niri} msg -j windows | from json
-      let sel = $windows
-        | format pattern $"{title}(char nul)icon(char unit_separator){app_id}"
-        | str join "\n"
-        | ${fuzzel} --dmenu --index
-        | into int
-      ${niri} msg action focus-window --id ($windows.id | get $sel)
-    '';
+  nu = getExe pkgs.nushell;
+  fuzzel = getExe pkgs.fuzzel;
+  windowPickExe = pkgs.writeScript "niriswitch-select" ''
+    #!${nu}
+    # based on https://git.ersei.net/nix-configs.git/tree/home/common/wayland/niri.nix?id=a5b7a6a7d92bb6f56c6ec374499bf40acebffefc#n39
+    let windows = ${niri} msg -j windows | from json
+    let sel = $windows
+      | format pattern $"{title}(char nul)icon(char unit_separator){app_id}"
+      | str join "\n"
+      | ${fuzzel} --dmenu --index
+      | into int
+    ${niri} msg action focus-window --id ($windows.id | get $sel)
+  '';
+  pickUrgentExe = pkgs.writeScript "niriswitch-urgent" ''
+    #!${nu}
+    let w = niri msg -j windows
+    | from json
+    | where is_urgent
+    | sort-by focus_timestamp.secs focus_timestamp.nanos
+    | last
+    if $w != null {
+      niri msg action focus-window --id $w.id
+    }
+  '';
   terminal =
     if nixosConfig.njx.foot or false
     then pkgs.foot
@@ -98,8 +107,7 @@ in {
     source = pkgs.replaceVarsWith {
       src = ../../dot/niri.kdl;
       replacements = {
-        lock = lockExe;
-        windowpick = windowPickExe;
+        inherit lockExe windowPickExe pickUrgentExe;
         brightnessctl = getExe pkgs.brightnessctl;
         wpctl = getExe' pkgs.wireplumber "wpctl";
         fuzzel = getExe config.programs.fuzzel.package;
