@@ -44,6 +44,11 @@
   services.smartd.notifications.wall.enable = true;
   networking.networkmanager.enable = false;
 
+  nix.settings.allowed-users = lib.pipe config.users.users [
+    (lib.filterAttrs (_: v: v.isNormalUser))
+    builtins.attrNames
+    lib.mkDefault
+  ];
   environment.systemPackages = with pkgs;
     [
       pv
