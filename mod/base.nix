@@ -49,15 +49,14 @@
     builtins.attrNames
     lib.mkDefault
   ];
-  # path doesn't matter as long as it doesn't exist
-  boot.extraModprobeConfig = ''
+  boot.blacklistedKernelModules = [
     # dirty frag
-    install esp4 /usr/bin/false
-    install esp6 /usr/bin/false
-    install rxrpc /usr/bin/false
+    "esp6"
+    "esp4"
+    "rxrpc"
     # copy fail
-    install algif_aead /usr/bin/false
-  '';
+    "algif_aead"
+  ];
   
   environment.systemPackages = with pkgs;
     [
