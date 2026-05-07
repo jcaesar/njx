@@ -49,6 +49,16 @@
     builtins.attrNames
     lib.mkDefault
   ];
+  # path doesn't matter as long as it doesn't exist
+  boot.extraModprobeConfig = ''
+    # dirty frag
+    install esp4 /usr/bin/false
+    install esp6 /usr/bin/false
+    install rxrpc /usr/bin/false
+    # copy fail
+    install algif_aead /usr/bin/false
+  '';
+  
   environment.systemPackages = with pkgs;
     [
       pv

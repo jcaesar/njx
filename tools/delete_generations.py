@@ -30,9 +30,10 @@ for arg in sys.argv[1:]:
 roots = [
     {"link": "/run/current-system", "name": "current"},
     {"link": "/run/booted-system", "name": "booted"},
+    {"link": profiledir + "system", "name": "newest"},
 ]
 for r in roots:
-    r["target"] = os.readlink(r["link"])
+    r["target"] = os.path.realpath(r["link"])
 
 profiles = []
 for p in os.listdir(profiledir):
@@ -60,8 +61,8 @@ def kept_name(p):
     else:
         return f"{p['profile']}"
 if keep_only_bootcurrent:
-    to_be_kept = [kept_name(p) for p in roots]
-    to_be_kept_idxs = [p["profile"] for p in roots]
+    to_be_kept = [kept_name(p) for p in profiles if p.get("root")]
+    to_be_kept_idxs = [p["profile"] for p in profiles if p.get("root")]
     to_be_deleted = [str(p["profile"]) for p in profiles if p["profile"] not in to_be_kept_idxs]
 else:
     delete_before = min(r["profile"] for r in roots)
