@@ -75,8 +75,6 @@ in {
         high-priority = "yes";
         realtime-scheduling = "yes";
         realtime-priority = 9;
-        default-fragments = 5;
-        default-fragment-size-msec = 2;
       };
     };
   };
