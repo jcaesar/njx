@@ -49,15 +49,23 @@
     builtins.attrNames
     lib.mkDefault
   ];
-  boot.blacklistedKernelModules = [
+  boot.extraModprobeConfig = let
+    noload = mod: "install ${mod} ${pkgs.writeScript "noload-${mod}" ''
+      #!${pkgs.runtimeShell} -eu
+      ${lib.getExe' pkgs.systemd "systemd-cat"} -t modprobe-noload -p alert <<EoF
+      Forbidden module load attempted: ${mod}
+      EoF
+      exit 1
+    ''}";
+  in ''
     # dirty frag
-    "esp6"
-    "esp4"
-    "rxrpc"
+    ${noload "esp4"}
+    ${noload "esp6"}
+    ${noload "rxrpc"}
     # copy fail
-    "algif_aead"
-  ];
-  
+    ${noload "algif_aead"}
+  '';
+
   environment.systemPackages = with pkgs;
     [
       pv
