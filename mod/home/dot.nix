@@ -3,6 +3,7 @@
   home.file.".config/alacritty/alacritty.toml".source = ../../dot/alacritty.toml;
   home.file.".config/mpv/mpv.conf".source = ../../dot/mpv/mpv.conf;
   home.file.".config/mpv/input.conf".source = ../../dot/mpv/input.conf;
+  home.file.".config/fcitx5/profile".source = ../../dot/fcitx5-profile;
   home.file.".gdbinit".source = ../../dot/gdbinit;
   home.file.".tmux.conf".source = ../../dot/tmux.conf;
   # niri.kdl needs templating, so that's in its own unit

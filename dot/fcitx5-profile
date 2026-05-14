@@ -1,0 +1,41 @@
+[Groups/0]
+# Group Name
+Name=Default
+# Layout
+Default Layout=us
+# Default Input Method
+DefaultIM=anthy
+
+[Groups/0/Items/0]
+# Name
+Name=keyboard-us
+# Layout
+Layout=
+
+[Groups/0/Items/1]
+# Name
+Name=anthy
+# Layout
+Layout=
+
+[Groups/0/Items/2]
+# Name
+Name=mozc
+# Layout
+Layout=
+
+[Groups/0/Items/3]
+# Name
+Name=keyboard-jp
+# Layout
+Layout=
+
+[Groups/0/Items/4]
+# Name
+Name=keyboard-us-alt-intl-unicode
+# Layout
+Layout=
+
+[GroupOrder]
+0=Default
+
