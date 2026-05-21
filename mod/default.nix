@@ -39,6 +39,7 @@ in {
     (mkModOption "graphical")
     (mkModOption "prometheus-nvml-exporter")
     (mkModOption "pi3")
+    (mkModOption "bpir4")
     (mkModOption "docker")
     (mkModOption "seeed-2mic/default")
     (mkModOption "slim")
