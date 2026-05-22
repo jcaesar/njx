@@ -150,7 +150,7 @@ in {
   hardware = {
     firmware = [pkgs.linux-firmware];
     deviceTree.filter = "mt7988a-bananapi-bpi-r4.dtb";
-    deviceTree.overlays = lib.singleton      {
+    deviceTree.overlays = lib.singleton {
         name = "bpi-r4-emmc";
         dtsFile = "${nixos-sbc}/modules/boards/bananapi/bpir4/mt7988a-bananapi-bpi-r4-sd.dts";
         # depending on how you set the dip switches, the internal emmc or the sd card appears at the hardware address, and you can't have both (I think. dipswitchdipshit)
@@ -166,8 +166,8 @@ in {
   fileSystems."/boot" = {
     fsType = "btrfs";
     device = "/dev/disk/by-label/sdnixboot";
-    # I'm on a slow-as-balls sd card
-    options = ["discard" "compress=zstd:19"];
+    # I'm on a slow-as-balls sd card. I'd like to use -19, but u-boot's zstd is broken?
+    options = ["discard" "compress=zstd"];
   };
   njx.protect-boot = false;
   boot.initrd.luks.devices.sdnixroot = {
@@ -221,7 +221,7 @@ in {
       mount /dev/mapper/sdnixroot "$mnt" -ocompress=zstd:19,discard
       mkdir -p "$mnt"/boot
       mkfs.btrfs -f -L sdnixboot "$boot"
-      mount "$boot" "$mnt"/boot -ocompress=zstd:19
+      mount "$boot" "$mnt"/boot -ocompress=zstd
       nix-env --extra-substituters auto?trusted=1 --store "$mnt" -p "$mnt/$sys" --set ${config.system.build.toplevel}
       # shellcheck disable=SC2174
       mkdir -p -m755 "$mnt"/etc
