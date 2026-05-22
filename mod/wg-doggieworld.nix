@@ -57,7 +57,7 @@ in {
             AllowedIPs = ["10.13.38.0/24" "10.13.44.0/24" "fc00:1337:dead:beef:caff::/96"];
             Endpoint = "${
               if cfg.v6Endpoint
-              then "[2400:6180:0:d0::241]"
+              then "[2400:6180:0:d0::241:9001]"
               else "128.199.185.74"
             }:13518";
             PersistentKeepalive = 29;

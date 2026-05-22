@@ -2,7 +2,7 @@
 # - https://gitlab.com/K900/nix/-/blob/fa6dd56dda3582e4c69f95c63986a2c92ada5734/shared/platform/bpi-r4.nix
 # - https://github.com/nakato/nixos-sbc/blob/816476f7c151d6170c74d655759f77641411372a/modules/boards/bananapi/bpir4/sd-image-mt7988.nix
 # The former wants to install uboot to spi and then boot like it's just any other efi. Neat, but I never managed to get that to work (It's described at https://github.com/nim65s/dotfiles/tree/374ca7d361cc1aa2ba4f2e5bc47c58c83b15f672/machines/bpi-r4 but the SPI is split into two parts when I look at it and the uboot image won't fit.)
-# The latter is just out of date
+# The latter is out of date, doesn't build on master, and the resulting sd image doesn't boot even with an old commit
 # Personally, I prefer the "create an sd card once, it boots" thing. I know it's at odds with the "treat u-boot as firmware, like efi on x86" stance.
 # In the off case I do want nvme, I can just move the root partition later.
 {
