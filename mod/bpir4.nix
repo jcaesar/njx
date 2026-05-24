@@ -137,7 +137,7 @@ in {
       "pcie-mediatek-gen3"
       "mii"
     ];
-    initrd.availableKernelModules = ["nvme" "8250" "aquantia" "at24" "authenc" "authencesn" "cfg80211" "crc_itu_t" "crypto_safexcel" "cryptomgr" "dmatest" "firmware_class" "geniv" "i2c_mux" "i2c_mux_pca954x" "ipv6" "leds_gpio" "libata" "libdes" "loop" "mac80211" "mdio_i2c" "mt76" "mt76_connac_lib" "mt7996e" "overlay" "ramoops" "scsi_mod" "seqiv" "sfp" "slhc" "ubi" "ubifs" "btrfs" "dm_crypt"];
+    initrd.availableKernelModules = ["nvme" "mtk_eth" "mt7530_mmio" "tag_mtk"];
     initrd.systemd.emergencyAccess = true;
     initrd.systemd.initrdBin = with pkgs; [busybox util-linux iproute2 lls];
 
