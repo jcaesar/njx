@@ -137,9 +137,7 @@ in {
       "pcie-mediatek-gen3"
       "mii"
     ];
-    initrd.availableKernelModules = ["nvme" "mtk_eth" "mt7530_mmio" "tag_mtk"];
-    initrd.systemd.emergencyAccess = true;
-    initrd.systemd.initrdBin = with pkgs; [busybox util-linux iproute2 lls];
+    initrd.availableKernelModules = ["nvme" "mtk_eth" "mt7530_mmio" "tag_mtk"]; # insufficient for networking, but I'll figure that out later
 
     loader = {
       grub.enable = false;
@@ -151,11 +149,11 @@ in {
     firmware = [pkgs.linux-firmware];
     deviceTree.filter = "mt7988a-bananapi-bpi-r4.dtb";
     deviceTree.overlays = lib.singleton {
-        name = "bpi-r4-emmc";
-        dtsFile = "${nixos-sbc}/modules/boards/bananapi/bpir4/mt7988a-bananapi-bpi-r4-sd.dts";
-        # depending on how you set the dip switches, the internal emmc or the sd card appears at the hardware address, and you can't have both (I think. dipswitchdipshit)
-        # anyway, make sure this is the dts for the sd card. the k900 one has the emmc one.
-      };
+      name = "bpi-r4-emmc";
+      dtsFile = "${nixos-sbc}/modules/boards/bananapi/bpir4/mt7988a-bananapi-bpi-r4-sd.dts";
+      # depending on how you set the dip switches, the internal emmc or the sd card appears at the hardware address, and you can't have both (I think. dipswitchdipshit)
+      # anyway, make sure this is the dts for the sd card. the k900 one has the emmc one.
+    };
   };
 
   fileSystems."/" = {
@@ -233,4 +231,3 @@ in {
     '';
   };
 }
-
