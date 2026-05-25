@@ -88,12 +88,11 @@
       mpv
       yt-dlp
       vlc # better windows media player
-      # crosspipe # pipewire patch bay - helvum replacement and I'm not trusting it yet
+      crosspipe # pipewire patch bay - helvum replacement
       pulseaudio
       pavucontrol
       dunst # better du
       gomuks # better element
-      activitywatch
       sxiv # better feh
       imv # because sxiv doesn't do wayland
       zathura
