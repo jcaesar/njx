@@ -2,6 +2,7 @@
   config,
   lib,
   flakes,
+  pkgs,
   ...
 }: {
   options.njx.source-flakes = lib.mkEnableOption "flake sources in /etc";
@@ -29,5 +30,15 @@
         };
       }
     )
+    {
+      nix.settings.flake-registry =
+        lib.pipe {
+          flakes = {};
+          version = 2;
+        } [
+          builtins.toJSON
+          (pkgs.writeText "empty-flake-registry.json")
+        ];
+    }
   ];
 }
