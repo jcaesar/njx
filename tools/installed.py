@@ -126,7 +126,7 @@ def gather(h):
             # if x.startswith("/run/booted-system -> /"):
             #     return False
             return True
-        return list(filter(nope, (x.split(" ")[-1] for x in out.split("\n"))))
+        return list(filter(nope, (x.split(" ")[-1].removeprefix("/nix/store/") for x in out.split("\n"))))
     if h == local:
         ft = os
         conn = None
@@ -136,13 +136,13 @@ def gather(h):
     ret = {
         "host": h,
         "roots": exec_decode(h, ["nix-store", "--gc", "--print-roots"], decode),
-        "files": set(f"/nix/store/{p}" for p in ft.listdir("/nix/store")),
+        "files": ft.listdir("/nix/store"),
     }
     pool_conn(h, conn)
     return ret
 ondisk = list(pool.imap(gather, set([local] + remote)))
 
-def exec_where_avail(cmd, targets):
+def exec_where_avail(cmd, targets, key):
     showpossible = defaultdict(lambda: []) # where derivations are available
     for t in targets:
         for g in ondisk:
@@ -164,23 +164,28 @@ def exec_where_avail(cmd, targets):
     showtasks = [(h, c) for h, cs in showchunk.items() for c in cs]
     def showdrv(t):
         (h, c) = t
+        cpfx = [f"/nix/store/{c1}" for c1 in c]
         def decode(out):
             ret = single(decode_stacked(out))
+            if key not in ret:
+                raise Exception(f"Unexpected nix output, did not contain {key}, only: {list(ret.keys())}. Old nix version?")
+            ret = ret[key]
             for d in c:
                 if d not in ret:
                     raise Exception(f"{d} not in show output of {h}")
             return ret
-        return exec_decode(h, cmd + c, decode)
+        return exec_decode(h, cmd + cpfx, decode)
     random.shuffle(showtasks)
     shown = {k: v for c in pool.imap(showdrv, showtasks) for k, v in c.items()}
     return shown
 
-path_info = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "path-info", "--recursive", "--json"], [p for h in ondisk for p in h["roots"]])
+# todo: would be nice to at least check the store dir from here?
+path_info = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "path-info", "--recursive", "--json", "--json-format", "2"], [p for h in ondisk for p in h["roots"]], "info")
 no_deriver = {k for k,v in path_info.items() if v.get("deriver", "") == ""}
 if no_deriver != set():
     print("No deriver: " + " ".join(no_deriver), file = sys.stderr)
 derivers = {v["deriver"] for v in path_info.values() if v.get("deriver", "") != ""}
-derivations = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "derivation", "show"], derivers)
+derivations = exec_where_avail(["nix", "--extra-experimental-features", "nix-command", "derivation", "show"], derivers, "derivations")
 
 g = defaultdict(lambda: set())
 for k, v in path_info.items():
@@ -195,7 +200,7 @@ no_derivation = set()
 no_pv = set()
 
 def drv_starts(s, sta):
-    return s.startswith("/nix/store/") and s[len("/nix/store/lw3najqhgyfrv58lc48c9072ayqxipvx-"):].startswith(sta)
+    return s[33:].startswith(sta)
 
 for x in ondisk:
     host = x["host"]
