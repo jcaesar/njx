@@ -214,7 +214,8 @@ for x in ondisk:
             continue
         drvr = info.get("deriver", None)
         if drvr is None:
-            if not ll.endswith(".drv"):
+            # todo I should probably ignore anything that's FOD/conten-addressed
+            if not any(ll.endswith(sfx) for sfx in [".patch", ".diff", ".drv", "-Cargo.lock", "-source", ".md", ".sh"]):
                 no_deriver |= {ll}
         drv = derivations.get(drvr, None)
         if drv is None:
