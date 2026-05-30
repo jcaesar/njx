@@ -36,7 +36,6 @@
     #openssh.authorizedKeys.keys = common.sshKeys.client;
     packages = with pkgs; [
       vim
-      fish
       helix
       gh
       file
