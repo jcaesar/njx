@@ -9,29 +9,13 @@
   pkgs,
   config,
   lib,
-  extendModules,
   ...
 }: let
-  crossPkgs =
-    (extendModules {
-      modules = lib.singleton ({pkgs, ...}: {
-        nixpkgs = {
-          buildPlatform = "x86_64-linux";
-          hostPlatform = config.nixpkgs.system;
-        };
-        system.build.pkgs = pkgs;
-      });
-    }).config.system.build.pkgs;
-  pkgsBuild =
-    (extendModules {
-      modules = lib.singleton ({pkgs, ...}: {
-        nixpkgs.system = lib.mkForce "x86_64-linux";
-        system.build.pkgs = pkgs;
-      });
-    }).config.system.build.pkgs;
+  pkgsCross = config.system.build.argsCross.x86_64-linux.pkgs;
+  pkgsBuild = pkgsCross.pkgsBuildBuild;
 
-  uboot = crossPkgs.buildUBoot {
-    src = builtins.fetchTree {
+  uboot = pkgsCross.buildUBoot {
+    src = fetchTree {
       type = "github";
       owner = "K900";
       repo = "u-boot";
@@ -60,7 +44,7 @@
     '';
   };
 
-  tfA = crossPkgs.buildArmTrustedFirmware {
+  tfA = pkgsCross.buildArmTrustedFirmware {
     platform = "mt7988";
     extraMakeFlags = [
       "BL33=${uboot}/u-boot.bin" # FIP-ify our uboot
@@ -94,10 +78,10 @@
       ]);
   });
 
-  kernel = crossPkgs.buildLinux {
+  kernel = pkgsCross.buildLinux {
     version = "7.0.9";
     modDirVersion = "7.0.9";
-    src = builtins.fetchTree {
+    src = fetchTree {
       type = "github";
       owner = "K900";
       repo = "linux";
@@ -117,7 +101,7 @@
     ];
   };
 
-  nixos-sbc = builtins.fetchTree {
+  nixos-sbc = fetchTree {
     type = "github";
     owner = "nakato";
     repo = "nixos-sbc";
@@ -128,7 +112,7 @@ in {
 
   system.boot.loader.kernelFile = "Image";
   boot = {
-    kernelPackages = crossPkgs.linuxPackagesFor kernel;
+    kernelPackages = pkgsCross.linuxPackagesFor kernel;
     kernelParams = ["clk_ignore_unused" "cma=256M"];
     consoleLogLevel = 7;
 

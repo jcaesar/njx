@@ -29,6 +29,7 @@ in {
     ./log-to-aws.nix
     ./openspeedtest.nix
     ./btspeaker.nix
+    ./pkgs-cross.nix
     (mkModOption "foot")
     (mkModOption "base")
     (mkModOption "binfmt")

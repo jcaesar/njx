@@ -1,9 +1,7 @@
 {
-  pkgs,
   lib,
   config,
   flakes,
-  extendModules,
   ...
 }: {
   njx.base = true;
@@ -49,20 +47,7 @@
   # I'm not so fond of nixos-hardware, but nixpkgs doesn't want to provide linux-rpi anymore.
   boot.kernelPackages = let
     flake = flakes.nixos-hardware.nixosModules.raspberry-pi-3;
-    em = extendModules {
-      modules = lib.singleton (args @ {
-        pkgs,
-        lib,
-        ...
-      }: {
-        nixpkgs = {
-          buildPlatform = "x86_64-linux";
-          hostPlatform = config.nixpkgs.system;
-        };
-        system.build.export = args;
-      });
-    };
-    mod = import flake em.config.system.build.export;
+    mod = import flake config.system.build.argsCross.x86_64-linux;
   in
     mod.boot.kernelPackages;
   nixpkgs.overlays = [
