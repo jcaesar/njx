@@ -18,6 +18,9 @@ pkgs: prev: {
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   planetutils = pkgs.python3.pkgs.callPackage ./planetutils.nix {};
   zerostack = pkgs.callPackage ./zerostack.nix {};
+  ratune = pkgs.callPackage ./ratune.nix {};
+  ferrosonic = pkgs.callPackage ./ferrosonic.nix {};
+  subtui = pkgs.callPackage ./subtui.nix {};
   piper-tts-small = pkgs.piper-tts.override {
     withTrain = false;
     withAlignment = false;
