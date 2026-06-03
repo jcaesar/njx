@@ -19,4 +19,6 @@
     }
   '';
   users.users.julius.packages = [pkgs.regctl];
+  # https://github.com/NixOS/nixpkgs/issues/231191#issuecomment-1664053176
+  environment.etc."resolv.conf".mode = lib.mkDefault "direct-symlink";
 }
