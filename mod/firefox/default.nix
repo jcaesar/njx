@@ -118,6 +118,7 @@ in
             "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.havePinned" = lock "[]";
             "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.searchEngines" = lock "[]";
             "browser.newtabpage.pinned" = lock "[]";
+            "privacy.resistfingerprinting" = true; # will it break turnstile?
 
             # arken
             "toolkit.telemetry.coverage.opt-out" = lock true;
