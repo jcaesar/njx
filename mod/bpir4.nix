@@ -146,10 +146,8 @@ in {
     options = ["discard" "compress=zstd:12"];
   };
   fileSystems."/boot" = {
-    fsType = "btrfs";
+    fsType = "vfat";
     device = "/dev/disk/by-label/sdnixboot";
-    # I'm on a slow-as-balls sd card. I'd like to use -19, but u-boot's zstd is broken?
-    options = ["discard" "compress=zstd"];
   };
   njx.protect-boot = false;
   boot.initrd.luks.devices.sdnixroot = {
@@ -202,8 +200,8 @@ in {
       || echo Making btrfs failed, likely because luksFormat was skipped and it already exist. Continuing.
       mount /dev/mapper/sdnixroot "$mnt" -ocompress=zstd:19,discard
       mkdir -p "$mnt"/boot
-      mkfs.btrfs -f -L sdnixboot "$boot"
-      mount "$boot" "$mnt"/boot -ocompress=zstd
+      mkfs.fat -F32 -nsdnixboot "$boot"
+      mount "$boot" "$mnt"/boot
       nix-env --extra-substituters auto?trusted=1 --store "$mnt" -p "$mnt/$sys" --set ${config.system.build.toplevel}
       # shellcheck disable=SC2174
       mkdir -p -m755 "$mnt"/etc
