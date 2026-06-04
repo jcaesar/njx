@@ -34,13 +34,9 @@
       CONFIG_CMD_BOOTFLOW_FULL=y
       CONFIG_BOOTCOMMAND="bootflow scan -lb"
       CONFIG_ENV_IS_NOWHERE=y
-      CONFIG_LZ4=y
-      CONFIG_BZIP2=y
-      CONFIG_ZSTD=y
-      CONFIG_CMD_EXT4=y
-      CONFIG_FS_BTRFS=y
-      CONFIG_CMD_BTRFS=y
-      CONFIG_BOOTP_PXE=n
+    '';
+    postConfigure = ''
+      sed -ri '/PXE|BOOTP/ d' .config
     '';
   };
 
@@ -155,6 +151,7 @@ in {
     allowDiscards = true;
   };
 
+  system.build.tfa = tfA';
   system.build.formatSd = pkgsBuild.writeShellApplication {
     name = "format-bpir4-sd";
     runtimeInputs = with pkgsBuild; [coreutils btrfs-progs cryptsetup gptfdisk e2fsprogs util-linux nix coreutils dosfstools systemd shadow];
@@ -191,8 +188,8 @@ in {
       fip="$(realpath "$bpu/$fip")"
       boot="$(realpath "$bpu/$boot")"
       root="$(realpath "$bpu/$root")"
-      dd conv=notrunc if=${tfA'}/bl2.img of="$bl2"
-      dd conv=notrunc if=${tfA'}/fip.bin of="$fip"
+      dd conv=notrunc if=${config.system.build.tfa}/bl2.img of="$bl2"
+      dd conv=notrunc if=${config.system.build.tfa}/fip.bin of="$fip"
       cryptsetup luksFormat "$root" --label sdnixcrypt --verify-passphrase \
       || echo Did not luksFormat - will try to open it anyway, maybe it already exists
       cryptsetup luksOpen "$root" sdnixroot --allow-discards
