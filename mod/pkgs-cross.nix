@@ -9,12 +9,17 @@
   # this would be a good place for _module.args - except that only applies to the current module
   system.build.argsCross = lib.flip lib.mapAttrs flakes.nixpkgs.legacyPackages (buildSys: _:
     (extendModules {
-      modules = lib.singleton ({pkgs, lib, config, ...}@args: {
-        nixpkgs = {
-          buildPlatform = buildSys;
-          hostPlatform = config.nixpkgs.system;
-        };
-        system.build.args = args;
-      });
+      modules = lib.singleton ({
+          pkgs,
+          lib,
+          config,
+          ...
+        } @ args: {
+          nixpkgs = {
+            buildPlatform = buildSys;
+            hostPlatform = config.nixpkgs.system;
+          };
+          system.build.args = args;
+        });
     }).config.system.build.args);
 }

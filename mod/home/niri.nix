@@ -6,6 +6,7 @@
   ...
 }: let
   inherit (lib) getExe getExe';
+  niriEnabled = nixosConfig.programs.niri.enable or false;
   lock = pkgs.writeShellApplication {
     name = "njx-waylock";
     runtimeInputs = [pkgs.swaylock];
@@ -80,8 +81,8 @@ in {
     #'';
   };
 
-  services.swayidle = lib.mkIf nixosConfig.programs.niri.enable {
-    enable = true;
+  services.swayidle = {
+    enable = lib.mkDefault niriEnabled;
     events = {
       "before-sleep" = lockExe;
       "lock" = lockExe;
@@ -97,13 +98,13 @@ in {
       }
     ];
   };
-  systemd.user.services.awww = lib.mkIf nixosConfig.programs.niri.enable {
+  systemd.user.services.awww = lib.mkIf niriEnabled {
     Service.ExecStart = getExe' pkgs.awww "awww-daemon";
     Unit.PartOf = lib.singleton "graphical-session.target";
     Install.WantedBy = lib.singleton "graphical-session.target";
   };
 
-  home.file.".config/niri/config.kdl" = lib.mkIf nixosConfig.programs.niri.enable {
+  home.file.".config/niri/config.kdl" = lib.mkIf niriEnabled {
     source = pkgs.replaceVarsWith {
       src = ../../dot/niri.kdl;
       replacements = {

@@ -2,6 +2,7 @@
   outputs = {
     nixpkgs,
     self,
+    home-manager,
     ...
   } @ flakes': let
     flakes = flakes' // {njx = self;};
@@ -16,6 +17,11 @@
       pitivi = sysA ./sys/pitivi.nix;
       gegensprech = sysA ./sys/gegensprech.nix;
       basenji = sysI ./sys/basenji.nix;
+    };
+    homeConfigurations.julius = home-manager.lib.homeManagerConfiguration {
+      pkgs = self.nixosConfigurations.pekinese.pkgs;
+      extraSpecialArgs = {inherit flakes;};
+      modules = [./mod/home/julius.nix];
     };
     nixosModules = {
       njx = import ./mod;
