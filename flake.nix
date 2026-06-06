@@ -32,8 +32,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     home-manager.url = "github:nix-community/home-manager";
     disko.url = "github:nix-community/disko";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
   };
 }
