@@ -9,7 +9,6 @@
   njx.sshUnlock.modules = ["smsc95xx"];
   njx.protect-boot = false;
 
-  boot.loader.systemd-boot.enable = lib.mkForce false;
   # one little nastiness: the bootloader doesn't support secrets, so we need to hack around
   # can't do: boot.initrd.networking.supplicant = config.networking.supplicant; so:
   boot.initrd.systemd.services.supplicant-wlan0 = let
@@ -24,7 +23,7 @@
     unitConfig.DefaultDependencies = false;
   };
   networking.supplicant.wlan0.configFile.path = "/boot/leakrets/wpa_supplicant.conf";
-  njx.leakrets.sshUnlockKeys = true;
+  njx.leakrets = true;
   # weird that it doesn't do this automatically
   njx.extraInitrdClosures = [config.systemd.services.supplicant-wlan0.serviceConfig];
   boot.initrd.systemd.groups.wheel.gid = 123;
@@ -53,6 +52,7 @@
     # https://raspberrypi.stackexchange.com/questions/91659/rpi-3b-wlan0-wifi-adapter-broken/140524#140524
     options brcmfmac roamoff=1 feature_disable=0x82000
   '';
+  boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
   boot.consoleLogLevel = lib.mkDefault 7;

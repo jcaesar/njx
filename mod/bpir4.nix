@@ -14,65 +14,69 @@
   pkgsCross = config.system.build.argsCross.x86_64-linux.pkgs;
   pkgsBuild = pkgsCross.pkgsBuildBuild;
 
-  uboot = pkgsCross.buildUBoot {
-    src = fetchTree {
-      type = "github";
-      owner = "K900";
-      repo = "u-boot";
-      # ref = "refs/heads/bpi-r4";
-      rev = "edf28fba63af6a97222f57551ae6d5b7a8e75527";
-    };
-    version = "2025.07-bpi";
-    defconfig = "mt7988a_bananapi_bpi-r4-bootstd_defconfig";
-    filesToInstall = ["u-boot.bin"];
-    extraConfig = ''
-      CONFIG_AUTOBOOT=y
-      CONFIG_BOOTDELAY=1
-      CONFIG_USE_BOOTCOMMAND=y
-      CONFIG_BOOTSTD_DEFAULTS=y
-      CONFIG_BOOTSTD_FULL=y
-      CONFIG_CMD_BOOTFLOW_FULL=y
-      CONFIG_BOOTCOMMAND="bootflow scan -lb"
-      CONFIG_ENV_IS_NOWHERE=y
-    '';
-    postConfigure = ''
-      sed -ri '/PXE|BOOTP/ d' .config
-    '';
-  };
-
-  tfA = pkgsCross.buildArmTrustedFirmware {
-    platform = "mt7988";
-    extraMakeFlags = [
-      "BL33=${uboot}/u-boot.bin" # FIP-ify our uboot
-      "BOOT_DEVICE=sdmmc" # boot from SD
-      "DRAM_USE_COMB=1" # you're supposed to use this one, sayeth mediatek
-      "DDR4_4BG_MODE=0" # disable large RAM support, for some reason this breaks things
-      "USE_MKIMAGE=1" # use uboot mkimage instead of vendor mtk tool
-      "bl2"
-      "fip"
-    ];
-    filesToInstall = [
-      "build/mt7988/release/bl2.img"
-      "build/mt7988/release/fip.bin"
-    ];
-  };
-
-  tfA' = tfA.overrideAttrs (old: {
-    src = pkgs.fetchFromGitHub {
-      owner = "mtk-openwrt";
-      repo = "arm-trusted-firmware";
-      rev = "e090770684e775711a624e68e0b28112227a4c38";
-      hash = "sha256-VI5OB2nWdXUjkSuUXl/0yQN+/aJp9Jkt+hy7DlL+PMg=";
-    };
-    nativeBuildInputs =
-      old.nativeBuildInputs
-      ++ (with pkgs.pkgsBuildBuild; [
-        dtc
-        openssl
-        ubootTools
-        which
-      ]);
-  });
+  tfA = let
+    f = {bootDevice ? "sdmmc"}: let
+      uboot = pkgsCross.buildUBoot {
+        src = fetchTree {
+          type = "github";
+          owner = "K900";
+          repo = "u-boot";
+          # ref = "refs/heads/bpi-r4";
+          rev = "edf28fba63af6a97222f57551ae6d5b7a8e75527";
+        };
+        version = "2025.07-bpi";
+        defconfig = "mt7988a_bananapi_bpi-r4-bootstd_defconfig";
+        filesToInstall = ["u-boot.bin"];
+        extraConfig = ''
+          CONFIG_AUTOBOOT=y
+          CONFIG_BOOTDELAY=1
+          CONFIG_USE_BOOTCOMMAND=y
+          CONFIG_BOOTSTD_DEFAULTS=y
+          CONFIG_BOOTSTD_FULL=y
+          CONFIG_CMD_BOOTFLOW_FULL=y
+          CONFIG_BOOTCOMMAND="bootflow scan -lb"
+          CONFIG_ENV_IS_NOWHERE=y
+        '';
+        postConfigure = ''
+          sed -ri '/PXE|BOOTP/ d' .config
+        '';
+      };
+      build = pkgsCross.buildArmTrustedFirmware {
+        platform = "mt7988";
+        extraMakeFlags = [
+          "BL33=${uboot}/u-boot.bin" # FIP-ify our uboot
+          "BOOT_DEVICE=${bootDevice}" # boot from SD
+          "DRAM_USE_COMB=1" # you're supposed to use this one, sayeth mediatek
+          "DDR4_4BG_MODE=0" # disable large RAM support, for some reason this breaks things
+          "USE_MKIMAGE=1" # use uboot mkimage instead of vendor mtk tool
+          "bl2"
+          "fip"
+        ];
+        filesToInstall = [
+          "build/mt7988/release/bl2.img"
+          "build/mt7988/release/fip.bin"
+        ];
+      };
+      patched = build.overrideAttrs (old: {
+        src = pkgs.fetchFromGitHub {
+          owner = "mtk-openwrt";
+          repo = "arm-trusted-firmware";
+          rev = "e090770684e775711a624e68e0b28112227a4c38";
+          hash = "sha256-VI5OB2nWdXUjkSuUXl/0yQN+/aJp9Jkt+hy7DlL+PMg=";
+        };
+        nativeBuildInputs =
+          old.nativeBuildInputs
+          ++ (with pkgs.pkgsBuildBuild; [
+            dtc
+            openssl
+            ubootTools
+            which
+          ]);
+      });
+    in
+      patched;
+  in
+    lib.makeOverridable f {};
 
   kernel = pkgsCross.buildLinux {
     version = "7.0.9";
@@ -103,6 +107,23 @@
     repo = "nixos-sbc";
     rev = "816476f7c151d6170c74d655759f77641411372a";
   };
+
+  update-firmware-sd = pkgs.writeShellScriptBin "njx-write-uboot-sd" ''
+    set -e
+    dd conv=notrunc if=${config.system.build.tfa}/bl2.img of=/dev/disk/by-partlabel/bl2
+    dd conv=notrunc if=${config.system.build.tfa}/fip.bin of=/dev/disk/by-partlabel/fip
+  '';
+  update-firmware-spi = let
+    tfa = config.system.build.tfa.override {bootDevice = "spim-nand";};
+  in
+    pkgs.writeShellScriptBin "njx-write-uboot-spi" ''
+      set -e
+      f=$(mktemp)
+      trap 'rm "$f"' exit
+      dd conv=notrunc if=${tfa}/bl2.img of=$f
+      dd conv=notrunc if=${tfa}/fip.bin of=$f bs=512 seek=$((0x580000 / 512))
+      dd conv=notrunk if=$f of=/dev/mtdblock0
+    '';
 in {
   nixpkgs.system = "aarch64-linux";
 
@@ -117,13 +138,15 @@ in {
       "pcie-mediatek-gen3"
       "mii"
     ];
-    initrd.availableKernelModules = ["nvme" "mtk_eth" "mt7530_mmio" "tag_mtk"]; # insufficient for networking, but I'll figure that out later
+    initrd.availableKernelModules = ["nvme" "mtk_eth" "mt7530_mmio" "tag_mtk" "nls_cp437" "nls_iso8859_1"]; # insufficient for networking, but I'll figure that out later
 
     loader = {
       grub.enable = false;
+      systemd-boot.enable = false;
       generic-extlinux-compatible.enable = true;
     };
   };
+  njx.leakrets = true;
 
   hardware = {
     firmware = [pkgs.linux-firmware];
@@ -145,13 +168,14 @@ in {
     fsType = "vfat";
     device = "/dev/disk/by-label/sdnixboot";
   };
-  njx.protect-boot = false;
+  njx.protect-boot = true;
   boot.initrd.luks.devices.sdnixroot = {
     device = "/dev/disk/by-label/sdnixcrypt";
     allowDiscards = true;
   };
 
-  system.build.tfa = tfA';
+  environment.systemPackages = [update-firmware-sd update-firmware-spi];
+  system.build.tfa = tfA;
   system.build.formatSd = pkgsBuild.writeShellApplication {
     name = "format-bpir4-sd";
     runtimeInputs = with pkgsBuild; [coreutils btrfs-progs cryptsetup gptfdisk e2fsprogs util-linux nix coreutils dosfstools systemd shadow];
