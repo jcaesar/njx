@@ -51,5 +51,6 @@ in {
     (mkModOption "sharkwire")
     (mkModOption "slim-qemu")
     (mkModOption "njx-cache")
+    (mkModOption "leakrets")
   ];
 }

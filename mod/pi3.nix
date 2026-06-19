@@ -11,19 +11,6 @@
 
   boot.loader.systemd-boot.enable = lib.mkForce false;
   # one little nastiness: the bootloader doesn't support secrets, so we need to hack around
-  boot.initrd.secrets = lib.mkForce {};
-  boot.initrd.network.ssh.hostKeys = lib.mkForce [
-    "/boot/leakrets/ssh/host_rsa_key"
-    "/boot/leakrets/ssh/host_ed25519_key"
-  ];
-  networking.supplicant.wlan0.configFile.path = "/boot/leakrets/wpa_supplicant.conf";
-  boot.initrd.systemd.mounts = [
-    {
-      what = "/dev/mmcblk0p2";
-      where = "/boot";
-      type = "ext4";
-    }
-  ];
   # can't do: boot.initrd.networking.supplicant = config.networking.supplicant; so:
   boot.initrd.systemd.services.supplicant-wlan0 = let
     cfg = config.systemd.services.supplicant-wlan0;
@@ -36,6 +23,8 @@
     wants = ["network.target"];
     unitConfig.DefaultDependencies = false;
   };
+  networking.supplicant.wlan0.configFile.path = "/boot/leakrets/wpa_supplicant.conf";
+  njx.leakrets.sshUnlockKeys = true;
   # weird that it doesn't do this automatically
   njx.extraInitrdClosures = [config.systemd.services.supplicant-wlan0.serviceConfig];
   boot.initrd.systemd.groups.wheel.gid = 123;
