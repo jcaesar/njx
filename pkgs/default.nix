@@ -18,6 +18,9 @@ pkgs: prev: {
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   planetutils = pkgs.python3.pkgs.callPackage ./planetutils.nix {};
   zerostack = pkgs.callPackage ./zerostack.nix {};
+  dirge = pkgs.callPackage ./dirge.nix {};
+  kage = pkgs.callPackage ./kage.nix {};
+  maki = pkgs.callPackage ./maki.nix {};
   ratune = pkgs.callPackage ./ratune.nix {};
   ferrosonic = pkgs.callPackage ./ferrosonic.nix {};
   subtui = pkgs.callPackage ./subtui.nix {};
