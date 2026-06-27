@@ -227,7 +227,7 @@ in {
       # shellcheck disable=SC2174
       mkdir -p -m755 "$mnt"/etc
       $emu $chroot "$mnt" "$sys"/activate # creates os-release and other stuff that the bootloader installer requires
-      passwd -R "$mnt" root
+      $emu $chroot "$mnt" "$sys"/sw/bin/passwd root
       $emu $chroot "$mnt" "$sys"/bin/switch-to-configuration boot
       umount -R "$mnt"
       cryptsetup luksClose /dev/mapper/sdnixroot
