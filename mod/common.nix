@@ -87,4 +87,6 @@
     ];
     shell = pkgs.nushell;
   };
+
+  programs.fuse.enable = true;
 }

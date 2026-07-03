@@ -98,7 +98,6 @@
       njx
       helix # better vim
       rsync # better scp
-      sshfs # use it for backups. TODO script
       wireguard-tools
     ]
     ++ (lib.optional config.services.pipewire.enable wiremix)
