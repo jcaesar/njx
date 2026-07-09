@@ -1,6 +1,24 @@
 let user = (whoami)
 let hostname = (hostname)
 
+def njx-fmt-time [t] {
+  let u = [[fmt unit];
+    [wk 1wk]
+    [day 1day]
+    [hr 1hr]
+    [min 1min]
+    [sec 1sec]
+    [ms 1ms]
+    [us 1us]
+  ]
+  | where { $t >= $in.unit }
+  | first
+  | default {fmt: ns, unit: 1ns}
+  $t / $u.unit
+  | math round -p 1
+  | $"($in)($u.fmt)"
+}
+
 $env.config = {
   show_banner: false,
   history: {
@@ -11,10 +29,20 @@ $env.config = {
     algorithm: "substring"
   }
   hooks: {
-    pre_prompt: [{ print -n $"\a(ansi title)($user)@($hostname):(pwd) $(ansi st)" }]
-    pre_execution: [
-      { print -n $"(ansi title)(commandline) < ($user)@($hostname):(pwd)(ansi st)" }
-    ]
+    pre_prompt: [{
+      # shell title (and accidentally useful newline)
+      print $"\a(ansi title)($user)@($hostname):(pwd) $(ansi st)"
+      # prev duration
+      # i don't want this reprinted on Ctrl-C
+      # it seems I cant (re-)set env vars from the PROMPT_COMMAND
+      # so this is not part of the prompt
+      let last_dur = $env.CMD_DURATION_MS | into float | $in * 0.001sec
+      let durs = if $last_dur > 2sec {
+        print $"(ansi purple)(njx-fmt-time $last_dur)(ansi reset)"
+      }
+      $env.CMD_DURATION_MS = "0"
+    }]
+    pre_execution: [{ print -n $"(ansi title)(commandline) < ($user)@($hostname):(pwd)(ansi st)" }]
   }
   float_precision: 6, # https://xkcd.com/2170/
   shell_integration: { osc2: false }, # do not overwrite pre-exec hook
@@ -46,11 +74,13 @@ $env.PROMPT_COMMAND = {||
   }
   | reverse
   | path join
-  $"\n(ansi purple)($time) ($scolor) (ansi green)(whoami)@(hostname)(ansi white):(ansi yellow)($dir)(ansi reset)\n$ " }
+  $"(ansi purple)($time) ($scolor) (ansi green)(whoami)@(hostname)(ansi white):(ansi yellow)($dir)(ansi reset)\n$ " }
+
 $env.PATH = (
-  $env.PATH |
-  split row (char esep) |
-  append /usr/bin/env
+  $env.PATH
+  | where { $in !~ nix.*profile.*bin or ($in | path exists) }
+  | append /usr/bin/env
+  | uniq
 )
 
 # aliases
