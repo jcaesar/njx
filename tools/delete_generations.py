@@ -11,6 +11,7 @@ delete_generations = False
 keep_only_bootcurrent = False
 update_bootloader = False
 run_gc = False
+ignore_notfound = False
 
 # y i no argparse…
 for arg in sys.argv[1:]:
@@ -23,6 +24,8 @@ for arg in sys.argv[1:]:
             update_bootloader = True
         case "max":
             keep_only_bootcurrent = True
+        case "whatev":
+            ignore_notfound = True
         case _:
             print("Unknown arg " + arg)
             sys.exit(2)
@@ -50,10 +53,17 @@ profiles = sorted(profiles, key = lambda p: p["profile"])
 for r in roots:
     profile = [p for p in profiles if p["target"] == r["target"]]
     if len(profile) != 1:
-        print(f"System profile for {r['link']} not found, bailing")
-        sys.exit(-1)
+        print(f"System profile for {r['link']} not found")
+        if not ignore_notfound:
+            sys.exit(-1)
+        else:
+            continue
     r["profile"] = profile[0]["profile"]
     profile[0]["root"] = [r["name"]] + profile[0].get("root", [])
+roots = [r for r in roots if "profile" in r]
+if roots == []:
+    raise Exception("No root matches any existing profile")
+    
 
 def kept_name(p):
     if "root" in p:
