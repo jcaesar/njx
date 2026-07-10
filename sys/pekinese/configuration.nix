@@ -85,6 +85,8 @@
     piper-tts-small
     vdirsyncer
     khal
+    ferrosonic
+    ratune
   ];
   njx.mail = true;
 
