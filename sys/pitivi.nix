@@ -31,6 +31,19 @@ in {
     openssh.authorizedKeys.keys = private.terminalKeys;
     uid = 1000;
   };
+  home-manager.users.media.home = {
+    file.".config/mpv/input.conf".source = ../dot/mpv/input.conf;
+    file.".config/mpv/mpv.conf".text = ''
+      volume=80
+      audio-display=no
+      save-position-on-quit=yes
+      no-video=yes
+      gapless-audio=yes
+      cache=yes
+      cache-secs=10
+    '';
+    stateVersion = "26.05";
+  };
   environment.systemPackages = with pkgs; [libcec];
 
   system.stateVersion = "24.05";
