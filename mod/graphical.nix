@@ -92,7 +92,6 @@
       pulseaudio
       pavucontrol
       dunst # better du
-      gomuks # better element
       sxiv # better feh
       imv # because sxiv doesn't do wayland
       zathura

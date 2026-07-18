@@ -87,6 +87,7 @@
     khal
     ferrosonic
     ratune
+    gomuks # better element
   ];
   njx.mail = true;
 
