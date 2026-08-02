@@ -1,5 +1,5 @@
 {lib, ...}: let
-  systems = ["aarch64-linux" "armv7l-linux" "riscv64-linux" "wasm32-wasi" "wasm64-wasi"];
+  systems = ["aarch64-linux" "armv7l-linux" "riscv64-linux" "wasm32-wasip1"];
   qusAttrs = system: {
     wrapInterpreterInShell = false;
     preserveArgvZero = true;
