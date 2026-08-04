@@ -27,6 +27,7 @@
       ++ pkgs.lib.singleton (_pfinal: pprev: {
         paramiko = pprev.paramiko.override {pytestCheckHook = null;};
       });
+    brltty = prev.brltty.override {bluez = null;};
   });
   system.forbiddenDependenciesRegexes = ["gtk.*" "wayland" "jack.*" "alsa-lib.*"];
   environment.systemPackages = [pkgs.qemu];
