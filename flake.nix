@@ -17,6 +17,7 @@
       pitivi = sysA ./sys/pitivi.nix;
       gegensprech = sysA ./sys/gegensprech.nix;
       basenji = sysI ./sys/basenji.nix;
+      ex-vmserver = sysI ./sys/ex-vmserver.nix;
     };
     homeConfigurations.julius = home-manager.lib.homeManagerConfiguration {
       pkgs = self.nixosConfigurations.pekinese.pkgs;

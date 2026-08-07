@@ -52,5 +52,7 @@ in {
     (mkModOption "slim-qemu")
     (mkModOption "njx-cache")
     (mkModOption "leakrets")
+    (mkModOption "toriaezu-btrfs")
+    (mkModOption "all-may-shutdown")
   ];
 }

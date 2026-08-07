@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  config,
   ...
 }: {
   nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
@@ -11,6 +10,7 @@
   njx.bluetooth = true;
   njx.foot = true;
   njx.sharkwire = true;
+  njx.toriaezu-btrfs = true;
 
   networking.hostName = "pekinese";
   system.build.sfbs-group = "1-core-2-terminal";
@@ -23,32 +23,6 @@
   systemd.targets.tpm2.enable = false; # timeouts waiting on dev-tpmrm0
   hardware.cpu.intel.updateMicrocode = true;
   # system.etc.overlay.enable = true; # broken?
-
-  fileSystems."/" = {
-    device = "/dev/mapper/nixroot";
-    fsType = "btrfs";
-    options = ["discard" "compress"];
-  };
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-partlabel/ESP";
-    fsType = "vfat";
-  };
-  boot.initrd.luks.devices.nixroot = {
-    device = "/dev/disk/by-partlabel/primary";
-    allowDiscards = true;
-  };
-  njx.manual.partitioning = ''
-    ```
-    disk=/dev/sda
-    blkdiscard -f $disk
-    parted $disk -- mklabel gpt
-    parted $disk -- mkpart ESP fat32 1MB 1G
-    parted $disk -- mkpart primary 1G 100%
-    parted $disk -- set 1 esp on
-    mkfs.fat -F 32 $disk""a
-    … # rest undoc
-    ```
-  '';
 
   networking.supplicant.wlp0s20f3.configFile.writable = true;
   networking.supplicant.wlp0s20f3.configFile.path = "/etc/wpa_supplicant.conf";
