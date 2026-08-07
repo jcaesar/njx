@@ -74,6 +74,8 @@
       man-pages
       expect
       timg # sixels image viewer
+      qrrs
+      jujutsu
       (python3.withPackages (ps:
         with ps; [
           netaddr
