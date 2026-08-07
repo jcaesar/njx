@@ -70,12 +70,14 @@
       cargo-watch
       cargo-edit
       gcc
-      # python3.pkgs.python-fx # TODO fut1 vs py13
       man-pages
       expect
       timg # sixels image viewer
       qrrs
-      jujutsu
+      jujutsu # better git (really just a better git commit -mf; git rebase -i HEAD~x)
+      fx
+      uv # better poetry
+      nurl
       (python3.withPackages (ps:
         with ps; [
           netaddr
