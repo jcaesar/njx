@@ -77,7 +77,10 @@
       jujutsu # better git (really just a better git commit -mf; git rebase -i HEAD~x)
       fx
       uv # better poetry
-      nurl
+      (nurl.override {
+        gitMinimal = git;
+        mercurial = null;
+      })
       (python3.withPackages (ps:
         with ps; [
           netaddr
