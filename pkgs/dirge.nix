@@ -4,12 +4,12 @@
 }:
 rustPlatform.buildRustPackage (final: {
   pname = "dirge-agent";
-  version = "0.6.4";
+  version = "0.21.11";
   src = fetchCrate {
     inherit (final) pname version;
-    hash = "sha256-Dbh+/gwYqHr1YcH/fmcU0UUsMZHFcLu8LbPFZEtzS8o=";
+    hash = "sha256-2otfcbv1rn4zX0/FlW3hTxqBGaMvS3R5hxLiE/itCjc=";
   };
-  cargoHash = "sha256-dC7RjOt/2RGpd/zsTI5WG8Yct+n/7e3L5SmDguXTYlI=";
+  cargoHash = "sha256-1YIrOkjqI44GkSf0002qAvltBprg1DoTcXjYiw/jJyE=";
   prePatch = "rm -rf .cargo # forces mold";
   nativeBuildInputs = [rustPlatform.bindgenHook];
   doCheck = false;

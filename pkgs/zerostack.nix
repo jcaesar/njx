@@ -4,15 +4,10 @@
 }:
 rustPlatform.buildRustPackage (final: {
   pname = "zerostack";
-  version = "1.2.2";
+  version = "1.7.2";
   src = fetchCrate {
     inherit (final) pname version;
-    hash = "sha256-xJsmBVov6rs9w4R7BE2ydIcEgQPJ5BfpvffHW3ZSM+o=";
+    hash = "sha256-wpVCFdvYBtNNYc3t7iXgTFYPz7+lPbaFe4WeTF1uUEA=";
   };
-  cargoHash = "sha256-AI7CIZNpwql78QIFitNimLFi+FGeOO3espXFkEyHRjI=";
-  postPatch = ''
-    # shh
-    substituteInPlace src/config/mod.rs \
-      --replace-fail 'cfg.mcp_servers.is_none()' 'false'
-  '';
+  cargoHash = "sha256-TToiPZy9+gw/Nv//gZc92fKw2t0sGp9lEbDAWvZhceI=";
 })
