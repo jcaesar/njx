@@ -24,6 +24,7 @@ pkgs: prev: {
   ratune = pkgs.callPackage ./ratune.nix {};
   ferrosonic = pkgs.callPackage ./ferrosonic.nix {};
   subtui = pkgs.callPackage ./subtui.nix {};
+  legacyclonk = pkgs.callPackage ./legacyclonk {};
   piper-tts-small = pkgs.piper-tts.override {
     withTrain = false;
     withAlignment = false;

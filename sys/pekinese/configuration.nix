@@ -62,6 +62,7 @@
     ferrosonic
     ratune
     gomuks # better element
+    legacyclonk # better openclonk ;(
   ];
   njx.mail = true;
 
@@ -104,6 +105,9 @@
   networking.extraHosts = ''
     0.0.0.0 pr0gramm.com
   '';
+
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.match "^legacyclonk-asset-.*" (lib.getName pkg) != null;
 
   system.stateVersion = "24.05";
 }
