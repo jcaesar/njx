@@ -107,7 +107,7 @@
   '';
 
   nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.match "^legacyclonk-asset-.*" (lib.getName pkg) != null;
+    builtins.match "^legacyclonk-.*" (lib.getName pkg) != null;
 
   system.stateVersion = "24.05";
 }

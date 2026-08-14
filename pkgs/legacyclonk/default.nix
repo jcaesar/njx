@@ -1,18 +1,25 @@
 {
+  legacyclonk,
   runCommand,
   fetchurl,
   lib,
-  writeScriptBin,
-  runtimeShell,
+  writeShellScriptBin,
   callPackage,
   unzip,
-  engine ? callPackage ./engine.nix {},
-  extraAssets ? [],
+  legacyclonkEngine ? callPackage ./engine.nix {},
+  legacyclonkContent ? callPackage ./content.nix {},
+  legacyclonkExtraAssets ? [legacyclonk.extraAssets.ultimate-compilation],
+  legacyclonkAssetPaths ?
+    lib.concatStringsSep " "
+    (map (path: "${path}/*")
+      (legacyclonkExtraAssets
+        ++ [legacyclonkContent "${legacyclonkEngine}/{bin,share}"])),
 }: let
-  getAsset = name: data: let
+  getAsset = key: data: let
     src = fetchurl {inherit (data) url hash;};
+     name = "legacyclonk-asset-${key}-${data.version}";
     env = {
-      name = "legacyclonk-asset-${name}";
+      inherit name;
       nativeBuildInputs = [unzip];
       meta = {
         license = [lib.licenses.unfreeRedistributable];
@@ -20,34 +27,43 @@
         inherit (data) homepage;
       };
     };
+    unpack = data.script or (src: "unzip ${src} -d $out");
     cmd = ''
       mkdir $out
-      ${data.script src}
+      ${unpack src}
     '';
   in
-    runCommand "clonk-asset-${name}" env cmd;
+    runCommand name env cmd;
 
-  assets = lib.mapAttrs getAsset (import ./assets.nix);
-
-  assetPaths =
-    lib.concatStringsSep " "
-    (map (path: "${path}/*")
-      (lib.attrValues assets ++ extraAssets));
-
+  # "legacy" meaning a codebase from before 1994
   # legacyclonk expects
   #  - game assets at the path where the executable is
   #  - to be able to write to the path where the executable is
   # patching around this gets pretty complicated,
   # so instead crate a directory that can be written to
-  script = writeScriptBin "clonk" ''
-    #!${runtimeShell}
-    dir="''${XDG_CACHE_HOME:-"''${HOME:-"$(realpath ~)"}/.cache"}/nix-legacyclonk"
-    rm -rf "$dir"
+  script = writeShellScriptBin "legacyclonk" ''
+    set -eu
+
+    dir="''${NIX_LEGACYCLONK_DIR:-"''${HOME:-"$(realpath ~)"}/.legacyclonk/.nix"}"
     mkdir -p "$dir"
     cd "$dir"
 
-    mkdir Extra.c4g
-    for f in ${assetPaths}; do
+    for f in * Extra.c4g/*; do
+      if test -L "$f"; then
+        if ! test -e "$f"; then
+          rm "$f"
+        else
+          case $(readlink "$f") in
+            ${builtins.storeDir}/*)
+              rm "$f"
+              ;;
+          esac
+        fi
+      fi
+    done
+
+    mkdir -p Extra.c4g
+    for f in ${legacyclonkAssetPaths}; do
       if test "$(basename "$f")" == Extra.c4g; then
         for ff in "$f"/*; do
           ln -s "$ff" Extra.c4g/.
@@ -56,24 +72,24 @@
         ln -s "$f" .
       fi
     done
-    for f in ${engine}/*; do
-        ln -sf "$f" .
-    done
-    exec ./clonk "$@"
+    
+    # no exec, so the process stays a gc root
+    ./clonk "$@"
   '';
 in
-  script
-  // {
+  script.overrideAttrs {
     name = "legacyclonk";
 
-    passthru = {
-      inherit engine assets;
+    passthru = rec {
+      inherit getAsset;
+      engine = legacyclonkEngine;
+      extraAssets = lib.mapAttrs getAsset (import ./extra.nix);
+      withExtraAssets = legacyclonkExtraAssets:
+        legacyclonk.override {inherit legacyclonkExtraAssets;};
     };
 
     meta = {
-      license = [lib.licenses.cc-by-nc-40 lib.licenses.isc lib.licenses.unfreeRedistributable];
       maintainers = [lib.maintainers.jcaesar];
       homepage = "https://clonkspot.org/lc-en";
-      mainProgram = "clonk";
     };
   }

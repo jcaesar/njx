@@ -1,0 +1,12 @@
+diff -Naur orig/src/C4UpdateDlg.cpp src/src/C4UpdateDlg.cpp
+--- orig/src/C4UpdateDlg.cpp	1970-01-01 09:00:01.000000000 +0900
++++ src/src/C4UpdateDlg.cpp	2026-08-12 08:56:22.838899296 +0900
+@@ -258,6 +258,8 @@
+ 
+ bool C4UpdateDlg::CheckForUpdates(C4GUI::Screen *pScreen, bool fAutomatic)
+ {
++	// downloaded binaries wouldn't work on nixos and asset patches can't be aplied to store
++	return false;
+ 	// Automatic update only once a day
+ 	if (fAutomatic)
+ 		if (time(nullptr) - Config.Network.LastUpdateTime < 60 * 60 * 24)
