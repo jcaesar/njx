@@ -27,7 +27,11 @@
   in
     runCommand "clonk-asset-${name}" env cmd;
 
-  assets = lib.mapAttrs getAsset (import ./assets.nix);
+  assets =
+    {
+      main = callPackage ./content.nix {};
+    }
+    // lib.mapAttrs getAsset (import ./assets.nix);
 
   assetPaths =
     lib.concatStringsSep " "
@@ -62,8 +66,8 @@
     exec ./clonk "$@"
   '';
 in
-  script
-  // {
+  script.overrideAttrs
+  {
     name = "legacyclonk";
 
     passthru = {
