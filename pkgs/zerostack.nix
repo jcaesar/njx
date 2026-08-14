@@ -10,4 +10,6 @@ rustPlatform.buildRustPackage (final: {
     hash = "sha256-wpVCFdvYBtNNYc3t7iXgTFYPz7+lPbaFe4WeTF1uUEA=";
   };
   cargoHash = "sha256-TToiPZy9+gw/Nv//gZc92fKw2t0sGp9lEbDAWvZhceI=";
+  prePatch = "rm -rf .cargo # forces mold";
+  doCheck = false;
 })
