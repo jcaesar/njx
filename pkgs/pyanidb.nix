@@ -5,7 +5,7 @@
 }:
 buildPythonPackage {
   pname = "pyanidb";
-  version = "0.2.1-jc";
+  version = "0.2.1";
   src = fetchFromGitHub {
     owner = "jcaesar";
     repo = "pyanidb";
