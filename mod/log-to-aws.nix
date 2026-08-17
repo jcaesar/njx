@@ -29,6 +29,7 @@ in {
           type = "aws_cloudwatch_logs";
           inputs = ["journal"];
           group_name = cfg.group;
+          dangerously_allow_unconfined_template_resolution = true;
           stream_name = "{{ host }}";
           encoding.codec = "json";
           region = cfg.region;
