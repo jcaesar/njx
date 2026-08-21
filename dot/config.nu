@@ -86,3 +86,4 @@ $env.PATH = (
 # aliases
 export def lsm [] { ls | sort-by modified }
 export def psf [name] { ps --long | where command =~ $name }
+export def sex [str] { $str | str expand }
