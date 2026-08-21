@@ -29,6 +29,7 @@ pkgs: prev: {
     withTrain = false;
     withAlignment = false;
   };
+  piper-tts-voiced = pkgs.callPackage ./piper-tts-voice.nix {};
   pythonPackagesExtensions =
     prev.pythonPackagesExtensions
     ++ pkgs.lib.singleton (final: prev: {

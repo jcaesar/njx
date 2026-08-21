@@ -50,20 +50,22 @@
   programs.niri.enable = true;
   xdg.portal.wlr.enable = true;
 
-  users.users.julius.packages = with pkgs; [
-    # element-desktop # not using it and electron is failing to compile this week
-    # iamb
-    pyanidb
-    geary
-    wl-clipboard
-    piper-tts-small
-    vdirsyncer
-    khal
-    ferrosonic
-    ratune
-    gomuks # better element
-    legacyclonk # better openclonk ;(
-  ];
+  users.users.julius.packages = with pkgs;
+    [
+      # element-desktop # not using it and electron is failing to compile this week
+      # iamb
+      pyanidb
+      geary
+      wl-clipboard
+      piper-tts-small
+      vdirsyncer
+      khal
+      ferrosonic
+      ratune
+      gomuks # better element
+      legacyclonk # better openclonk ;(
+    ]
+    ++ piper-tts-voiced.all;
   njx.mail = true;
 
   services.avahi = {

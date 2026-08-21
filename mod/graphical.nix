@@ -114,6 +114,7 @@
       waypipe
       wireshark
       hydra-check
+      piper-tts-voiced.alan-medium
     ]
     ++ lib.optionals config.programs.niri.enable [
       wofi # worse rofi
