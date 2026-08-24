@@ -23,18 +23,4 @@ final: prev: {
         --replace-fail "TestView" "SkipView"
     '';
   });
-
-  # https://github.com/NixOS/nixpkgs/issues/548631#issuecomment-5203175176
-  pythonPackagesExtensions =
-    prev.pythonPackagesExtensions
-    ++ prev.lib.singleton (final: prev: {
-      python-lsp-ruff = prev.python-lsp-ruff.overridePythonAttrs (old: {
-        disabledTests =
-          (old.disabledTests or [])
-          ++ [
-            "test_ruff_settings"
-            "test_notebook_input"
-          ];
-      });
-    });
 }
