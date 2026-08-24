@@ -12,7 +12,7 @@
       services.shpool.settings = lib.mkIf config.programs.nushell.enable (
         lib.mkDefault {
           prompt_prefix = "";
-          forward_env = ["PATH"];
+          forward_env = ["PATH" "PWD"];
         }
       );
       systemd.user.services.shpool.Install = lib.mkForce {};
