@@ -25,10 +25,18 @@ pkgs: prev: {
   ferrosonic = pkgs.callPackage ./ferrosonic.nix {};
   subtui = pkgs.callPackage ./subtui.nix {};
   legacyclonk = pkgs.callPackage ./legacyclonk {};
-  piper-tts-small = pkgs.piper-tts.override {
-    withTrain = false;
-    withAlignment = false;
-  };
+  piper-tts-small = prev.lib.pipe pkgs.piper-tts [
+    (p:
+      p.override {
+        withTrain = false;
+        withAlignment = false;
+        withHTTP = false;
+      })
+    (p:
+      p.overridePythonAttrs (old: {
+        dependencies = old.dependencies ++ [(prev.lib.elemAt old.dependencies 0).pythonModule.pkgs.pyopenjtalk];
+      }))
+  ];
   piper-tts-voiced = pkgs.callPackage ./piper-tts-voice.nix {};
   pythonPackagesExtensions =
     prev.pythonPackagesExtensions

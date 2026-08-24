@@ -54,7 +54,7 @@
     };
 in rec {
   inherit voice;
-  all = [ryan-high cori-high alan-medium thorsten-high];
+  all = [ryan-high cori-high alan-medium thorsten-high hi_fi_captain-medium];
   ryan-high = voice {
     locale = "en_US";
     name = "ryan";
@@ -83,14 +83,12 @@ in rec {
     modelHash = "sha256-nfHEPGEUnvmznmGOK4YfvkHh/OqTkLLaxi6HYVc+pPE==";
     configHash = "sha256-bec0RE5MP54zt+vidG28GbcehfYT55xlrPYjIAuZp2o==";
   };
-  # Disabled: the hi_fi_captain config uses phoneme_type "japanese", which
-  # piper 1.4.2 (and upstream master) does not support — it raises
-  # ValueError: 'japanese' is not a valid PhonemeType. Re-enable once piper
-  # understands that phoneme type.
-  #hi_fi_captain-medium = voice {
-  #  locale = "ja_JA";
-  #  name = "hi_fi_captain-medium";
-  #  modelHash = "sha256-Xq+hYQ/HoP8uf96cvgly2HYmbiPY2zMXJ+skZvGUYOs==";
-  #  configHash = "sha256-VC6wtjic2JygKuZicA4d7Enr8bYSghxO0uHRyk4NJXw==";
-  #};
+  hi_fi_captain-medium = voice {
+    locale = "ja_JA";
+    name = "hi_fi_captain";
+    alias = "ja";
+    quality = "medium";
+    modelHash = "sha256-Xq+hYQ/HoP8uf96cvgly2HYmbiPY2zMXJ+skZvGUYOs==";
+    configHash = "sha256-VC6wtjic2JygKuZicA4d7Enr8bYSghxO0uHRyk4NJXw==";
+  };
 }
