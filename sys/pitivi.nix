@@ -1,4 +1,9 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  config,
+  ...
+}: let
+  pkgsCross = config.system.build.argsCross.x86_64-linux.pkgs;
   private = import ../private.nix;
 in {
   njx.pi3 = true;
@@ -26,7 +31,7 @@ in {
   users.users.root.openssh.authorizedKeys.keys = private.terminalKeys ++ [private.prideKey];
   users.users.media = {
     isNormalUser = true;
-    packages = with pkgs; [mpv];
+    packages = with pkgs; [mpv pkgsCross.ferrosonic];
     shell = pkgs.nushell;
     openssh.authorizedKeys.keys = private.terminalKeys;
     uid = 1000;
