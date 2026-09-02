@@ -16,7 +16,6 @@ pkgs: prev: {
   ghcr-login = pkgs.callPackage ./ghcr-login.nix {};
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   dirge = pkgs.callPackage ./dirge.nix {};
-  kage = pkgs.callPackage ./kage.nix {};
   ferrosonic = pkgs.callPackage ./ferrosonic.nix {};
   legacyclonk = pkgs.callPackage ./legacyclonk {};
   piper-tts-small = prev.lib.pipe pkgs.piper-tts [
