@@ -59,8 +59,16 @@ $env.PROMPT_COMMAND = {||
   } else {
     $"(ansi xterm_darkorange3a)~.~"
   }
+  def replace_home [] {
+    let p = $in
+    if ($p | str starts-with $env.HOME) {
+      $p | str substring ($env.HOME | str length).. | $"~($in)"
+    } else {
+      $p
+    }
+  }
   let dir = pwd
-  | str replace $env.HOME ~
+  | replace_home
   | path split
   | reverse
   | enumerate
