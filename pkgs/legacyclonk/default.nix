@@ -17,7 +17,7 @@
 }: let
   getAsset = key: data: let
     src = fetchurl {inherit (data) url hash;};
-     name = "legacyclonk-asset-${key}-${data.version}";
+    name = "legacyclonk-asset-${key}-${data.version}";
     env = {
       inherit name;
       nativeBuildInputs = [unzip];
@@ -72,7 +72,7 @@
         ln -s "$f" .
       fi
     done
-    
+
     # no exec, so the process stays a gc root
     ./clonk "$@"
   '';
