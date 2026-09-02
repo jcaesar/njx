@@ -61,7 +61,6 @@
       vdirsyncer
       khal
       ferrosonic
-      ratune
       gomuks # better element
       legacyclonk # better openclonk ;(
     ]
