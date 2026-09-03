@@ -5,13 +5,16 @@
   pkg-config,
 }:
 rustPlatform.buildRustPackage (final: {
+  # apparently, this is actually ferrosonic-ng.
+  # original ferrosonic is again maintained, but never squatted crates.io,
+  # so all kinds of naming chaos.
   pname = "ferrosonic";
-  version = "0.8.1";
+  version = "0.8.3";
   src = fetchCrate {
     inherit (final) pname version;
-    hash = "sha256-eYXZpWmCmRvlWm+ciTJoA46JbG2fQjbSOrM1vn8OzGg=";
+    hash = "sha256-9ROrh8X12R3VQAVNUOQlSLH9THtvkhtGuIPeLSis8x8=";
   };
-  cargoHash = "sha256-KN+Lg+N/XOvAg3+TTeoJLW/y0rgY0ji6ubTzoU6oLdI=";
+  cargoHash = "sha256-znpZy9i5gNYMom2jnbDr7J7slkBITTIt8rpzVMxdluM=";
   buildInputs = [openssl];
   nativeBuildInputs = [pkg-config];
 })
