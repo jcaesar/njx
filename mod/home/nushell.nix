@@ -9,7 +9,10 @@
     nushell = {
       enable = true;
       package = pkgs.nushell;
-      configFile.source = ../../dot/config.nu;
+      configFile.text = ''
+        plugin use --plugin-config ${pkgs.nu_plugin_dots}/registry.msgpackz dots
+        source ${../../dot/config.nu}
+      '';
       shellAliases = {
         vi = "hx";
         vim = "hx";
