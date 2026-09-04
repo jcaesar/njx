@@ -4,6 +4,7 @@ pkgs: prev: {
   gegensprech = pkgs.callPackage ./gegensprech.nix {};
   seeed-2mic-blinky = pkgs.callPackage ./seeed-2mic-blinky.nix {};
   pyanidb = pkgs.python3.pkgs.callPackage ./pyanidb.nix {};
+  nu_plugin_dots = pkgs.python3.pkgs.callPackage ./nu_plugin_dots.nix {};
   junix = pkgs.python3.pkgs.callPackage ./junix.nix {};
   njx = pkgs.python3.pkgs.callPackage ../tools {};
   njx-repo-scripts = pkgs.callPackage ../tools/nus.nix {};

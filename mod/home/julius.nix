@@ -8,7 +8,7 @@
     ./git.nix
     ./helix.nix
     ./niri.nix
-    ./nushell.nix
+    ./nu
     ./stehauf.nix
     ./xdg.nix
     ./shpool.nix
