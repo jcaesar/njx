@@ -11,12 +11,12 @@ def main [--action = "switch", --throughcache, --noask, target: string] {
 
   if $throughcache {
     let hostname = ssh ...$sshopts $target.host hostname
-    nix copy --to ssh-ng://westiei $flakemeta.path
+    nix flake archive --to ssh-ng://westiei $flakepath
     let syspath = ssh ...$sshopts westiei nix build $"'($flakepath)#nixosConfigurations.($hostname).config.system.build.toplevel'" --no-link --print-out-paths | lines | first
     ssh -tt ...$sshopts $target.host nix copy --to local $syspath
     ssh -tt ...$sshopts $target.host nh os $action -R ...($ask) $syspath
   } else {
-    nix copy --to ssh-ng://($target.host) $flakemeta.path
+    nix archive --to ssh-ng://($target.host) $flakepath
     ssh -tt ...$sshopts $target.host nh os $action -R ...($ask) $"'($flakepath)'"
   }
 }
