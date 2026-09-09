@@ -71,8 +71,8 @@ class FakeRenderer:
     def __init__(self):
         self.calls = []
 
-    def __call__(self, points, source):
-        self.calls.append((points, source))
+    def __call__(self, points, source, no_basemap=False):
+        self.calls.append((points, source, no_basemap))
         return "<svg>fake-map</svg>"
 
 
@@ -124,6 +124,9 @@ def test_signature_and_metadata():
     assert sig["name"] == "dots"
     source_flags = [n for n in sig["named"] if n["long"] == "source"]
     assert len(source_flags) == 1
+    no_basemap_flags = [n for n in sig["named"] if n["long"] == "no-basemap"]
+    assert len(no_basemap_flags) == 1
+    assert no_basemap_flags[0]["arg"] == "Boolean"
 
     meta_resp = outs[1]["CallResponse"]
     assert meta_resp[0] == 1
@@ -165,7 +168,8 @@ def test_run_with_value_input():
     value, _ = header["Value"]
     assert "String" in value, value
     assert value["String"]["val"] == "<svg>fake-map</svg>"
-    (points, source), = renderer.calls
+    (points, source, no_basemap), = renderer.calls
+    assert no_basemap is False
     assert source == "a.b.c"
     assert points == [
         {"lon": 101, "lat": 51.5},
@@ -189,7 +193,8 @@ def test_run_default_source():
         ]
     }
     run_protocol(plugin, [json.dumps(ENGINE_HELLO), json.dumps(call)], renderer)
-    (points, source), = renderer.calls
+    (_, source, no_basemap), = renderer.calls
+    assert no_basemap is False
     assert source == "Esri.WorldGrayCanvas"
 
 
@@ -218,9 +223,9 @@ def test_run_with_list_stream_input():
     ]
     outs = run_protocol(plugin, lines, renderer)
     assert len(outs) == 1
-    cid, response = outs[0]["CallResponse"]
+    cid, _ = outs[0]["CallResponse"]
     assert cid == 9
-    (points, _), = renderer.calls
+    (points, _, _), = renderer.calls
     assert points == [{"lon": 1, "lat": 2}, {"lon": 3, "lat": 4}]
 
 
@@ -298,7 +303,7 @@ def test_render_svg_calls_contextily():
     # points are inside the extent
     assert extent[0] < -122.4 < extent[2]
     assert extent[1] < 37.7 < extent[3]
-    (args, kwargs), = ax.scatter_calls
+    (args, _), = ax.scatter_calls
     assert sorted(args[0]) == [-122.4, -122.3]
     assert sorted(args[1]) == [37.7, 37.8]
 
@@ -341,6 +346,74 @@ def test_render_svg_single_point_extent():
     assert extent[1] < 6 < extent[3]
 
 
+def test_run_with_no_basemap_flag():
+    plugin = load_plugin()
+    renderer = FakeRenderer()
+    call = {
+        "Call": [
+            11,
+            {
+                "Run": {
+                    "name": "dots",
+                    "call": {
+                        "head": SPAN,
+                        "positional": [],
+                        "named": [[{"item": "no-basemap", "span": SPAN}, {"Bool": {"val": True, "span": SPAN}}]],
+                    },
+                    "input": {
+                        "Value": [
+                            {"List": {"vals": [rec(101, 51.5)], "span": SPAN}},
+                            None,
+                        ]
+                    },
+                }
+            },
+        ]
+    }
+    outs = run_protocol(plugin, [json.dumps(ENGINE_HELLO), json.dumps(call)], renderer)
+    assert len(outs) == 1
+    cid, response = outs[0]["CallResponse"]
+    assert cid == 11
+    assert "PipelineData" in response, f"expected a value response, got {response!r}"
+    (_, source, no_basemap), = renderer.calls
+    assert no_basemap is True
+    assert source == "Esri.WorldGrayCanvas"
+
+
+def test_render_svg_no_basemap_skips_contextily():
+    plugin = load_plugin()
+
+    class FakeAxes:
+        def scatter(self, *args, **kwargs):
+            pass
+
+    class FakeFigure:
+        def savefig(self, buf, format=None):
+            buf.write(b"<svg/>")
+
+    pyplot = types.ModuleType("matplotlib.pyplot")
+    pyplot.subplots = lambda **kwargs: (FakeFigure(), FakeAxes())
+    pyplot.close = lambda f: None
+    matplotlib = types.ModuleType("matplotlib")
+    matplotlib.use = lambda backend: None
+    matplotlib.pyplot = pyplot
+    sys.modules["matplotlib"] = matplotlib
+    sys.modules["matplotlib.pyplot"] = pyplot
+    # A hostile fake: if the plugin imports or calls contextily, the render fails.
+    class HostileCtx:
+        def add_basemap(self, *args, **kwargs):
+            raise RuntimeError("basemap must be skipped with no_basemap=True")
+
+    sys.modules["contextily"] = HostileCtx()
+
+    try:
+        svg = plugin.render_svg([{"lon": 5, "lat": 6}], "Esri.WorldGrayCanvas", no_basemap=True)
+    finally:
+        del sys.modules["matplotlib"], sys.modules["matplotlib.pyplot"], sys.modules["contextily"]
+
+    assert svg == "<svg/>"
+
+
 TESTS = [
     test_handshake_subprocess,
     test_signature_and_metadata,
@@ -350,6 +423,8 @@ TESTS = [
     test_run_error_on_bad_input,
     test_render_svg_calls_contextily,
     test_render_svg_single_point_extent,
+    test_run_with_no_basemap_flag,
+    test_render_svg_no_basemap_skips_contextily,
 ]
 
 
@@ -362,7 +437,7 @@ def main():
         except AssertionError as e:
             failed += 1
             print(f"FAIL {test.__name__}: {e}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             failed += 1
             print(f"ERROR {test.__name__}: {type(e).__name__}: {e}")
     if failed:

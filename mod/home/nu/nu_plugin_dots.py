@@ -28,6 +28,13 @@ def signatures():
                             "arg": "String",
                             "required": False,
                             "desc": "Map source for contextily"
+                        },
+                        {
+                            "long": "no-basemap",
+                            "short": None,
+                            "arg": "Boolean",
+                            "required": False,
+                            "desc": "Skip the contextily basemap (no network needed)"
                         }
                     ],
                     "input_output_types": [["Any", "Any"]],
@@ -68,34 +75,46 @@ def extract_points_from_records(vals):
         points.append({"lon": lon, "lat": lat})
     return points
 
-def render_svg(points, source):
+def render_svg(points, source, no_basemap=False):
     import matplotlib
     matplotlib.use("Agg")
-    import contextily as ctx
     import matplotlib.pyplot as plt
-    import geopandas as gpd
-    from shapely.geometry import Point
+
+    lons = [p["lon"] for p in points]
+    lats = [p["lat"] for p in points]
 
     fig, ax = plt.subplots(figsize=(16,16))
+    ax.scatter(lons, lats)
 
-    geometry = [Point(p["lon"], p["lat"]) for p in points]
-    crs = 4326
-    gpd.GeoDataFrame(geometry=geometry, crs=crs).plot(ax=ax)
-    ctx.add_basemap(ax, source=source, crs=crs)
+    if not no_basemap:
+        import contextily as ctx
+
+        pad_lon = (max(lons) - min(lons)) * 0.2 or 0.01
+        pad_lat = (max(lats) - min(lats)) * 0.2 or 0.01
+        extent = (
+            min(lons) - pad_lon,
+            min(lats) - pad_lat,
+            max(lons) + pad_lon,
+            max(lats) + pad_lat,
+        )
+        ctx.add_basemap(ax, source=source, crs=4326, extent=extent)
 
     buf = io.BytesIO()
     fig.savefig(buf, format="svg")
     plt.close(fig)
     return buf.getvalue().decode("utf-8")
 
-def get_source_from_call(call):
+def get_options_from_call(call):
     source = DEFAULT_SOURCE
+    no_basemap = False
     for flag, val in call.get("named", []):
-        if isinstance(flag, dict) and flag.get("item") == "source":
-            if "String" in val:
-                source = val["String"]["val"]
-            break
-    return source
+        if not isinstance(flag, dict):
+            continue
+        if flag.get("item") == "source" and "String" in val:
+            source = val["String"]["val"]
+        elif flag.get("item") == "no-basemap" and "Bool" in val:
+            no_basemap = val["Bool"]["val"]
+    return source, no_basemap
 
 def make_pipeline_data_string(svg, span):
     return {"PipelineData": {"Value": [{"String": {"val": svg, "span": span}}, None]}}
@@ -113,7 +132,7 @@ def process_run(call_id, run, pending, write):
         write({"CallResponse": [call_id, {"Error": {"msg": "unknown command"}}]})
         return
     call = run.get("call", {})
-    source = get_source_from_call(call)
+    source, no_basemap = get_options_from_call(call)
     input_header = run.get("input", {})
     span = call.get("head", {"start": 0, "end": 0})
 
@@ -124,7 +143,7 @@ def process_run(call_id, run, pending, write):
                 raise ValueError("expected list")
             vals = value_obj["List"]["vals"]
             points = extract_points_from_records(vals)
-            svg = render_svg(points, source)
+            svg = render_svg(points, source, no_basemap)
             write({"CallResponse": [call_id, make_pipeline_data_string(svg, span)]})
         except Exception as e:  # noqa: BLE001
             write(make_error_response(call_id, str(e), span))
@@ -132,7 +151,7 @@ def process_run(call_id, run, pending, write):
 
     if "ListStream" in input_header:
         stream_id = input_header["ListStream"]["id"]
-        pending[stream_id] = {"call_id": call_id, "source": source, "items": [], "span": span}
+        pending[stream_id] = {"call_id": call_id, "source": source, "no_basemap": no_basemap, "items": [], "span": span}
         return
 
     write(make_error_response(call_id, "unsupported input", span))
@@ -174,11 +193,12 @@ def plugin_loop(input_iter, write):
                 info = pending.pop(stream_id)
                 call_id = info["call_id"]
                 source = info["source"]
+                no_basemap = info["no_basemap"]
                 span = info["span"]
                 items = info["items"]
                 try:
                     points = extract_points_from_records(items)
-                    svg = render_svg(points, source)
+                    svg = render_svg(points, source, no_basemap)
                     write({"CallResponse": [call_id, make_pipeline_data_string(svg, span)]})
                 except Exception as e:  # noqa: BLE001
                     write(make_error_response(call_id, str(e), span))
