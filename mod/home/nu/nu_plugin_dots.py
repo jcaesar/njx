@@ -79,25 +79,18 @@ def render_svg(points, source, no_basemap=False):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-
-    lons = [p["lon"] for p in points]
-    lats = [p["lat"] for p in points]
+    import geopandas as gpd
+    from shapely.geometry import Point
 
     fig, ax = plt.subplots(figsize=(16,16))
-    ax.scatter(lons, lats)
+
+    geometry = [Point(p["lon"], p["lat"]) for p in points]
+    crs = 4326
+    gpd.GeoDataFrame(geometry=geometry, crs=crs).plot(ax=ax)
 
     if not no_basemap:
         import contextily as ctx
-
-        pad_lon = (max(lons) - min(lons)) * 0.2 or 0.01
-        pad_lat = (max(lats) - min(lats)) * 0.2 or 0.01
-        extent = (
-            min(lons) - pad_lon,
-            min(lats) - pad_lat,
-            max(lons) + pad_lon,
-            max(lats) + pad_lat,
-        )
-        ctx.add_basemap(ax, source=source, crs=4326, extent=extent)
+        ctx.add_basemap(ax, source=source, crs=crs, extent=extent)
 
     buf = io.BytesIO()
     fig.savefig(buf, format="svg")
