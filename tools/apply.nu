@@ -15,7 +15,7 @@ def main [--action = "switch", --throughcache, --noask, target: string] {
 
   let flakemeta = nix flake metadata --json $target.flake | from json
   let flakepath = $"path:($flakemeta.path)?($flakemeta.locked | reject -o __final ref type url dirtyRev dirtyShortRev path | url build-query)"
-  let srcs = nix flake archive --dry-run --json
+  let srcs = nix flake archive --dry-run --json $target.flake
     | from json | allv { do -i { get path } }
   let sshopts = [-q -oCompression=yes -oControlMaster=auto -oControlPath=/tmp/ssh-check-nix-build-%C -oControlPersist=60]
   $env.NIX_SSHOPTS = $sshopts | str join " "
