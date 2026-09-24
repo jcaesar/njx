@@ -74,7 +74,6 @@
       wget
       xh # "better" httpie
       screen
-      tmux # better screen
       lls # better ss -loptun
       nload
       ripgrep # better grep -R
@@ -102,6 +101,10 @@
     ]
     ++ (lib.optional config.services.pipewire.enable wiremix)
     ++ (lib.optional config.services.pulseaudio.enable pulsemixer);
+  programs.tmux = { # better screen
+    enable = true;
+    extraConfig = builtins.readFile ../dot/tmux.conf;
+  };
   programs.nh.enable = true; # better nixos-rebuild
   services.openssh = {
     settings.PasswordAuthentication = false;
