@@ -90,7 +90,7 @@ def render_svg(points, source, no_basemap=False):
 
     if not no_basemap:
         import contextily as ctx
-        ctx.add_basemap(ax, source=source, crs=crs, extent=extent)
+        ctx.add_basemap(ax, source=source, crs=crs)
 
     buf = io.BytesIO()
     fig.savefig(buf, format="svg")
@@ -179,6 +179,9 @@ def plugin_loop(input_iter, write):
             stream_id, data = msg["Data"]
             if stream_id in pending and "List" in data:
                 pending[stream_id]["items"].append(data["List"])
+            # Acknowledge consumption so the engine's flow-controlled writer (which pauses
+            # after 100 un-acknowledged messages) can keep sending the rest of the stream.
+            write({"Ack": stream_id})
             continue
         if "End" in msg:
             stream_id = msg["End"]
