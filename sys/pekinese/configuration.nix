@@ -61,7 +61,6 @@
       vdirsyncer
       khal
       ferrosonic
-      gomuks # better element
       legacyclonk # better openclonk ;(
     ]
     ++ piper-tts-voiced.all;
