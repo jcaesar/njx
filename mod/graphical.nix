@@ -78,10 +78,6 @@
   };
   services.pulseaudio.enable = lib.mkDefault false;
 
-  environment.systemPackages = with pkgs; [
-    mesa-demos
-  ];
-
   users.users.julius.packages = with pkgs;
     [
       xpra

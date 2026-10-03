@@ -8,10 +8,10 @@
     ./git.nix
     ./helix.nix
     ./niri.nix
-    ./nushell.nix
     ./stehauf.nix
     ./xdg.nix
     ./shpool.nix
   ];
   services.pueue.enable = true;
+  njx.nushell.enable = true;
 }

@@ -19,7 +19,7 @@
   njx.source-flakes = lib.mkDefault true;
   njx.njx-cache = lib.mkDefault true;
 
-  home-manager.sharedModules = [./home/generation-cleanup.nix];
+  home-manager.sharedModules = [./home/generation-cleanup.nix ./home/nushell.nix];
   system.activationScripts.nochannels = ''
     rm -rf /nix/var/nix/profiles/per-user/root/channels /root/.nix-defexpr
   '';
@@ -101,7 +101,8 @@
     ]
     ++ (lib.optional config.services.pipewire.enable wiremix)
     ++ (lib.optional config.services.pulseaudio.enable pulsemixer);
-  programs.tmux = { # better screen
+  programs.tmux = {
+    # better screen
     enable = true;
     extraConfig = builtins.readFile ../dot/tmux.conf;
   };
