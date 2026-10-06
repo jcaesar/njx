@@ -92,7 +92,7 @@
       imv # because sxiv doesn't do wayland
       zathura
       imagemagick
-      libreoffice-still
+      libreoffice-stable
       rusti-cal # rustier cal
       gimp3
       picard
