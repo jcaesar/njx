@@ -22,9 +22,9 @@
           owner = "K900";
           repo = "u-boot";
           # ref = "refs/heads/bpi-r4";
-          rev = "edf28fba63af6a97222f57551ae6d5b7a8e75527";
+          rev = "64203d2b0099aa6f18ab98ad7aeadd91a65202e8";
         };
-        version = "2025.07-bpi";
+        version = "2026.07-bpi-r4";
         defconfig = "mt7988a_bananapi_bpi-r4-bootstd_defconfig";
         filesToInstall = ["u-boot.bin"];
         extraConfig = ''
@@ -79,14 +79,14 @@
     lib.makeOverridable f {};
 
   kernel = pkgsCross.buildLinux {
-    version = "7.0.9";
-    modDirVersion = "7.0.9";
+    version = "7.2.9";
+    modDirVersion = "7.2.9";
     src = fetchTree {
       type = "github";
       owner = "K900";
       repo = "linux";
       # ref = "refs/heads/bpi-r4";
-      rev = "97371ad31bdb8d1c5c052d5dcc2e95bb6fc207cf";
+      rev = "080b79149842b73e0217a6639778163ab0b740a7";
     };
 
     kernelPatches = [
@@ -97,6 +97,11 @@
           FWNODE_PCS = lib.kernel.yes;
           PCS_MTK_USXGMII = lib.kernel.yes;
         };
+      }
+      {
+        name = "enable-testmode";
+        patch = null;
+        structuredExtraConfig.NL80211_TESTMODE = lib.kernel.yes;
       }
     ];
   };
