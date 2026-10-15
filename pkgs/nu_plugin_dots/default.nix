@@ -1,18 +1,22 @@
 {
-  pkgs,
   buildPythonApplication,
   emptyDirectory,
   contextily,
   geopandas,
+  nushell,
 }:
 buildPythonApplication (finalAttrs: {
   pname = "nu_plugin_dots";
   version = "0.0.1";
   format = "other";
   src = emptyDirectory;
-  nativeBuildInputs = [pkgs.nushell];
+  nativeBuildInputs = [nushell];
   propagatedBuildInputs = [contextily geopandas];
-  installPhase = "install -Dm555 ${./dots.py} $out/bin/${finalAttrs.pname}";
+  installPhase = ''
+    ob=$out/bin/${finalAttrs.pname}
+    install -Dm555 ${./dots.py} $ob
+    substituteInPlace $ob --replace-fail '"version": NUSHELL_VERSION' '"version": "${nushell.version}"'
+  '';
   postFixup = "nu -c 'plugin add --plugin-config ($env.out)/registry.msgpackz ($env.out)/bin/${finalAttrs.pname}'";
   doCheck = true;
   checkPhase = ''
