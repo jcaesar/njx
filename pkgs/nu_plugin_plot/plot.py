@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Nushell plugin: dots
-Input a list of lon/lat records, output SVG map with contextily basemap.
+"""Nushell plugin: plot
+Subcommand `plot dots`: input a list of lon/lat records, output SVG map
+with contextily basemap.
 Records may carry an optional `category` string; each category gets its
 own color in the plot and an entry in the legend.
 """
@@ -17,7 +18,7 @@ def signatures():
         "Signature": [
             {
                 "sig": {
-                    "name": "dots",
+                    "name": "plot dots",
                     "description": "Plot lon/lat points on a map and output SVG; records may carry an optional 'category' string for color-coded legend entries",
                     "extra_description": "",
                     "required_positional": [],
@@ -137,7 +138,7 @@ def make_error_response(call_id, msg, span=None):
 
 def process_run(call_id, run, pending, write):
     name = run.get("name")
-    if name != "dots":
+    if name not in ("plot dots", "dots"):
         write({"CallResponse": [call_id, {"Error": {"msg": "unknown command"}}]})
         return
     call = run.get("call", {})

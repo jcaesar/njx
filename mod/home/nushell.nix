@@ -20,7 +20,7 @@ in {
         enable = cfg.enable;
         package = pkgs.nushell;
         configFile.text = ''
-          ${lib.optionalString cfg.dots "plugin use --plugin-config ${pkgs.nu_plugin_dots}/registry.msgpackz dots"}
+          ${lib.optionalString cfg.dots "plugin use --plugin-config ${pkgs.nu_plugin_plot}/registry.msgpackz plot"}
           source ${../../dot/config.nu}
         '';
         shellAliases = {
