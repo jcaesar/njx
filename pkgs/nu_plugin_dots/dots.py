@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Nushell plugin: dots
 Input a list of lon/lat records, output SVG map with contextily basemap.
+Records may carry an optional `category` string; each category gets its
+own color in the plot and an entry in the legend.
 """
 import io
 import json
 import sys
 
 PLUGIN_VERSION = "0.1.0"
-NUSHELL_VERSION = "0.115.0"
+NUSHELL_VERSION = "0.116.0"
 DEFAULT_SOURCE = "Esri.WorldGrayCanvas"
 
 def signatures():
@@ -16,7 +18,7 @@ def signatures():
             {
                 "sig": {
                     "name": "dots",
-                    "description": "Plot lon/lat points on a map and output SVG",
+                    "description": "Plot lon/lat points on a map and output SVG; records may carry an optional 'category' string for color-coded legend entries",
                     "extra_description": "",
                     "required_positional": [],
                     "optional_positional": [],
@@ -72,7 +74,14 @@ def extract_points_from_records(vals):
             lat = float(lat_node["Int"]["val"])
         else:
             raise ValueError("lat not float/int")
-        points.append({"lon": lon, "lat": lat})
+        category = None
+        if "category" in rec:
+            cat_node = rec["category"]
+            if "String" in cat_node:
+                category = cat_node["String"]["val"]
+            elif "Nothing" not in cat_node:
+                raise ValueError("category not a string")
+        points.append({"lon": lon, "lat": lat, "category": category})
     return points
 
 def render_svg(points, source, no_basemap=False):
@@ -83,10 +92,17 @@ def render_svg(points, source, no_basemap=False):
     from shapely.geometry import Point
 
     fig, ax = plt.subplots(figsize=(16,16))
-
-    geometry = [Point(p["lon"], p["lat"]) for p in points]
     crs = 4326
-    gpd.GeoDataFrame(geometry=geometry, crs=crs).plot(ax=ax)
+
+    categories = list(dict.fromkeys(p["category"] or "uncategorized" for p in points))
+    cmap = plt.get_cmap("tab10")
+    for i, cat in enumerate(categories):
+        pts = [p for p in points if (p["category"] or "uncategorized") == cat]
+        geometry = [Point(p["lon"], p["lat"]) for p in pts]
+        gpd.GeoDataFrame(geometry=geometry, crs=crs).plot(
+            ax=ax, color=cmap(i % 10), label=cat)
+    if any(p["category"] is not None for p in points):
+        ax.legend()
 
     if not no_basemap:
         import contextily as ctx
