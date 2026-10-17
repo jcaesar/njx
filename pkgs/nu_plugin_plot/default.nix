@@ -31,4 +31,18 @@ buildPythonApplication (finalAttrs: {
       }
     '
   '';
+  passthru = {
+    # use e.g. as echo '[{"lon":139, "lat":42}]' | nix run -- .#nu_plugin_plot.run dots --no-basemap=true
+    run = writeScriptBin "nu-plugin-plot-run" ''
+      #!${lib.getExe nushell} --stdin
+      def main [sc] {
+        let data = $in | from json
+        plugin use --plugin-config ${finalAttrs.finalPackage.out}/registry.msgpackz plot
+        match $sc {
+          dots => { plot dots --no-basemap=true }
+          _ => { error make {msg: "unknown subcommand", labels: [{span: (metadata $sc).span}]} }
+        }
+      }
+    '';
+  };
 })
