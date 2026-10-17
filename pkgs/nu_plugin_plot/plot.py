@@ -4,6 +4,9 @@ Subcommand `plot dots`: input a list of lon/lat records, output SVG map
 with contextily basemap.
 Records may carry an optional `category` string; each category gets its
 own color in the plot and an entry in the legend.
+Subcommand `plot lines`: input a list of numbers, a record of lists of
+numbers (key = label), or a list of records with `x`/`y` and optional
+`category`; output SVG line plot.
 """
 import io
 import json
@@ -49,48 +52,79 @@ def signatures():
                     "category": "Experimental",
                 },
                 "examples": [],
+            },
+            {
+                "sig": {
+                    "name": "plot lines",
+                    "description": "Make line plots and output SVG; input a list of numbers, a record of lists of numbers (key = label), or a list of records with 'x'/'y' and optional 'category'",
+                    "extra_description": "",
+                    "required_positional": [],
+                    "optional_positional": [],
+                    "rest_positional": None,
+                    "named": [],
+                    "input_output_types": [["Any", "Any"]],
+                    "allow_variants_without_examples": True,
+                    "search_terms": [],
+                    "is_filter": True,
+                    "creates_scope": False,
+                    "allows_unknown_args": False,
+                    "category": "Experimental",
+                },
+                "examples": [],
             }
         ]
     }
 
+def extract_value(node):
+    if node is None:
+        return None
+    if "Float" in node:
+        return node["Float"]["val"]
+    if "Int" in node:
+        return node["Int"]["val"]
+    if "String" in node:
+        return node["String"]["val"]
+    if "Bool" in node:
+        return node["Bool"]["val"]
+    if "Nothing" in node:
+        return None
+    if "List" in node:
+        return [extract_value(v) for v in node["List"]["vals"]]
+    if "Record" in node:
+        return {k: extract_value(c) for k, c in node["Record"]["val"].items()}
+    raise ValueError(f"unsupported value type: {list(node)}")
+
+def is_number(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
 def extract_points_from_records(vals):
     points = []
-    for v in vals:
-        if "Record" not in v:
-            raise ValueError("expected Record")
-        rec = v["Record"]["val"]
-        if "lon" not in rec or "lat" not in rec:
+    for rec in vals:
+        if not isinstance(rec, dict) or "lon" not in rec or "lat" not in rec:
             raise ValueError("missing lon/lat")
-        lon_node = rec["lon"]
-        lat_node = rec["lat"]
-        if "Float" in lon_node:
-            lon = lon_node["Float"]["val"]
-        elif "Int" in lon_node:
-            lon = float(lon_node["Int"]["val"])
-        else:
-            raise ValueError("lon not int/float")
-        if "Float" in lat_node:
-            lat = lat_node["Float"]["val"]
-        elif "Int" in lat_node:
-            lat = float(lat_node["Int"]["val"])
-        else:
-            raise ValueError("lat not float/int")
-        category = None
-        if "category" in rec:
-            cat_node = rec["category"]
-            if "String" in cat_node:
-                category = cat_node["String"]["val"]
-            elif "Nothing" not in cat_node:
-                raise ValueError("category not a string")
-        points.append({"lon": lon, "lat": lat, "category": category})
+        if not is_number(rec["lon"]) or not is_number(rec["lat"]):
+            raise ValueError("lon/lat must be numbers")
+        category = rec.get("category")
+        if category is not None and not isinstance(category, str):
+            raise ValueError("category not a string")
+        points.append({"lon": float(rec["lon"]), "lat": float(rec["lat"]), "category": category})
     return points
 
-def render_svg(points, source, no_basemap=False):
-    import matplotlib
-    matplotlib.use("Agg")
+def fig_to_svg(fig):
     import matplotlib.pyplot as plt
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="svg")
+    plt.close(fig)
+    return buf.getvalue().decode("utf-8")
+
+def render_svg(points, source, no_basemap=False):
     import geopandas as gpd
+    import matplotlib
+    import matplotlib.pyplot as plt
     from shapely.geometry import Point
+
+    matplotlib.use("Agg")
 
     fig, ax = plt.subplots(figsize=(16,16))
     crs = 4326
@@ -109,10 +143,60 @@ def render_svg(points, source, no_basemap=False):
         import contextily as ctx
         ctx.add_basemap(ax, source=source, crs=crs)
 
-    buf = io.BytesIO()
-    fig.savefig(buf, format="svg")
-    plt.close(fig)
-    return buf.getvalue().decode("utf-8")
+    return fig_to_svg(fig)
+
+def lines_from_value(value):
+    if isinstance(value, list):
+        if value and all(is_number(v) for v in value):
+            return [("values", [(i, float(v)) for i, v in enumerate(value)])]
+        if value and all(isinstance(v, dict) and "x" in v and "y" in v for v in value):
+            groups = {}
+            for rec in value:
+                label = rec.get("category")
+                if label is None:
+                    label = "points"
+                if not isinstance(label, str):
+                    raise TypeError("category must be a string")
+                if not is_number(rec["x"]) or not is_number(rec["y"]):
+                    raise TypeError("x/y must be numbers")
+                groups.setdefault(label, []).append((float(rec["x"]), float(rec["y"])))
+            return list(groups.items())
+        raise ValueError("list input must be numbers or records with 'x' and 'y'")
+    if isinstance(value, dict):
+        if not value:
+            raise ValueError("record input has no lines to plot")
+        lines = []
+        for key, vals in value.items():
+            if not isinstance(vals, list) or not vals or not all(is_number(v) for v in vals):
+                raise ValueError(f"'{key}' must be a non-empty list of numbers")
+            lines.append((key, [(i, float(v)) for i, v in enumerate(vals)]))
+        return lines
+    raise ValueError(
+        "expected a list of numbers, a record of lists of numbers, or a list of records with 'x'/'y'"
+    )
+
+def render_lines_svg(lines):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(16, 8))
+    for label, pts in lines:
+        xs = [p[0] for p in pts]
+        ys = [p[1] for p in pts]
+        ax.plot(xs, ys, label=label)
+    if len(lines) > 1:
+        ax.legend()
+    return fig_to_svg(fig)
+
+def extract_rows(item):
+    if "List" in item:
+        inner = item["List"]
+        if isinstance(inner, dict) and "vals" in inner:
+            return [extract_value(v) for v in inner["vals"]]
+        return [extract_value(inner)]
+    value = extract_value(item)
+    return value if isinstance(value, list) else [value]
 
 def get_options_from_call(call):
     source = DEFAULT_SOURCE
@@ -138,7 +222,11 @@ def make_error_response(call_id, msg, span=None):
 
 def process_run(call_id, run, pending, write):
     name = run.get("name")
-    if name not in ("plot dots", "dots"):
+    if name in ("plot lines", "lines"):
+        command = "lines"
+    elif name in ("plot dots", "dots"):
+        command = "dots"
+    else:
         write({"CallResponse": [call_id, {"Error": {"msg": "unknown command"}}]})
         return
     call = run.get("call", {})
@@ -149,11 +237,13 @@ def process_run(call_id, run, pending, write):
     if "Value" in input_header:
         value_obj, _ = input_header["Value"]
         try:
-            if "List" not in value_obj:
-                raise ValueError("expected list")
-            vals = value_obj["List"]["vals"]
-            points = extract_points_from_records(vals)
-            svg = render_svg(points, source, no_basemap)
+            value = extract_value(value_obj)
+            if command == "lines":
+                svg = render_lines_svg(lines_from_value(value))
+            else:
+                if not isinstance(value, list):
+                    raise ValueError("expected list")
+                svg = render_svg(extract_points_from_records(value), source, no_basemap)
             write({"CallResponse": [call_id, make_pipeline_data_string(svg, span)]})
         except Exception as e:  # noqa: BLE001
             write(make_error_response(call_id, str(e), span))
@@ -161,7 +251,14 @@ def process_run(call_id, run, pending, write):
 
     if "ListStream" in input_header:
         stream_id = input_header["ListStream"]["id"]
-        pending[stream_id] = {"call_id": call_id, "source": source, "no_basemap": no_basemap, "items": [], "span": span}
+        pending[stream_id] = {
+            "call_id": call_id,
+            "command": command,
+            "source": source,
+            "no_basemap": no_basemap,
+            "items": [],
+            "span": span,
+        }
         return
 
     write(make_error_response(call_id, "unsupported input", span))
@@ -194,8 +291,8 @@ def plugin_loop(input_iter, write):
             continue
         if "Data" in msg:
             stream_id, data = msg["Data"]
-            if stream_id in pending and "List" in data:
-                pending[stream_id]["items"].append(data["List"])
+            if stream_id in pending:
+                pending[stream_id]["items"].append(data)
             # Acknowledge consumption so the engine's flow-controlled writer (which pauses
             # after 100 un-acknowledged messages) can keep sending the rest of the stream.
             write({"Ack": stream_id})
@@ -205,13 +302,15 @@ def plugin_loop(input_iter, write):
             if stream_id in pending:
                 info = pending.pop(stream_id)
                 call_id = info["call_id"]
-                source = info["source"]
-                no_basemap = info["no_basemap"]
                 span = info["span"]
-                items = info["items"]
                 try:
-                    points = extract_points_from_records(items)
-                    svg = render_svg(points, source, no_basemap)
+                    rows = [row for item in info["items"] for row in extract_rows(item)]
+                    if info["command"] == "lines":
+                        svg = render_lines_svg(lines_from_value(rows))
+                    else:
+                        svg = render_svg(
+                            extract_points_from_records(rows), info["source"], info["no_basemap"]
+                        )
                     write({"CallResponse": [call_id, make_pipeline_data_string(svg, span)]})
                 except Exception as e:  # noqa: BLE001
                     write(make_error_response(call_id, str(e), span))

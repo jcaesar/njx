@@ -29,6 +29,10 @@ buildPythonApplication (finalAttrs: {
       if ($svg | str contains "<svg" | not $in) {
         exit 1
       }
+      let svg2 = [1 2 3 4 5] | plot lines
+      if ($svg2 | str contains "<svg" | not $in) {
+        exit 1
+      }
     '
   '';
   passthru = {
@@ -39,7 +43,8 @@ buildPythonApplication (finalAttrs: {
         let data = $in | from json
         plugin use --plugin-config ${finalAttrs.finalPackage.out}/registry.msgpackz plot
         match $sc {
-          dots => { plot dots --no-basemap=true }
+          dots => { $data | plot dots --no-basemap=true }
+          lines => { $data | plot lines }
           _ => { error make {msg: "unknown subcommand", labels: [{span: (metadata $sc).span}]} }
         }
       }
