@@ -12,7 +12,10 @@ rustPlatform.buildRustPackage (final: {
     hash = "sha256-LHEsPcKCdMlg8wIHzAgfFZe9Cb+mNWivBP9DE9vqdno=";
   };
   cargoHash = "sha256-nMKbBR3VnL85DQQT6LZWr3YOGPVNha0G4yvKbHSPG/E=";
-  prePatch = "rm -rf .cargo # forces mold";
+  prePatch = ''
+    rm -rf .cargo # forces mold
+    sed -r 's/^lto = |^codegen-units =/# &/'
+  '';
   nativeBuildInputs = [rustPlatform.bindgenHook];
   doCheck = false;
   meta.mainProgram = "dirge";
