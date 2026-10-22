@@ -40,7 +40,7 @@
       gh
       file
       unar
-      httpie # better wget/curl, but xh is even better in most cases
+      # httpie # better wget/curl, but xh is even better in most cases
       bat # better cat
       glow # cat for markdown
       socat # better netcat
