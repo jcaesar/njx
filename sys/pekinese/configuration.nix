@@ -19,7 +19,6 @@
   boot.initrd.availableKernelModules = import ./bootmods.nix;
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
-  boot.initrd.systemd.enable = true;
   systemd.targets.tpm2.enable = false; # timeouts waiting on dev-tpmrm0
   hardware.cpu.intel.updateMicrocode = true;
   # system.etc.overlay.enable = true; # broken?

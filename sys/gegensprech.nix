@@ -9,7 +9,6 @@ in {
   njx.pi3 = true;
   # njx."seeed-2mic/default" = true;
   njx.sshUnlock.keys = private.terminalKeys;
-  boot.initrd.systemd.enable = true;
   networking.hostName = "gegensprech";
   system.build.sfbs-group = "3-other-2-raspis";
   networking.supplicant.wlan0.extraConf = "country=JP";

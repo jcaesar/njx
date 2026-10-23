@@ -32,7 +32,6 @@
   common = {lib, ...}: {
     imports = [base];
     users.users.coworkerSalt = lib.mkForce {isNormalUser = true;};
-    boot.initrd.systemd.enable = lib.mkForce false;
     # Should now be possible to do installs with
     # # /etc/sysflake/diskoScript
     # # nixos-install --system /etc/sysflake/toplevel

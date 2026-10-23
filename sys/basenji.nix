@@ -20,7 +20,6 @@ in {
   '';
   boot.loader.grub.configurationLimit = 5; # small boot
   boot.kernelParams = ["console=ttyS0,115200n8"];
-  boot.initrd.systemd.enable = true;
   boot.initrd.systemd.emergencyAccess = true;
   boot.initrd.availableKernelModules = [
     "virtiofs"

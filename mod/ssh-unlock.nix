@@ -39,7 +39,6 @@ in {
     boot.initrd = {
       kernelModules = cfg.modules;
       systemd = {
-        enable = true;
         network = lib.mkDefault {
           inherit (config.systemd.network) enable config links netdevs networks;
         };
