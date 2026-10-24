@@ -17,7 +17,7 @@ rustPlatform.buildRustPackage rec {
     rev = "6e05e7844b5b50f89787d30bffcbbd3471bfcfde";
     hash = "sha256-/byGj3Gz+dcriPwyAN54Nppl/UQK2WMD8bYh74wy2t8=";
   };
-  cargoLock.lockFile = "${src}/Cargo.lock";
+  cargoHash = "sha256-BMEBDX5oE3nxFDauXwT65VN3RkMmIXltU+duBi+BXsA=";
 
   buildInputs = [
     glib

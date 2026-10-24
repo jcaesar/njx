@@ -9,12 +9,8 @@ pkgs.rq.overrideAttrs (
       rev = "2ae985b835595d47769b9e83bd99f413044895ec";
       hash = "sha256-+ItBvPWRiJ0QIF9H8h/KnBsjTZDa9NhIdAvDNQkC70g=";
     };
+    cargoHash = "sha256-nxFuNLGsvibl43Tq32gwFHmarlesIz9wtwmHfZJHbyk=";
 
-    cargoDeps = pkgs.rustPlatform.importCargoLock {
-      lockFile = "${final.src}/Cargo.lock";
-      allowBuiltinFetchGit = true;
-    };
-    cargoHash = null;
     env.VERGEN_GIT_SEMVER = final.src.rev;
     doInstallCheck = false;
   }

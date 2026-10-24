@@ -13,7 +13,7 @@ rustPlatform.buildRustPackage rec {
     tag = "v${version}";
     hash = "sha256-321kpkOCYHqAQo8KKiiGc+Dz2NApLTyylddrCNGj62I=";
   };
-  cargoLock.lockFile = "${src}/Cargo.lock";
+  cargoHash = "sha256-sC0vR6uHWlXEc+XWAoH4nF6AwQbfki/dB2X69k6Kpy4=";
 
   meta = {
     description = "Calculates the CRC-32 of files and checks them against their filename";

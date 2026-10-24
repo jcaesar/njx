@@ -13,10 +13,8 @@ rustPlatform.buildRustPackage rec {
     rev = "07667fbd8689eccea14699e49e3df0da5e2c04c0";
     hash = "sha256-e05QKX86CsW+b5xqJw1bEllcr7OtKliZEGBF5Oi2h3E=";
   };
-  cargoLock = {
-    lockFile = "${src}/Cargo.lock";
-    allowBuiltinFetchGit = true;
-  };
+  cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB=";
+  cargoLock.allowBuiltinFetchGit = true;
 
   meta = with lib; {
     description = "Exports a single vector of metrics for the exclusive memory use per cgroup";
