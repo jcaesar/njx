@@ -36,7 +36,7 @@
     nerd-fonts.droid-sans-mono
     fira-code
     terminus_font
-    iosevka
+    # iosevka # node->brotli in build path…
     sarasa-gothic
     source-code-pro
     terminus_font
@@ -100,14 +100,14 @@
       typst # better tex?
       xclip
       kdePackages.dolphin # better explorer.exe
-      asak # "better audacity" / just an audio recorder
+      # asak # "better audacity" / just an audio recorder
       gnome-clocks
-      easyeffects # pipewire remixer
+      # easyeffects # pipewire remixer - with a dependency rat tail
       omekasy # unicode font style changer
       alacritty
       #qt6-wayland
       wl-clipboard
-      waypipe
+      # waypipe
       wireshark
       hydra-check
       piper-tts-voiced.alan-medium

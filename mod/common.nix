@@ -20,7 +20,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    deadnix
+    # deadnix
     # vulnix # todo
     git # better svn/hg
     nmap
