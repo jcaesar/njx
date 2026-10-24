@@ -68,7 +68,7 @@
   services.avahi = {
     enable = true;
     openFirewall = true;
-    publish.enable = true;
+    # settings.publish."disable-publishing" = false;
   };
   services.pipewire.extraConfig.pipewire.zeroconf-discover."context.modules" = lib.singleton {
     name = "libpipewire-module-zeroconf-discover";
