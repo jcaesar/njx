@@ -16,7 +16,6 @@
       pekinese = sysI ./sys/pekinese/configuration.nix;
       pitivi = sysA ./sys/pitivi.nix;
       gegensprech = sysA ./sys/gegensprech.nix;
-      basenji = sysI ./sys/basenji.nix;
       ex-vmserver = sysI ./sys/ex-vmserver.nix;
       ex-banana = sysA ./sys/ex-banana.nix;
       ex-small = sysI ./sys/ex-small.nix;
