@@ -21,9 +21,14 @@ def main [--action = "switch", --throughcache, --noask, target: string] {
   $env.NIX_SSHOPTS = $sshopts | str join " "
 
   if $throughcache {
-    nix copy --to ssh-ng://westiei ...$srcs --substitute-on-destination --no-check-sigs
-    let syspath = ssh ...$sshopts westiei nix build $"'($flakepath)#nixosConfigurations.($target.host).config.system.build.toplevel'" --no-link --print-out-paths | lines | first
-    if (sys host).hostname != $target.host {
+    let local = ((sys host).hostname == $target.host);
+    let th = match $local {
+      false => (ssh -tt ...$sshopts $target.host hostname),
+      true => $target.host,
+    }
+    nix copy --to ssh-ng://westie.net.liftm.de ...$srcs --substitute-on-destination --no-check-sigs
+    let syspath = ssh ...$sshopts westie.net.liftm.de nix build $"'($flakepath)#nixosConfigurations.($th).config.system.build.toplevel'" --no-link --print-out-paths | lines | first
+    if not $local {
       ssh -tt ...$sshopts $target.host nix copy --to local $syspath
       ssh -tt ...$sshopts $target.host nh os $action -R ...($ask) $syspath
     } else {
