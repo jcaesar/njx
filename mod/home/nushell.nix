@@ -22,6 +22,16 @@ in {
         configFile.text = ''
           ${lib.optionalString cfg.dots "plugin use --plugin-config ${pkgs.nu_plugin_plot}/registry.msgpackz plot"}
           source ${../../dot/config.nu}
+          source ${pkgs.replaceVarsWith {
+            src = ../../dot/nushell-historyfind.nu;
+            replacements.FINDER = lib.getExe pkgs.skim;
+            replacements.PREVIEW = pkgs.writeScript "nuhl" ''
+              #!${lib.getExe config.programs.nushell.package}
+              def main [...args] {
+                $args | str join " " | nu-highlight | print $in
+              }
+            '';
+          }}
         '';
         shellAliases = {
           vi = "hx";
