@@ -3,6 +3,7 @@
   pkgs,
   ...
 }: {
+  imports = [./sleepier.nix];
   nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
   njx.common = true;
   njx.graphical = true;
