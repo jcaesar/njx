@@ -104,6 +104,7 @@
 
   networking.extraHosts = ''
     0.0.0.0 pr0gramm.com
+    0.0.0.0 pr0.app
   '';
 
   nixpkgs.config.allowUnfreePredicate = pkg:
