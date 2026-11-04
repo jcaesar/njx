@@ -92,9 +92,9 @@
       imv # because sxiv doesn't do wayland
       zathura
       imagemagick
-      libreoffice-stable
+      # libreoffice-stable # TODO brot
       rusti-cal # rustier cal
-      gimp3
+      # gimp3 # TODO brot
       picard
       inkscape
       typst # better tex?
