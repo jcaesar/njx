@@ -22,7 +22,7 @@
           owner = "K900";
           repo = "u-boot";
           # ref = "refs/heads/bpi-r4";
-          rev = "64203d2b0099aa6f18ab98ad7aeadd91a65202e8";
+          rev = "edf28fba63af6a97222f57551ae6d5b7a8e75527";
         };
         version = "2026.07-bpi-r4";
         defconfig = "mt7988a_bananapi_bpi-r4-bootstd_defconfig";
@@ -79,25 +79,17 @@
     lib.makeOverridable f {};
 
   kernel = pkgsCross.buildLinux {
-    version = "7.2.9";
-    modDirVersion = "7.2.9";
+    version = "7.3.0";
+    modDirVersion = "7.3.0";
     src = fetchTree {
       type = "github";
       owner = "K900";
       repo = "linux";
-      # ref = "refs/heads/bpi-r4";
-      rev = "080b79149842b73e0217a6639778163ab0b740a7";
+      # ref = "refs/heads/bpi-r4-mt76-next";
+      rev = "51cde5153affedb75f699c2fcb78e6f36090ef85";
     };
 
     kernelPatches = [
-      {
-        name = "fix-build-with-phylink-builtin";
-        patch = null;
-        structuredExtraConfig = {
-          FWNODE_PCS = lib.kernel.yes;
-          PCS_MTK_USXGMII = lib.kernel.yes;
-        };
-      }
       {
         name = "enable-testmode";
         patch = null;

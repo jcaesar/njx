@@ -22,6 +22,11 @@ final: prev: {
     # test-utils "equality assertion failed" on this machine
     doCheck = false;
   });
+  elfutils = prev.elfutils.overrideAttrs (old: {
+    # backtrace/deleted/proc-attach tests need ptrace, which qemu-user (cross build) doesn't implement
+    doCheck = false;
+    doInstallCheck = false;
+  });
   coredns = prev.coredns.overrideAttrs (old: {
     postPatch = ''
       ${old.postPatch}
