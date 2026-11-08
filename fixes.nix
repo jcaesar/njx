@@ -1,4 +1,12 @@
 final: prev: {
+  # geopandas tests fail: pyarrow roundtrip length errors + shapely-2 mask tests
+  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+    (_: finalPython: {
+      geopandas = finalPython.geopandas.overridePythonAttrs (old: {
+        doCheck = false;
+      });
+    })
+  ];
   home-assistant = prev.home-assistant.override {
     packageOverrides = _: prev: {
       # apparently this doesn't build on bcachefs
@@ -14,19 +22,6 @@ final: prev: {
       test -e $out/lib/windsurf/bin/windsurf-tunnel
     '';
   });
-  gjs = prev.gjs.overrideAttrs (old: {
-    # Debugger/Scripts tests time out after 30s on this machine
-    doCheck = false;
-  });
-  libcmis = prev.libcmis.overrideAttrs (old: {
-    # test-utils "equality assertion failed" on this machine
-    doCheck = false;
-  });
-  elfutils = prev.elfutils.overrideAttrs (old: {
-    # backtrace/deleted/proc-attach tests need ptrace, which qemu-user (cross build) doesn't implement
-    doCheck = false;
-    doInstallCheck = false;
-  });
   coredns = prev.coredns.overrideAttrs (old: {
     postPatch = ''
       ${old.postPatch}
@@ -36,17 +31,4 @@ final: prev: {
         --replace-fail "TestView" "SkipView"
     '';
   });
-  # https://github.com/NixOS/nixpkgs/pull/577208/changes
-  brotli = let
-    new = prev.brotli.overrideAttrs (old: {
-      version = "1.2.1";
-      src = final.fetchFromGitHub {
-        owner = "google";
-        repo = "brotli";
-        tag = "v1.2.1";
-        hash = "sha256-llY72cYffDv0ugsH0p89xIPEbElV4L8u7U/Fe8hT3gI=";
-      };
-    });
-  in
-    new // {overrideAttrs = _: new;};
 }

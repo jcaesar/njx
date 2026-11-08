@@ -46,7 +46,7 @@
       socat # better netcat
       delta # better diff
       difftastic # much better diff
-      oha # http bench
+      # oha # http bench (temporarily out: nixpkgs oha/aws-lc-sys build failure)
       sshfs
       pwgen
       binutils

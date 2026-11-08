@@ -95,6 +95,12 @@
         patch = null;
         structuredExtraConfig.NL80211_TESTMODE = lib.kernel.yes;
       }
+      # nixpkgs' nixos config sets GOOGLE_FIRMWARE, which the K900 mt7988 kernel doesn't have
+      {
+        name = "google-firmware";
+        patch = null;
+        structuredExtraConfig.GOOGLE_FIRMWARE = lib.mkForce (lib.kernel.option lib.kernel.yes);
+      }
     ];
   };
 

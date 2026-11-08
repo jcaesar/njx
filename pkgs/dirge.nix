@@ -3,20 +3,22 @@
   fetchCrate,
   rustPlatform,
   writeShellApplication,
+  sqlite,
 }:
 rustPlatform.buildRustPackage (final: {
   pname = "dirge-agent";
-  version = "0.25.7";
+  version = "0.26.1";
   src = fetchCrate {
     inherit (final) pname version;
-    hash = "sha256-LHEsPcKCdMlg8wIHzAgfFZe9Cb+mNWivBP9DE9vqdno=";
+    hash = "sha256-669FZRIfbc90taVr3/r4PW4B9+M6Mdg3dVrqWUsx2DY=";
   };
-  cargoHash = "sha256-nMKbBR3VnL85DQQT6LZWr3YOGPVNha0G4yvKbHSPG/E=";
+  cargoHash = "sha256-qJw7JTR+isfSqvX8k1mEtyYcpq0N+t00QSQ5GcXxqlc=";
   prePatch = ''
     rm -rf .cargo # forces mold
     sed -r 's/^lto = |^codegen-units =/# &/'
   '';
   nativeBuildInputs = [rustPlatform.bindgenHook];
+  buildInputs = [sqlite];
   doCheck = false;
   meta.mainProgram = "dirge";
   passthru.env-ollama = writeShellApplication {

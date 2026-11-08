@@ -8,7 +8,6 @@ in
   {
     pkgs,
     lib,
-    flakes,
     ...
   }: {
     # Enable SearchEngines policy: https://hedgedoc.grimmauld.de/s/rVnTq0-Rs#
@@ -29,8 +28,6 @@ in
           )
         '';
       });
-      # TODO: undo when brotli 1.2.1 gets out of staging
-      firefox-unwrapped = flakes.nixpkgs.legacyPackages.x86_64-linux.firefox-unwrapped;
     });
     programs = {
       firefox = {

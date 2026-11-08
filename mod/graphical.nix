@@ -36,7 +36,7 @@
     nerd-fonts.droid-sans-mono
     fira-code
     terminus_font
-    # iosevka # node->brotli in build path…
+    # iosevka # node in build path…
     sarasa-gothic
     source-code-pro
     terminus_font
