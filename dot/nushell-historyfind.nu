@@ -1,7 +1,7 @@
 $env.config.keybindings = $env.config.keybindings | append {
   name: fuzzy_history
   modifier: control
-  keycode: char_r
+  keycode: char_e
   mode: [emacs, vi_normal, vi_insert]
   event: [
     {
@@ -13,11 +13,13 @@ $env.config.keybindings = $env.config.keybindings | append {
           | reverse
           | uniq
           | str join (char -i 0)
-          | @FINDER@ 
+          | @FINDER@
               --read0 --print0
               --layout=reverse
+              --no-typos
               --height=40%
               --preview='exec @PREVIEW@ {}'
+              --preview-window down:45%:wrap:pty
           | bytes split 0x[0] | get 0
           | decode utf8
         )
