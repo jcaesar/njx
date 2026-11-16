@@ -16,6 +16,7 @@ pkgs: prev: {
   vector-cloudwatchsyslogs = import ./vector-cloudwatchsyslogs.nix pkgs;
   rq = import ./rq.nix prev;
   ghcr-login = pkgs.callPackage ./ghcr-login.nix {};
+  git-remote-s3 = pkgs.python3.pkgs.callPackage ./git-remote-s3.nix {};
   cgroup-memory-prometheus-ex = pkgs.callPackage ./cgroup-memory-prometheus-ex.nix {};
   dirge = pkgs.callPackage ./dirge.nix {};
   ferrosonic = pkgs.callPackage ./ferrosonic.nix {};
