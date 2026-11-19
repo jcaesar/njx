@@ -5,7 +5,7 @@
     serviceConfig = {
       ExecStart = "${pkgs.prometheus-nvml-exporter}/bin/prometheus-nvml-exporter";
       PrivateTmp = true;
-      WorkingDirectory = /tmp;
+      WorkingDirectory = "/tmp";
       DynamicUser = true;
       User = "prometheus-nvml-exporter";
       CapabilityBoundingSet = [""];
