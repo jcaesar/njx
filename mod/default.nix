@@ -30,6 +30,7 @@ in {
     ./openspeedtest.nix
     ./btspeaker.nix
     ./pkgs-cross.nix
+    ./nginx-fix.nix
     (mkModOption "foot")
     (mkModOption "base")
     (mkModOption "binfmt")

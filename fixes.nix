@@ -1,12 +1,14 @@
 final: prev: {
   # geopandas tests fail: pyarrow roundtrip length errors + shapely-2 mask tests
-  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-    (_: finalPython: {
-      geopandas = finalPython.geopandas.overridePythonAttrs (old: {
-        doCheck = false;
-      });
-    })
-  ];
+  pythonPackagesExtensions =
+    prev.pythonPackagesExtensions
+    ++ [
+      (_: finalPython: {
+        geopandas = finalPython.geopandas.overridePythonAttrs (old: {
+          doCheck = false;
+        });
+      })
+    ];
   home-assistant = prev.home-assistant.override {
     packageOverrides = _: prev: {
       # apparently this doesn't build on bcachefs
