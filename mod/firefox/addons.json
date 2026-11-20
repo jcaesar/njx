@@ -30,11 +30,6 @@
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4186050/latest.xpi"
   },
   {
-    "name": "Old Reddit Redirect",
-    "id": "{9063c2e9-e07c-4c2c-9646-cfe7ca8d0498}",
-    "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/4182157/latest.xpi"
-  },
-  {
     "name": "uMatrix",
     "id": "uMatrix@raymondhill.net",
     "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/3812704/latest.xpi"
