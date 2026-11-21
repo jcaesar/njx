@@ -1,7 +1,7 @@
 $env.config.keybindings = $env.config.keybindings | append {
   name: fuzzy_history
   modifier: control
-  keycode: char_e
+  keycode: char_t
   mode: [emacs, vi_normal, vi_insert]
   event: [
     {
