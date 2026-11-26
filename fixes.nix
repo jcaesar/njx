@@ -24,13 +24,6 @@ final: prev: {
       test -e $out/lib/windsurf/bin/windsurf-tunnel
     '';
   });
-  # kernel 6.18.64 backported the inode_state_* accessors into linux/fs.h,
-  # colliding with the local copies (redefinition errors in the dkms module)
-  bcachefs-tools = prev.bcachefs-tools.overrideAttrs (old: {
-    patches = (old.patches or []) ++ [
-      ./patches/bcachefs-tools-6.18.64-inode-state-guard.patch
-    ];
-  });
   coredns = prev.coredns.overrideAttrs (old: {
     postPatch = ''
       ${old.postPatch}
